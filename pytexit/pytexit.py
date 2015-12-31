@@ -97,7 +97,7 @@ Still WIP
 
 #TODO:
 
-- make it Python 2 compatible
+- make it fully Python 2 compatible
 
 - allow syntax "a*b = c" (not a valid Python expression, but convenient to type
     some LaTeX formula)
@@ -123,7 +123,7 @@ try:
 except:
     pass
 
-unicode = {
+unicode_tbl = {
     'α':'alpha',
     'β':'beta',
     'χ':'chi',
@@ -162,7 +162,8 @@ class LatexVisitor(ast.NodeVisitor):
 
     def __init__(self,dummy_var='u',upperscript='ˆ',lowerscript='_',
                  verbose=False):
-        super().__init__()
+        super(LatexVisitor,self).__init__()
+        # super().__init__()  # doesn't work in Python 2.x
         self.dummy_var = dummy_var
         
         self.upper = upperscript
@@ -376,8 +377,8 @@ class LatexVisitor(ast.NodeVisitor):
             m = r'\%s'%m
         
         # Unicode
-        elif m in unicode:
-            m = r'\%s'%unicode[m]
+        elif m in unicode_tbl:
+            m = r'\%s'%unicode_tbl[m]
         
         elif m in ['eps']:
             m  = r'\epsilon'
@@ -661,10 +662,15 @@ def py2tex(expr,print_latex=True,print_formula=True,dummy_var='u',output='tex',
     '''
 
     try:
-        assert(isinstance(expr, str))
+        if sys.version_info>(3,):
+            assert(isinstance(expr, str))
+        else:
+            assert(isinstance(expr,(str,unicode)))
     except AssertionError:
         raise ValueError('Input must be a string')
-    
+
+       
+        
     expr=clean(expr) # removes module calls, etc.
 
     # Parse 
@@ -696,14 +702,17 @@ def py2tex(expr,print_latex=True,print_formula=True,dummy_var='u',output='tex',
         uprint(s)
     return s
     
-def uprint(*expr, sep=' ', end='\n', file=sys.stdout):
-    ''' Deals with encoding problems '''
+# % Printing & encoding 
+
+def uprint(*expr):
+    ''' Deals with encoding problems '''    
     
     try:
-        print(*expr, sep=sep, end=end, file=file)
+        print(*expr)
     except UnicodeEncodeError:
         f = lambda expr: expr.encode(sys.stdout.encoding, errors='replace')
-        print(*map(f, expr), sep=sep, end=end, file=file)
+        print(*map(f, expr))
+
 
 def _test(verbose=True,**kwargs):
     ''' 

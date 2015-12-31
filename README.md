@@ -40,7 +40,7 @@ py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
 
 Will display the following:
 
-![Image](docs/output.png)
+![https://github.com/rainwear/pytexit/blob/master/docs/output.png](docs/output.png)
 
 And the corresponding LaTeX formula
 
@@ -115,15 +115,21 @@ unreadable.
 ## Test
 
 I haven't deeply tested this module. Please let me know if anything goes wrong.
-In particular I tried to make it Python-2 compatible but I'm not sure it's 
-actually the case. 
+From version 0.1.4 Python 2.7 should also work, even if some encoding problems
+may happen in the console mode, and special unicode characters cannot be used
+as valid identifiers. 
+
+
+## Changes
+
+- 0.1.4 : partial Python 2 support
 
 
 ## Still WIP
 
 Todo:
 
-- make it Python 2 compatible
+- make it fully Python 2 compatible
 
 - allow syntax "a*b = c" (not a valid Python expression, but convenient to type
     some LaTeX formula)
