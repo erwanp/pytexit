@@ -42,7 +42,10 @@ Will display the following:
 
 ![https://github.com/rainwear/pytexit/blob/master/docs/output.png](docs/output.png)
 
-And the corresponding LaTeX formula
+And the corresponding LaTeX formula:
+```
+'$$x=2\\,\\sqrt{\\frac{2\\,\\pi\\,k\\,T_{e}}{m_{e}}}\\,\\left(\\frac{\\Delta E}{k\\,T_{e}}\\right)^{2}\\,a_{0}^{2}$$'
+```
 
 You may also use it directly from the console:
 
