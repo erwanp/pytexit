@@ -96,15 +96,15 @@ Still WIP
 ----------    
 
 #TODO:
-- add script direct access to py2tex
 
 - make it Python 2 compatible
 
 - allow syntax "a*b = c" (not a valid Python expression, but convenient to type
     some LaTeX formula)
+    
 - code for numbered equations
-- Word mode: fix arctan etc... could be nice to rely on a dictionary in an 
-    external file?
+
+- export all the conversions on an external text file 
     
 """
 
