@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-'''Automatically generate a README.rst for Pypi from my README.md
+'''Automatically generate a README.rst for Pypi from my README.md, and publish
+the latest version
+
+Use
+------------
+    python register.py
 
 Requirement
 ------------

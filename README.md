@@ -44,6 +44,12 @@ Will display the following:
 
 And the corresponding LaTeX formula
 
+You may also use it directly from the console:
+
+```
+py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
+```
+
 ## Current Features
 
 Successfully deal with most of the one or two parameter functions. Run the 

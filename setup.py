@@ -1,12 +1,13 @@
 from setuptools import setup
 import os
+import codecs
 
 long_description = 'Convert a Python expression in a LaTeX formula'
-if os.path.exists('README.txt'):
-    long_description = open('README.txt').read()
+if os.path.exists('README.rst'):
+    long_description = codecs.open('README.rst').read()
     
 setup(name='pytexit',
-      version='0.1.0',
+      version='0.1.2',
       description='Convert a Python expression in a LaTeX formula',
 	long_description=long_description,
       url='https://github.com/rainwear/pytexit',
