@@ -1,9 +1,8 @@
 # pytexit
     
-*Convert a Python expression in a LaTeX formula*
+Convert a Python expression in a LaTeX formula
 
-Erwan Pannier
-Non Equilibrium Plasma Group - EM2C Laboratory, CentraleSupélec / CNRS UPR 288
+*Erwan Pannier - Non Equilibrium Plasma Group - EM2C Laboratory, CentraleSupélec / CNRS UPR 288*
 
 Based on a code sample from Geoff Reedy on [StackOverflow](http://stackoverflow.com/questions/3867028/converting-a-python-numeric-expression-to-latex
 )
@@ -26,11 +25,17 @@ write in my reports / papers. It allows me to:
 - check my Python formulas are correct:
     once printed LaTeX is much more readable that a multiline Python expression
 
-# Use
+## Install
 
 ```
-    from pytexit import py2tex
-    py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
+pip install pytexit
+```
+    
+## Use
+
+```
+from pytexit import py2tex
+py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
 ```
 
 Will display the following:
@@ -39,7 +44,7 @@ Will display the following:
 
 And the corresponding LaTeX formula
 
-# Current Features
+## Current Features
 
 Successfully deal with most of the one or two parameter functions. Run the 
 _test() function to have an idea of what's possible. 
@@ -61,7 +66,7 @@ Also note that iPython uses auto-completion to convert most of the latex
 identifiers in their unicode equivalent:
 
 ```
-    \alpha --> [Tab] --> α
+\alpha --> [Tab] --> α
 ```
     
 - pytexit will recognize those unicode characters and convert them again in 
@@ -72,49 +77,45 @@ Word converts most LaTeX expressions in its own graphical representation. The
 Word mode here was just about replacing those LaTeX {} with Word ().
 
 ```    
-    py2tex('sqrt(5/3)',output='word')
+py2tex('sqrt(5/3)',output='word')
 ```
 
-# Upperscript formalism
+## Upperscript formalism
 
 Python3 allows you to use almost every unicode character as a valid identifier
-for a variable. For instance all the following characters are valid:
+for a variable. For instance all the following characters are valid: 
+`αβχδεφγψιθκλνηοπϕστωξℂΔΦΓΨΛΣℚℝΞ`
 
-```
-    'αβχδεφγψιθκλνηοπϕστωξℂΔΦΓΨΛΣℚℝΞ'
-```
-
-Also, 'ˆ' [chr(710)] is a valid Python3 identifier (^ isn't). Although I 
+Also, `ˆ` [chr(710)] is a valid Python3 identifier (`^` isn't). Although I 
 wouldn't call it recommanded, I find it convenient to name some of my variables 
-with ˆ, such as α_iˆj (mostly because I want a direct Python -> LaTeX 
+with `ˆ`, such as α_iˆj (mostly because I want a direct Python -> LaTeX 
 translation). The py2tex code below is aware of this and will perform the 
 following conversion:
 
 ```
-    Python -> Real
-    
-    k_i_j  -> k_i,j
-    k_i__j -> k_(i_j) 
-    k_iˆj -> k_i^j
-    k_iˆˆj -> k_(i^j)
-    k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)
+Python -> Real
+
+k_i_j  -> k_i,j
+k_i__j -> k_(i_j) 
+k_iˆj -> k_i^j
+k_iˆˆj -> k_(i^j)
+k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)
 ```
     
 etc. k_i__j___1 is still a valid expression, although it quickly starts to be 
 unreadable.
 
 
-# Test
+## Test
 
 I haven't deeply tested this module. Please let me know if anything goes wrong.
 In particular I tried to make it Python-2 compatible but I'm not sure it's 
 actually the case. 
 
 
-# Still WIP
+## Still WIP
 
-
-#TODO:
+Todo:
 
 - add script direct access to py2tex
 
