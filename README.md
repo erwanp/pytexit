@@ -1,22 +1,12 @@
 # pytexit
 
-*Erwan Pannier - Non Eq. Plasma Group - EM2C Laboratory, CentraleSupélec / CNRS UPR 288*
+*Erwan Pannier - EM2C Laboratory, CentraleSupélec / CNRS UPR 288*
 
 ## Description
 
 Convert a Python expression in a LaTeX formula
 
 [Project Github page](https://github.com/rainwear/pytexit)
-
-Based on a code sample from Geoff Reedy on [StackOverflow](http://stackoverflow.com/questions/3867028/converting-a-python-numeric-expression-to-latex
-)
-
-You may also be interested in the similar development from [BekeJ](
-https://github.com/BekeJ/py2tex) that was built
-on top of the same sample. 
-BekeJ's code is designed to be used exclusively in an iPython console using 
-%magic commands to perform unit aware calculations and return result in a nice
-LaTeX format. 
 
 This module isn't unit aware and isn't designed to perform calculations. It is 
 a mere translator from Python expressions into LaTeX syntax. The idea behind it
@@ -28,6 +18,24 @@ write in my reports / papers. It allows me to:
     
 - check my Python formulas are correct:
     once printed LaTeX is much more readable that a multiline Python expression
+
+This is my one of my first released modules, I'll be pleased to have any advice or 
+feedback, mostly concerning cross-platform compatibility issues.
+
+## References
+
+Based on a code sample from Geoff Reedy on [StackOverflow](http://stackoverflow.com/questions/3867028/converting-a-python-numeric-expression-to-latex
+)
+
+You may also be interested in the similar development from [BekeJ](
+https://github.com/BekeJ/py2tex) that was built
+on top of the same sample. 
+BekeJ's code is designed to be used exclusively in an iPython console using 
+%magic commands to perform unit aware calculations and return result in a nice
+LaTeX format. 
+
+Sympy also has some nice LaTeX output, but it requires declaring your symbolic
+variables and isn't as fast as a one-line console command in pytexit.
 
 ## Install
 
@@ -44,7 +52,7 @@ py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
 
 Will display the following equation:
 
-![https://github.com/rainwear/pytexit/blob/master/docs/output.png](docs/output.png)
+![output.png](https://github.com/rainwear/pytexit/blob/master/docs/output.png)
 
 And the corresponding LaTeX formula:
 ```
@@ -129,6 +137,7 @@ as valid identifiers.
 
 ## Changes
 
+- 0.1.8 : fixed console script on Unix systems
 - 0.1.4 : partial Python 2 support
 
 
