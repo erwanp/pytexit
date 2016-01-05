@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+# updated for unix support
 
 import sys
 from pytexit import py2tex
