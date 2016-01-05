@@ -1,9 +1,12 @@
 # pytexit
 
+*Erwan Pannier - Non Eq. Plasma Group - EM2C Laboratory, CentraleSupélec / CNRS UPR 288*
+
+## Description
+
 Convert a Python expression in a LaTeX formula
 
-*Erwan Pannier - Non Equilibrium Plasma Group - EM2C Laboratory, CentraleSupélec / CNRS UPR 288*
-[Github page](https://github.com/rainwear/pytexit)
+[Project Github page](https://github.com/rainwear/pytexit)
 
 Based on a code sample from Geoff Reedy on [StackOverflow](http://stackoverflow.com/questions/3867028/converting-a-python-numeric-expression-to-latex
 )
