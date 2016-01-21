@@ -6,7 +6,7 @@
 
 Convert a Python expression in a LaTeX formula
 
-[Project Github page](https://github.com/rainwear/pytexit)
+[Project Github page](https://github.com/erwanp/pytexit)
 
 This module isn't unit aware and isn't designed to perform calculations. It is 
 a mere translator from Python expressions into LaTeX syntax. The idea behind it
@@ -52,7 +52,7 @@ py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
 
 Will display the following equation:
 
-![output.png](https://github.com/rainwear/pytexit/blob/master/docs/output.png)
+![output.png](https://github.com/erwanp/pytexit/blob/master/docs/output.png)
 
 And the corresponding LaTeX formula:
 ```
@@ -72,7 +72,7 @@ _test() function to have an idea of what's possible.
 
 Arbitrary syntax:
 
-- Variables named after greek names are turned into LaTeX syntax
+- Variables named after Greek names are turned into LaTeX syntax
 
 - 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard 
 scientific module names are removed beforehand)
@@ -84,13 +84,13 @@ scientific module names are removed beforehand)
 - 'a_p' variables are converted with "p" as subscript
 
 Also note that iPython uses auto-completion to convert most of the latex 
-identifiers in their unicode equivalent:
+identifiers in their Unicode equivalent:
 
 ```
 \alpha --> [Tab] --> α
 ```
     
-- pytexit will recognize those unicode characters and convert them again in 
+- pytexit will recognize those Unicode characters and convert them again in 
 latex expressions
 
 - there is a mode to output Python expressions in Word syntax. From version 2007
@@ -103,14 +103,14 @@ py2tex('sqrt(5/3)',output='word')
 
 ## Upperscript formalism
 
-Python3 allows you to use almost every unicode character as a valid identifier
+Python3 allows you to use almost every Unicode character as a valid identifier
 for a variable. For instance all the following characters are valid: 
 `αβχδεφγψιθκλνηοπϕστωξℂΔΦΓΨΛΣℚℝΞ`
 
 Also, `ˆ` [chr(710)] is a valid Python3 identifier (`^` isn't). Although I 
-wouldn't call it recommanded, I find it convenient to name some of my variables 
-with `ˆ`, such as α_iˆj (mostly because I want a direct Python -> LaTeX 
-translation). The py2tex code below is aware of this and will perform the 
+wouldn't call it recommended, I find it convenient to name some of my variables 
+with `ˆ`, such as `α_iˆj` (mostly because I want a direct Python -> LaTeX 
+translation). The py2tex function is aware of this and will perform the 
 following conversion:
 
 ```
@@ -123,7 +123,7 @@ k_iˆˆj -> k_(i^j)
 k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)
 ```
     
-etc. k_i__j___1 is still a valid expression, although it quickly starts to be 
+etc. `k_i__j___1` is still a valid expression, although it quickly starts to be 
 unreadable.
 
 
@@ -131,13 +131,14 @@ unreadable.
 
 I haven't deeply tested this module. Please let me know if anything goes wrong.
 From version 0.1.4 Python 2.7 should also work, even if some encoding problems
-may happen in the console mode, and special unicode characters cannot be used
+may happen in the console mode, and special Unicode characters cannot be used
 as valid identifiers. 
 
 
 ## Changes
 
 - 0.1.8 : fixed console script on Unix systems
+
 - 0.1.4 : partial Python 2 support
 
 

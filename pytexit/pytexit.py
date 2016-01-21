@@ -155,7 +155,8 @@ unicode_tbl = {
 # Modules removed from expressions:
 clear_modules=['math',
                'np','numpy',
-               'scipy.integrate','scipy' # Note that scipy.integrate must be placed before scipy as names are removed in this order
+               'scipy.integrate','scipy', # Note that scipy.integrate must be placed before scipy as names are removed in this order
+               'df', # not a module, but useful to clear pandas dataframe for readability
                ] 
 
 class LatexVisitor(ast.NodeVisitor):
@@ -632,7 +633,7 @@ def clean(expr):
     ''' Removes unnessary calls to libraries'''
     
     for m in clear_modules:
-        expr = expr.replace(m+'.','')
+        expr = expr.replace(m+'.','') # Todo: some regexp here. re(<(+- */)). To make sure we're not removing a variable name
     
     return expr
 
