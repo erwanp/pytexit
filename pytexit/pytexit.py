@@ -454,9 +454,11 @@ class LatexVisitor(ast.NodeVisitor):
 
             if left_is_float & right_is_float:
                 return r'{0}\times{1}'.format(left, right)
-            elif right_is_float:  # revert (a*2 --> 2 a)
-                return r'{0}{1}{2}'.format(right, self.visit(n.op), left)
-            else:  # At least one of the 2 is not an integer
+            elif right_is_float: # simplify (a*2 --> 2a)
+                return r'{0}{1}'.format(right, left)
+            elif left_is_float: # simplify (2*a --> 2a)
+                return r'{0}{1}'.format(left, right)
+            else: # At least one of the 2 is not an integer
                 return r'{0}{1}{2}'.format(left, self.visit(n.op), right)
         else:
             return r'{0}{1}{2}'.format(left, self.visit(n.op), right)
@@ -477,7 +479,7 @@ class LatexVisitor(ast.NodeVisitor):
         return 300
 
     def visit_Mult(self, n):
-        return r'\,'  # reduced space from: r'\;'
+        return r' '   # no space in LaTeX (before:   r'\;'   )
 
     def prec_Mult(self, n):
         return 400
@@ -585,20 +587,28 @@ class LatexVisitor(ast.NodeVisitor):
         return 0
 
     # LaTeX blocs
-    def group(self, expr):
+    def brackets(self, expr):
+        ''' Enclose expr in {...} '''
         return r'{{{0}}}'.format(expr)
 
-    def parenthesis(self, expr):
+    def group(self,expr):
+        ''' Returns expr, add brackets if needed'''
+        if len(expr)==1:
+            return expr
+        else:
+            return self.brackets(expr)
+        
+    def parenthesis(self,expr):
         return r'\left({0}\right)'.format(expr)
 
     def power(self, expr, power):
         return r'{0}^{1}'.format(expr, self.group(power))
 
-    def division(self, up, down):
-        return r'\frac{0}{1}'.format(self.group(up), self.group(down))
+    def division(self,up,down):
+        return r'\frac{0}{1}'.format(self.brackets(up), self.brackets(down))
 
-    def sqrt(self, args):
-        return r'\sqrt{0}'.format(self.group(args))
+    def sqrt(self,args):
+         return r'\sqrt{0}'.format(self.brackets(args))
 
     def operator(self, func, args=None):
         if args is None:
@@ -608,7 +618,9 @@ class LatexVisitor(ast.NodeVisitor):
 
 
 class WordVisitor(LatexVisitor):
-    ''' A variant of the LatexVisitor to create Word readable equations '''
+    ''' A variant of the LatexVisitor to create Word readable equations 
+    (to be inserted in Word equation tool)
+    '''
 
     # Word-readable blocks
     def group(self, expr):
@@ -737,26 +749,26 @@ def _test(verbose=True, **kwargs):
     '''
 
     expr_py = [r'Re_x=(rho*v*x)/mu',
-               r'2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2',
-               r'f(x**2/y**3)',
-               r'arctanh(x/sqrt(x))',
-               r'quad(f,0,np.inf)',
-               r'2*4',
-               r'1<2<a<=5',
-               r'np.std([f(i) for i in range(20)])',
-               r'np.sum([i**2 for i in range(1,100)])==328350',
-               r'k_i__1_i__2ˆj__1ˆj__2',
-               ]
-    expr_tex = [r'$$Re_{x}=\frac{\rho\,v\,x}{\mu}$$',
-                r"$$2\,\sqrt{\frac{2\,\pi\,k\,T_{e}}{m_{e}}}\,\left(\frac{\Delta E}{k\,T_{e}}\right)^{2}\,a_{0}^{2}$$",
-                r"$$f{\left(\frac{x^{2}}{y^{3}}\right)}$$",
+                r'2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2',
+                r'f(x**2/y**3)',
+                r'arctanh(x/sqrt(x))',
+                r'quad(f,0,np.inf)',
+                r'2*4',
+                r'1<2<a<=5',
+                r'np.std([f(i) for i in range(20)])',
+                r'np.sum([i**2 for i in range(1,100)])==328350',
+                r'k_i__1_i__2ˆj__1ˆj__2',
+                ]
+    expr_tex = [r'$$Re_x=\frac{\rho v x}{\mu}$$',
+                r"$$2\sqrt{\frac{2\pi k T_e}{m_e}} \left(\frac{\Delta E}{k T_e}\right)^2 a_0^2$$",
+                r"$$f{\left(\frac{x^2}{y^3}\right)}$$",
                 r"$$\tanh^{-1}(\frac{x}{\sqrt{x}})$$",
                 r"$$\int_{0}^{\infty} f(u) du$$",
                 r'$$2\times4$$',
                 r'$$1<2<a<=5$$',
                 r'$$\operatorname{std}\left(f{\left(i\right)}, i=0..20\right)$$',
-                r'$$\sum_{i=1}^{100} i^{2}=328350$$',
-                r'$$k_{i_{1},i_{2}}^{j_{1},j_{2}}$$',
+                r'$$\sum_{i=1}^{100} i^2=328350$$',
+                r'$$k_{i_1,i_2}^{j_1,j_2}$$',
                 ]
 
     btest = True

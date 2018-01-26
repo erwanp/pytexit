@@ -12,6 +12,8 @@ Requirement
     
 '''
 
+from __future__ import print_function
+
 import os
 
 
@@ -22,5 +24,7 @@ os.system('pandoc -s README.md --from markdown --to rst -s -o README.rst')
 
 if os.path.exists('README.rst'):
     print('Readme generated')
-    os.system("setup.py register sdist upload")
+    os.system("python setup.py register sdist upload")
     os.remove('README.rst')
+
+print('All done')

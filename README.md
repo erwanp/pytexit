@@ -1,7 +1,5 @@
 # pytexit
 
-*Erwan Pannier - EM2C Laboratory, CentraleSupélec / CNRS UPR 288*
-
 ## Description
 
 Convert a Python expression in a LaTeX formula
@@ -56,7 +54,7 @@ Will display the following equation:
 
 And the corresponding LaTeX formula:
 ```
-$$x=2\,\sqrt{\frac{2\,\pi\,k\,T_{e}}{m_{e}}}\,\left(\frac{\Delta E}{k\,T_{e}}\right)^{2}\,a_{0}^{2}$$
+$$x=2\\sqrt{\\frac{2\\pi k T_e}{m_e}} \\left(\\frac{\\Delta E}{k T_e}\\right)^2 a_0^2$$
 ```
 
 You may also use it directly from the console:
@@ -155,3 +153,4 @@ Todo:
 
 - export all the conversions on an external text file 
     
+*Erwan Pannier - EM2C Laboratory, CentraleSupélec / CNRS UPR 288*
