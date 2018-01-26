@@ -117,6 +117,9 @@ import sys
 import ast
 import re
 from warnings import warn
+from six.moves import map
+import six
+from six.moves import range
 
 try:
     import IPython.display
@@ -264,9 +267,9 @@ class LatexVisitor(ast.NodeVisitor):
         # Integrals
         # TODO : add this integral in a visit_tripOp function???
         elif func in ['quad']:
-            (f, a, b) = map(self.visit, n.args)
-            return r'\int_{%s}^{%s} %s(%s) d%s' % (a, b, f, self.dummy_var, self.dummy_var)
-#
+            (f,a,b) = list(map(self.visit, n.args))
+            return r'\int_{%s}^{%s} %s(%s) d%s' %(a,b,f,self.dummy_var,self.dummy_var)
+#                
         # Sum
         elif func in ['sum']:
             if blist:
@@ -693,7 +696,7 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
         if sys.version_info > (3,):
             assert(isinstance(expr, str))
         else:
-            assert(isinstance(expr, (str, unicode)))
+            assert(isinstance(expr,(str,six.text_type)))
     except AssertionError:
         raise ValueError('Input must be a string')
 
@@ -738,7 +741,7 @@ def uprint(*expr):
         print(*expr)
     except UnicodeEncodeError:
         f = lambda expr: expr.encode(sys.stdout.encoding, errors='replace')
-        print(*map(f, expr))
+        print(*list(map(f, expr)))
 
 
 def _test(verbose=True, **kwargs):
