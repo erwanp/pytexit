@@ -318,10 +318,13 @@ class LatexVisitor(ast.NodeVisitor):
         return 1000
 
     def visit_UnaryOp(self, n):
+        # Note: removed space between {0} and {1}... so that 10**-3 yields
+        # $$10^{-3}$$ and not $$10^{- 3}$$
+        
         if self.prec(n.op) > self.prec(n.operand):
-            return r'{0} {1}'.format(self.visit(n.op), self.parenthesis(self.visit(n.operand)))
+            return r'{0}{1}'.format(self.visit(n.op), self.parenthesis(self.visit(n.operand)))
         else:
-            return r'{0} {1}'.format(self.visit(n.op), self.visit(n.operand))
+            return r'{0}{1}'.format(self.visit(n.op), self.visit(n.operand))
 
     def prec_UnaryOp(self, n):
         return self.prec(n.op)
@@ -524,6 +527,8 @@ class LatexVisitor(ast.NodeVisitor):
 
 def clean(expr):
     ''' Removes unnessary calls to libraries'''
+    
+    expr = expr.strip()  # remove spaces on the side
 
     for m in clear_modules:
         # Todo: some regexp here. re(<(+- */)). To make sure we're not removing

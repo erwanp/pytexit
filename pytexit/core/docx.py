@@ -44,7 +44,8 @@ class WordVisitor(LatexVisitor):
 
     def visit_Mult(self, n):
         'No spacing'
-        return r''
+        return r'\cdot'
+#        return r''
 
     def sqrt(self, args):
         return r'\sqrt({0})'.format(args)
