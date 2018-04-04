@@ -120,11 +120,11 @@ import sys
 import ast
 import six
 try:
-    from pytexit.core.core import clean, LatexVisitor, uprint
+    from pytexit.core.core import clean, LatexVisitor, uprint, simplify
     from pytexit.core.docx import WordVisitor
     from pytexit.core.fortran import for2py
 except:     # if run locally as a script
-    from core.core import clean, LatexVisitor, uprint
+    from core.core import clean, LatexVisitor, uprint, simplify
     from core.docx import WordVisitor
     from core.fortran import for2py
 try:
@@ -133,7 +133,7 @@ except:
     pass
 
 def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='tex',
-           upperscript='ˆ', lowerscript='_', verbose=False):
+           simplify_output=True, upperscript='ˆ', lowerscript='_', verbose=False):
     ''' Return the LaTeX expression of a Python formula 
     
     Parameters
@@ -150,6 +150,9 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
     output: 'tex' / 'word'
         if 'tex', output latex formula. If word, output a Word MathTex formula
         (may be a little different)
+
+    simplify_output: boolean
+        if True, simplify output. Ex: 1x10^-5 --> 10^-5. Default True
 
     Output
     ------
@@ -191,6 +194,10 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
         s = Visitor.visit(pt.body[0].value)
     else:  # For Compare / Assign expressions
         s = Visitor.visit(pt.body[0])
+      
+    # Simplify if asked for
+    if simplify_output:
+        s = simplify(s)
 
     if output == 'tex':
         s = '$$' + s + '$$'
@@ -208,6 +215,6 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
 
 if __name__ == '__main__':
     
-    from test.test_functions import test
-    uprint('Test =', bool(test(True)))
+    from test.test_functions import run_all_tests
+    uprint('Test =', bool(run_all_tests(True)))
     

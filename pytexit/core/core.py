@@ -526,7 +526,13 @@ class LatexVisitor(ast.NodeVisitor):
 
 
 def clean(expr):
-    ''' Removes unnessary calls to libraries'''
+    ''' Removes unnessary calls to libraries
+    
+    Examples
+    --------
+    
+        np.exp(-3) would be read exp(-3)  
+    '''
     
     expr = expr.strip()  # remove spaces on the side
 
@@ -537,3 +543,46 @@ def clean(expr):
 
     return expr
 
+
+def simplify(s):
+    ''' Cleans the generated text in post-processing '''
+    
+    # Remove unecessary parenthesis? 
+    # -------------
+    # TODO: look for groups that looks like \(\([\(.+\)]*\)\ ), 
+    # (2 pairs of external parenthesis around any number (even 0) of closed pairs 
+    # of parenthesis)  -> then remove one of the the two external parenthesis 
+    
+    
+    # Improve:
+    
+    # Replace 'NUMBER e NUMBER' with powers of 10
+    # ------------
+    regexp = re.compile(r'(\d*\.{0,1}\d+)[e]([-+]?\d*\.{0,1}\d+)')
+    
+    matches = regexp.findall(s)
+    splits = regexp.split(s)
+    assert len(splits) == (len(matches) + 1) + (2 * len(matches))
+    #                     splitted groups             prefactor, exponent  
+    
+    new_s = ''
+    # loop over all match and replace 
+    # ... I didnt find any better way to do that given that we want a conditional
+    # ... replace (.sub wouldnt work)
+    for i, (prefactor, exponent) in enumerate(matches):
+        new_s += splits[3*i]
+        
+        if len(exponent) == 1:
+            exp_str = r'{0}'.format(exponent)
+        else:
+            exp_str = r'{'+'{0}'.format(exponent)+'}'
+        
+        if prefactor == '1':
+            new_s += r'10^{0}'.format(exp_str)
+        else:
+            new_s += r'{0}\times10^{1}'.format(prefactor, exp_str)
+    if len(splits) % 3 == 1:  # add last ones
+        new_s += splits[-1]
+    s = new_s
+    
+    return s 

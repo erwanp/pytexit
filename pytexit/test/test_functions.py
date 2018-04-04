@@ -3,9 +3,9 @@
 Test pytextit 
 """
 
-from pytexit import py2tex, uprint
+from pytexit import py2tex, uprint, simplify
 
-def test(verbose=True, **kwargs):
+def test_py2tex(verbose=True, **kwargs):
     ''' 
     Note : for debugging use 
         pt = ast.parse(expr)
@@ -56,5 +56,16 @@ def test(verbose=True, **kwargs):
     return True
 
 
+def test_simplify(verbose=True, **kwargs):
+    
+    assert simplify('1e-20*11e2') == r'10^{-20}*11\times10^2'
+    assert simplify('1e-20*11e-20+5+2') == r'10^{-20}*11\times10^{-20}+5+2'
+
+
+def run_all_tests(verbose=True, **kwargs):
+    
+    test_py2tex(verbose=verbose, **kwargs)
+    test_simplify(verbose=verbose, **kwargs)
+
 if __name__ == '__main__':
-    test()
+    run_all_tests(verbose=True)

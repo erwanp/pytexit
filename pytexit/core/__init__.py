@@ -3,6 +3,6 @@
 
 """
 
-from .core import clean, LatexVisitor, uprint
+from .core import clean, LatexVisitor, uprint, simplify
 from .docx import WordVisitor
 from .fortran import for2py
