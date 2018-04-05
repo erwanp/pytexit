@@ -70,7 +70,7 @@ def uprint(*expr):
 class LatexVisitor(ast.NodeVisitor):
 
     def __init__(self, dummy_var='u', upperscript='ˆ', lowerscript='_',
-                 verbose=False):
+                 verbose=False, simplify=True):
         super(LatexVisitor, self).__init__()
         # super().__init__()  # doesn't work in Python 2.x
         self.dummy_var = dummy_var
@@ -79,6 +79,7 @@ class LatexVisitor(ast.NodeVisitor):
         self.lower = lowerscript
 
         self.verbose = verbose
+        self.simplify=simplify
 
     def prec(self, n):
         return getattr(self, 'prec_' + n.__class__.__name__, getattr(self, 'generic_prec'))(n)
@@ -338,6 +339,12 @@ class LatexVisitor(ast.NodeVisitor):
             right = self.parenthesis(self.visit(n.right))
         else:
             right = self.visit(n.right)
+            
+        print('self.prec(n.op)', self.prec(n.op))
+        print('self.prec(n.left)', self.prec(n.left))
+        print('self.prec(n.right)', self.prec(n.right))
+        print('left:', left)
+        print('right:', right)
 
         # Special binary operators
         if isinstance(n.op, ast.Div):
@@ -347,26 +354,35 @@ class LatexVisitor(ast.NodeVisitor):
         elif isinstance(n.op, ast.Pow):
             return self.power(left, self.visit(n.right))
         elif isinstance(n.op, ast.Mult):
-
-            def looks_like_float(a):
-                ''' Care for the special case of 2 floats/integer
-                We don't want 'a*2' where we could have simply written '2a' '''
-                try:
-                    float(a)
-                    return True
-                except ValueError:
-                    return False
-
-            left_is_float = looks_like_float(left)
-            right_is_float = looks_like_float(right)
-
-            if left_is_float & right_is_float:
-                return r'{0}\times{1}'.format(left, right)
-            elif right_is_float: # simplify (a*2 --> 2a)
-                return r'{0}{1}'.format(right, left)
-            elif left_is_float: # simplify (2*a --> 2a)
-                return r'{0}{1}'.format(left, right)
-            else: # At least one of the 2 is not an integer
+            
+            if self.simplify:
+                    
+                def looks_like_float(a):
+                    ''' Care for the special case of 2 floats/integer
+                    We don't want 'a*2' where we could have simply written '2a' '''
+                    try:
+                        float(a)
+                        return True
+                    except ValueError:
+                        return False
+    
+                left_is_float = looks_like_float(left)
+                right_is_float = looks_like_float(right)
+                
+                # Get multiplication operator. Force x if floats are involved
+                if left_is_float or right_is_float:
+                    operator = r'\times'
+                else: # get standard Mult operator (see visit_Mult)
+                    operator = self.visit(n.op)
+    
+                # Simplify in some cases
+                if right_is_float and not left[0].isnumeric(): # simplify (a*2 --> 2a)
+                    return r'{0}{1}'.format(right, left)
+                elif left_is_float and not right[0].isnumeric(): # simplify (2*a --> 2a)
+                    return r'{0}{1}'.format(left, right)
+                else: 
+                    return r'{0}{1}{2}'.format(left, operator, right)
+            else:
                 return r'{0}{1}{2}'.format(left, self.visit(n.op), right)
         else:
             return r'{0}{1}{2}'.format(left, self.visit(n.op), right)
@@ -387,6 +403,7 @@ class LatexVisitor(ast.NodeVisitor):
         return 300
 
     def visit_Mult(self, n):
+#        return r'\cdot'   # no space in LaTeX (before:   r'\;'   )
         return r' '   # no space in LaTeX (before:   r'\;'   )
 
     def prec_Mult(self, n):
@@ -552,9 +569,13 @@ def simplify(s):
     # TODO: look for groups that looks like \(\([\(.+\)]*\)\ ), 
     # (2 pairs of external parenthesis around any number (even 0) of closed pairs 
     # of parenthesis)  -> then remove one of the the two external parenthesis 
+    # TRied with re.findall(r'\(\([^\(^\)]*(\([^\(^\)]+\))*[^\(^\)]*\)\)', s)  but
+    # it doesnt work. One should better try to look for inner pairs and remove that
+    # one after one.. 
     
     
-    # Improve:
+    # Improve readability:
+    
     
     # Replace 'NUMBER e NUMBER' with powers of 10
     # ------------

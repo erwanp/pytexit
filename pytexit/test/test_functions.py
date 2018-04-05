@@ -3,7 +3,7 @@
 Test pytextit 
 """
 
-from pytexit import py2tex, uprint, simplify
+from pytexit import py2tex, uprint, simplify, for2py
 
 def test_py2tex(verbose=True, **kwargs):
     ''' 
@@ -43,8 +43,8 @@ def test_py2tex(verbose=True, **kwargs):
             s = py2tex(expr)
             uprint('Got:')
             b = (expr_tex[i] == s)
-#            print(s)
-            uprint('.. correct =', b)
+            print(s)
+#            uprint('.. correct =', b)
             if not b:
                 uprint('Expected:\n', expr_tex[i])
                 uprint('\n' * 3)
@@ -61,6 +61,10 @@ def test_simplify(verbose=True, **kwargs):
     assert simplify('1e-20*11e2') == r'10^{-20}*11\times10^2'
     assert simplify('1e-20*11e-20+5+2') == r'10^{-20}*11\times10^{-20}+5+2'
 
+    assert (py2tex(for2py(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)'),
+           simplify_output=True) == 
+           "$$2.8\\times10^{-11}\\operatorname{exp}\\left(\\frac{-\\left(26500-0.5\\times"+\
+           "1.97\\times11600\\right)}{Tgas}\\right)$$")
 
 def run_all_tests(verbose=True, **kwargs):
     
@@ -69,3 +73,5 @@ def run_all_tests(verbose=True, **kwargs):
 
 if __name__ == '__main__':
     run_all_tests(verbose=True)
+    
+    
