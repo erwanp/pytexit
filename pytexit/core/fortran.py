@@ -3,6 +3,8 @@
 Tools to work with FORTRAN formula
 """
 
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import re
 
 def for2py(a):
@@ -34,4 +36,4 @@ if __name__ == '__main__':
     
     print('FORTRAN\t\tPython')
     for a in examples:
-        print('{0}\t {1}'.format(a, for2py(a)))
+        print(('{0}\t {1}'.format(a, for2py(a))))

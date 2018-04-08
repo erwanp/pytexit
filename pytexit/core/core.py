@@ -3,10 +3,7 @@
 Parser and core Routines 
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 import re
@@ -370,9 +367,9 @@ class LatexVisitor(ast.NodeVisitor):
                     operator = self.visit(n.op)
     
                 # Simplify in some cases
-                if right_is_float and not left[0].isnumeric(): # simplify (a*2 --> 2a)
+                if right_is_float and not left[0].isdigit(): # simplify (a*2 --> 2a)
                     return r'{0}{1}'.format(right, left)
-                elif left_is_float and not right[0].isnumeric(): # simplify (2*a --> 2a)
+                elif left_is_float and not right[0].isdigit(): # simplify (2*a --> 2a)
                     return r'{0}{1}'.format(left, right)
                 else: 
                     return r'{0}{1}{2}'.format(left, operator, right)
