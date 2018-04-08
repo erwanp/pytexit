@@ -340,12 +340,6 @@ class LatexVisitor(ast.NodeVisitor):
         else:
             right = self.visit(n.right)
             
-        print('self.prec(n.op)', self.prec(n.op))
-        print('self.prec(n.left)', self.prec(n.left))
-        print('self.prec(n.right)', self.prec(n.right))
-        print('left:', left)
-        print('right:', right)
-
         # Special binary operators
         if isinstance(n.op, ast.Div):
             return self.division(self.visit(n.left), self.visit(n.right))

@@ -34,9 +34,9 @@ class WordVisitor(LatexVisitor):
         'No spacing'
         return '({0})'.format(expr)
 
-    def power(self, expr, power):
-        'no { }'
-        return r'{0}^{1}'.format(expr, power)
+#    def power(self, expr, power):
+#        'no { }'
+#        return r'{0}^{1}'.format(expr, power)
 
     def division(self, up, down):
         'no frac'
