@@ -3,8 +3,8 @@
 Tools to work with FORTRAN formula
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import re
 
 def for2py(a):
