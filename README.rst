@@ -1,6 +1,14 @@
-# pytexit
 
-## Description
+.. image:: https://img.shields.io/pypi/v/pytexit.svg
+    :target: https://pypi.python.org/pypi/pytexit
+    :alt: PyPI
+
+=======
+pytexit
+=======
+
+Description
+-----------
 
 Convert a Python expression in a LaTeX formula
 
@@ -9,7 +17,7 @@ Convert a Python expression in a LaTeX formula
 This module isn't unit aware and isn't designed to perform calculations. It is 
 a mere translator from Python expressions into LaTeX syntax. The idea behind it
 was I wanted my Python formula to be the same objects as the LaTeX formula I 
-write in my reports / papers. It allows me to:
+write in my reports / papers. It allows me to::
 
 - gain time: 
     I can write my LaTeX formulas directly from the Python expression
@@ -20,7 +28,8 @@ write in my reports / papers. It allows me to:
 This is my one of my first released modules, I'll be pleased to have any advice or 
 feedback, mostly concerning cross-platform compatibility issues.
 
-## References
+References
+----------
 
 Based on a code sample from Geoff Reedy on [StackOverflow](http://stackoverflow.com/questions/3867028/converting-a-python-numeric-expression-to-latex
 )
@@ -35,13 +44,15 @@ LaTeX format.
 Sympy also has some nice LaTeX output, but it requires declaring your symbolic
 variables and isn't as fast as a one-line console command in pytexit.
 
-## Install
+Install
+-------
 
 ```
 pip install pytexit
 ```
     
-## Use
+Use
+---
 
 ```
 from pytexit import py2tex
@@ -63,7 +74,8 @@ You may also use it directly from the console:
 py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
 ```
 
-## Current Features
+Current Features
+----------------
 
 Successfully deal with most of the one or two parameter functions. Run the 
 _test() function to have an idea of what's possible. 
@@ -99,7 +111,10 @@ Word mode here was just about replacing those LaTeX {} with Word ().
 py2tex('sqrt(5/3)',output='word')
 ```
 
-## Upperscript formalism
+Upperscript formalism
+---------------------
+
+(experimental)
 
 Python3 allows you to use almost every Unicode character as a valid identifier
 for a variable. For instance all the following characters are valid: 
@@ -125,7 +140,8 @@ etc. `k_i__j___1` is still a valid expression, although it quickly starts to be
 unreadable.
 
 
-## Test
+Test
+----
 
 I haven't deeply tested this module. Please let me know if anything goes wrong.
 From version 0.1.4 Python 2.7 should also work, even if some encoding problems
@@ -133,16 +149,20 @@ may happen in the console mode, and special Unicode characters cannot be used
 as valid identifiers. 
 
 
-## Changes
+Changes
+-------
+
+- 0.1.11 : make it reliable: added pytest, Travis, code coverage
 
 - 0.1.8 : fixed console script on Unix systems
 
 - 0.1.4 : partial Python 2 support
 
 
-## Still WIP
+Still WIP
+---------
 
-Todo:
+Todo::
 
 - make it fully Python 2 compatible
 
@@ -153,4 +173,4 @@ Todo:
 
 - export all the conversions on an external text file 
     
-*Erwan Pannier - EM2C Laboratory, CentraleSupélec / CNRS UPR 288*
+*Erwan Pannier*
