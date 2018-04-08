@@ -3,6 +3,14 @@
     :target: https://pypi.python.org/pypi/pytexit
     :alt: PyPI
 
+.. image:: https://img.shields.io/travis/erwanp/pytexit.svg
+    :target: https://travis-ci.org/erwanp/pytexit
+    :alt: Tests
+    
+.. image:: https://codecov.io/gh/erwanp/pytexit/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/erwanp/pytexit
+    :alt: Coverage
+  
 =======
 pytexit
 =======
@@ -47,32 +55,32 @@ variables and isn't as fast as a one-line console command in pytexit.
 Install
 -------
 
-```
-pip install pytexit
-```
+`pytexit` is on PyPi::
+
+    pip install pytexit
+
     
 Use
 ---
 
-```
-from pytexit import py2tex
-py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
-```
+In a Python console::
 
+    from pytexit import py2tex
+    py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
+
+    
 Will display the following equation:
 
-![output.png](https://github.com/erwanp/pytexit/blob/master/docs/output.png)
+.. image:: https://github.com/erwanp/pytexit/blob/master/docs/output.png
 
-And the corresponding LaTeX formula:
-```
-$$x=2\\sqrt{\\frac{2\\pi k T_e}{m_e}} \\left(\\frac{\\Delta E}{k T_e}\\right)^2 a_0^2$$
-```
+And the corresponding LaTeX formula::
 
-You may also use it directly from the console:
+    $$x=2\\sqrt{\\frac{2\\pi k T_e}{m_e}} \\left(\\frac{\\Delta E}{k T_e}\\right)^2 a_0^2$$
 
-```
-py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
-```
+You may also use it directly from a terminal::
+
+    py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
+
 
 Current Features
 ----------------
@@ -80,7 +88,7 @@ Current Features
 Successfully deal with most of the one or two parameter functions. Run the 
 _test() function to have an idea of what's possible. 
 
-Arbitrary syntax:
+Arbitrary syntax::
 
 - Variables named after Greek names are turned into LaTeX syntax
 
@@ -94,22 +102,19 @@ scientific module names are removed beforehand)
 - 'a_p' variables are converted with "p" as subscript
 
 Also note that iPython uses auto-completion to convert most of the latex 
-identifiers in their Unicode equivalent:
+identifiers in their Unicode equivalent::
 
-```
-\alpha --> [Tab] --> α
-```
+    \alpha --> [Tab] --> α
     
 - pytexit will recognize those Unicode characters and convert them again in 
 latex expressions
 
 - there is a mode to output Python expressions in Word syntax. From version 2007
 Word converts most LaTeX expressions in its own graphical representation. The 
-Word mode here was just about replacing those LaTeX {} with Word ().
+Word mode here was just about replacing those LaTeX {} with Word ()::
 
-```    
-py2tex('sqrt(5/3)',output='word')
-```
+    py2tex('sqrt(5/3)',output='word')
+
 
 Upperscript formalism
 ---------------------
@@ -143,10 +148,11 @@ unreadable.
 Test
 ----
 
-I haven't deeply tested this module. Please let me know if anything goes wrong.
-From version 0.1.4 Python 2.7 should also work, even if some encoding problems
-may happen in the console mode, and special Unicode characters cannot be used
-as valid identifiers. 
+In order to enforce cross-version compatibility and non-regression, `pytexit` is 
+now tested with `pytest` and Travis. Run the test suite locally from a terminal with::
+
+    pip install pytest 
+    pytest 
 
 
 Changes
