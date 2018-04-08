@@ -20,12 +20,14 @@ Description
 
 Convert a Python expression in a LaTeX formula
 
-[Project Github page](https://github.com/erwanp/pytexit)
+Github::
+
+    https://github.com/erwanp/pytexit)
 
 This module isn't unit aware and isn't designed to perform calculations. It is 
 a mere translator from Python expressions into LaTeX syntax. The idea behind it
 was I wanted my Python formula to be the same objects as the LaTeX formula I 
-write in my reports / papers. It allows me to::
+write in my reports / papers. It allows me to:
 
 - gain time: 
     I can write my LaTeX formulas directly from the Python expression
@@ -88,7 +90,7 @@ Current Features
 Successfully deal with most of the one or two parameter functions. Run the 
 _test() function to have an idea of what's possible. 
 
-Arbitrary syntax::
+Arbitrary syntax:
 
 - Variables named after Greek names are turned into LaTeX syntax
 
@@ -131,15 +133,13 @@ with `ˆ`, such as `α_iˆj` (mostly because I want a direct Python -> LaTeX
 translation). The py2tex function is aware of this and will perform the 
 following conversion:
 
-```
-Python -> Real
+Python -> Real::
 
-k_i_j  -> k_i,j
-k_i__j -> k_(i_j) 
-k_iˆj -> k_i^j
-k_iˆˆj -> k_(i^j)
-k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)
-```
+    k_i_j  -> k_i,j
+    k_i__j -> k_(i_j) 
+    k_iˆj -> k_i^j
+    k_iˆˆj -> k_(i^j)
+    k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)
     
 etc. `k_i__j___1` is still a valid expression, although it quickly starts to be 
 unreadable.
@@ -168,12 +168,12 @@ Changes
 Still WIP
 ---------
 
-Todo::
+Todo:
 
 - make it fully Python 2 compatible
 
-- allow syntax "a*b = c" (not a valid Python expression, but convenient to type
-    some LaTeX formula)
+- allow syntax "a*b = c" (not a valid Python expression, but convenient to type 
+  some LaTeX formula)
     
 - code for numbered equations
 
