@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 import codecs
 
@@ -8,14 +8,14 @@ if os.path.exists('README.rst'):
     long_description = codecs.open('README.rst', encoding="utf-8").read()
 
 setup(name='pytexit',
-      version='0.1.11',
+      version='0.2.1',
       description='Convert a Python expression in a LaTeX formula',
       long_description=long_description,
       url='https://github.com/erwanp/pytexit',
       author='Erwan Pannier',
       author_email='erwan.pannier@gmail.com',
       license='CeCILL-2.1',
-      packages=['pytexit'],
+      packages=find_packages(),
       platforms="any",
       classifiers=[
         'Development Status :: 4 - Beta',

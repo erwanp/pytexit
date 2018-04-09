@@ -22,7 +22,7 @@ Convert a Python expression in a LaTeX formula
 
 Github::
 
-    https://github.com/erwanp/pytexit)
+    https://github.com/erwanp/pytexit
 
 This module isn't unit aware and isn't designed to perform calculations. It is 
 a mere translator from Python expressions into LaTeX syntax. The idea behind it
