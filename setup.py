@@ -13,7 +13,7 @@ with open(join(dirname(__file__),'pytexit', '__version__.txt')) as version_file:
     __version__ = version_file.read().strip()
     
 setup(name='pytexit',
-      version='0.2.1',
+      version=__version__,
       description='Convert a Python expression in a LaTeX formula',
       long_description=long_description,
       url='https://github.com/erwanp/pytexit',
