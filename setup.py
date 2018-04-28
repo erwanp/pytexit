@@ -2,13 +2,18 @@ from __future__ import absolute_import
 from setuptools import setup, find_packages
 import os
 import codecs
+from os.path import join, dirname
 
 long_description = 'Convert a Python expression in a LaTeX formula'
 if os.path.exists('README.rst'):
     long_description = codecs.open('README.rst', encoding="utf-8").read()
 
+# Read version number from file
+with open(join(dirname(__file__),'pytexit', '__version__.txt')) as version_file:
+    __version__ = version_file.read().strip()
+    
 setup(name='pytexit',
-      version='0.2.1',
+      version=__version__,
       description='Convert a Python expression in a LaTeX formula',
       long_description=long_description,
       url='https://github.com/erwanp/pytexit',
