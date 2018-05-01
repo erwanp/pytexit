@@ -29,11 +29,9 @@ def for2py(a):
     
     return a
 
-
 if __name__ == '__main__':
     
-    examples = ['x=1.0d-2', 'a=3.2d0+3d1', '3d-12']
+    from pytexit.test.test_fortran import test_for2py, test_for2tex
     
-    print('FORTRAN\t\tPython')
-    for a in examples:
-        print(('{0}\t {1}'.format(a, for2py(a))))
+    test_for2py()
+    test_for2tex()

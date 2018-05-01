@@ -15,16 +15,8 @@
 pytexit
 =======
 
-Description
------------
-
 Convert a Python expression in a LaTeX formula
 
-Github::
-
-    https://github.com/erwanp/pytexit
-
-	
 Install
 -------
 
@@ -63,6 +55,14 @@ was I wanted my Python formula to be the same objects as the LaTeX formula I
 write in my reports / papers. It allows me to gain time (I can write my LaTeX 
 formulas directly from the Python expression), and check my Python formulas are correct
 (once printed LaTeX is much more readable that a multiline Python expression)
+
+
+`pytexit` can also convert FORTRAN formulas to Python (`for2py`) and LaTeX (`for2tex`)::
+
+	from pytexit import for2tex
+	for2tex(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)')
+
+
 
 References
 ----------
@@ -147,3 +147,11 @@ Todo:
 
 - export all the conversions on an external text file 
     
+	
+Links
+-----
+
+Github::
+
+    https://github.com/erwanp/pytexit
+
