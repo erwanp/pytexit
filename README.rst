@@ -24,6 +24,39 @@ Github::
 
     https://github.com/erwanp/pytexit
 
+	
+Install
+-------
+
+`pytexit` is on PyPi::
+
+    pip install pytexit
+
+	
+Use
+---
+
+In a Terminal::
+
+    py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
+
+In a Python console::
+
+    from pytexit import py2tex
+    py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
+
+returns the corresponding LaTeX formula (to re-use in papers)::
+
+    $$x=2\\sqrt{\\frac{2\\pi k T_e}{m_e}} \\left(\\frac{\\Delta E}{k T_e}\\right)^2 a_0^2$$
+    
+and (in ipython console only) prints the equation:
+
+.. image:: https://github.com/erwanp/pytexit/blob/master/docs/output.png
+
+	
+Notes
+-----
+	
 This module isn't unit aware and isn't designed to perform calculations. It is 
 a mere translator from Python expressions into LaTeX syntax. The idea behind it
 was I wanted my Python formula to be the same objects as the LaTeX formula I 
@@ -45,36 +78,6 @@ LaTeX format.
 
 Sympy also has some nice LaTeX output, but it requires declaring your symbolic
 variables and isn't as fast as a one-line console command in pytexit.
-
-Install
--------
-
-`pytexit` is on PyPi::
-
-    pip install pytexit
-
-    
-Use
----
-
-In a Python console::
-
-    from pytexit import py2tex
-    py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
-
-    
-Will display the following equation:
-
-.. image:: https://github.com/erwanp/pytexit/blob/master/docs/output.png
-
-And the corresponding LaTeX formula::
-
-    $$x=2\\sqrt{\\frac{2\\pi k T_e}{m_e}} \\left(\\frac{\\Delta E}{k T_e}\\right)^2 a_0^2$$
-
-You may also use it directly from a terminal::
-
-    py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
-
 
 Current Features
 ----------------
