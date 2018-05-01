@@ -15,44 +15,7 @@
 pytexit
 =======
 
-Description
------------
-
 Convert a Python expression in a LaTeX formula
-
-Github::
-
-    https://github.com/erwanp/pytexit
-
-This module isn't unit aware and isn't designed to perform calculations. It is 
-a mere translator from Python expressions into LaTeX syntax. The idea behind it
-was I wanted my Python formula to be the same objects as the LaTeX formula I 
-write in my reports / papers. It allows me to:
-
-- gain time: 
-    I can write my LaTeX formulas directly from the Python expression
-    
-- check my Python formulas are correct:
-    once printed LaTeX is much more readable that a multiline Python expression
-
-This is my one of my first released modules, I'll be pleased to have any advice or 
-feedback, mostly concerning cross-platform compatibility issues.
-
-References
-----------
-
-Based on a code sample from Geoff Reedy on [StackOverflow](http://stackoverflow.com/questions/3867028/converting-a-python-numeric-expression-to-latex
-)
-
-You may also be interested in the similar development from [BekeJ](
-https://github.com/BekeJ/py2tex) that was built
-on top of the same sample. 
-BekeJ's code is designed to be used exclusively in an iPython console using 
-%magic commands to perform unit aware calculations and return result in a nice
-LaTeX format. 
-
-Sympy also has some nice LaTeX output, but it requires declaring your symbolic
-variables and isn't as fast as a one-line console command in pytexit.
 
 Install
 -------
@@ -61,28 +24,67 @@ Install
 
     pip install pytexit
 
-    
+	
 Use
 ---
+
+In a Terminal::
+
+    py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
 
 In a Python console::
 
     from pytexit import py2tex
     py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
 
+returns the corresponding LaTeX formula (to re-use in papers)::
+
+    $$x=2\\sqrt{\\frac{2\\pi k T_e}{m_e}} \\left(\\frac{\\Delta E}{k T_e}\\right)^2 a_0^2$$
     
-Will display the following equation:
+and (in ipython console only) prints the equation:
 
 .. image:: https://github.com/erwanp/pytexit/blob/master/docs/output.png
 
-And the corresponding LaTeX formula::
+	
+Notes
+-----
+	
+This module isn't unit aware and isn't designed to perform calculations. It is 
+a mere translator from Python expressions into LaTeX syntax. The idea behind it
+was I wanted my Python formula to be the same objects as the LaTeX formula I 
+write in my reports / papers. It allows me to gain time (I can write my LaTeX 
+formulas directly from the Python expression), and check my Python formulas are correct
+(once printed LaTeX is much more readable that a multiline Python expression)
 
-    $$x=2\\sqrt{\\frac{2\\pi k T_e}{m_e}} \\left(\\frac{\\Delta E}{k T_e}\\right)^2 a_0^2$$
 
-You may also use it directly from a terminal::
+`pytexit` can also convert FORTRAN formulas to Python (`for2py`) and LaTeX (`for2tex`)::
 
-    py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
+	from pytexit import for2tex
+	for2tex(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)')
 
+Finally, `pytexit` output can be made compatible with Word equation editor with the `output='word'` option::
+
+	from pytexit import py2tex
+	py2tex(r'2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2', output='word')
+	
+The latest output will typically replace all brackets {} with parenthesis () that are correctly
+interpreted by Word, and keep keywords that are correctly evaluated by Word (`\pi` or `\cdot`) 
+
+
+References
+----------
+
+Based on a code sample from Geoff Reedy on `StackOverflow <http://stackoverflow.com/questions/3867028/converting-a-python-numeric-expression-to-latex>`__
+
+
+You may also be interested in the similar development from `BekeJ <https://github.com/BekeJ/py2tex>`__ that was built
+on top of the same sample. 
+BekeJ's code is designed to be used exclusively in an iPython console using 
+%magic commands to perform unit aware calculations and return result in a nice
+LaTeX format. 
+
+Sympy also has some nice LaTeX output, but it requires declaring your symbolic
+variables and isn't as fast as a one-line console command in pytexit.
 
 Current Features
 ----------------
@@ -118,33 +120,6 @@ Word mode here was just about replacing those LaTeX {} with Word ()::
     py2tex('sqrt(5/3)',output='word')
 
 
-Upperscript formalism
----------------------
-
-(experimental)
-
-Python3 allows you to use almost every Unicode character as a valid identifier
-for a variable. For instance all the following characters are valid: 
-`αβχδεφγψιθκλνηοπϕστωξℂΔΦΓΨΛΣℚℝΞ`
-
-Also, `ˆ` [chr(710)] is a valid Python3 identifier (`^` isn't). Although I 
-wouldn't call it recommended, I find it convenient to name some of my variables 
-with `ˆ`, such as `α_iˆj` (mostly because I want a direct Python -> LaTeX 
-translation). The py2tex function is aware of this and will perform the 
-following conversion:
-
-Python -> Real::
-
-    k_i_j  -> k_i,j
-    k_i__j -> k_(i_j) 
-    k_iˆj -> k_i^j
-    k_iˆˆj -> k_(i^j)
-    k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)
-    
-etc. `k_i__j___1` is still a valid expression, although it quickly starts to be 
-unreadable.
-
-
 Test
 ----
 
@@ -158,6 +133,8 @@ now tested with `pytest` and Travis. Run the test suite locally from a terminal 
 Changes
 -------
 
+- 0.2.1 : full Python 2 support, added automated tests with pytest and Travis
+
 - 0.1.11 : make it reliable: added pytest, Travis, code coverage
 
 - 0.1.8 : fixed console script on Unix systems
@@ -170,8 +147,6 @@ Still WIP
 
 Todo:
 
-- make it fully Python 2 compatible
-
 - allow syntax "a*b = c" (not a valid Python expression, but convenient to type 
   some LaTeX formula)
     
@@ -179,4 +154,11 @@ Todo:
 
 - export all the conversions on an external text file 
     
-*Erwan Pannier*
+	
+Links
+-----
+
+Github::
+
+    https://github.com/erwanp/pytexit
+

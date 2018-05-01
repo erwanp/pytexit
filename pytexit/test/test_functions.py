@@ -6,7 +6,7 @@ Test pytextit
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
-from pytexit import py2tex, for2py
+from pytexit import py2tex
 from pytexit.pytexit import uprint, simplify
 
 def test_py2tex(verbose=True, **kwargs):
@@ -63,6 +63,7 @@ def test_py2tex_py3only(verbose=True, **kwargs):
     ''' Some tests valid with Python 3 syntax only (Ex: unicodes: ˆ)'''
     
     if sys.version_info[0] != 3:
+        if verbose: print('Not Python 3. Ignoring test_py2tex_py3only')
         return
     
     # Tests
@@ -97,11 +98,6 @@ def test_simplify(verbose=True, **kwargs):
     
     assert simplify('1e-20*11e2') == r'10^{-20}*11\times10^2'
     assert simplify('1e-20*11e-20+5+2') == r'10^{-20}*11\times10^{-20}+5+2'
-
-    assert (py2tex(for2py(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)'),
-           simplify_output=True) == 
-           "$$2.8\\times10^{-11}\\operatorname{exp}\\left(\\frac{-\\left(26500-0.5\\times"+\
-           "1.97\\times11600\\right)}{Tgas}\\right)$$")
 
 def run_all_tests(verbose=True, **kwargs):
     
