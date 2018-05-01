@@ -2,7 +2,7 @@
 .. image:: https://img.shields.io/pypi/v/pytexit.svg
     :target: https://pypi.python.org/pypi/pytexit
     :alt: PyPI
-
+    
 .. image:: https://img.shields.io/travis/erwanp/pytexit.svg
     :target: https://travis-ci.org/erwanp/pytexit
     :alt: Tests
