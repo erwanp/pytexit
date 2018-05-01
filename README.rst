@@ -62,6 +62,13 @@ formulas directly from the Python expression), and check my Python formulas are 
 	from pytexit import for2tex
 	for2tex(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)')
 
+Finally, `pytexit` output can be made compatible with Word equation editor with the `output='word'` option::
+
+	from pytexit import py2tex
+	py2tex(r'2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2', output='word')
+	
+The latest output will typically replace all brackets {} with parenthesis () that are correctly
+interpreted by Word, and keep keywords that are correctly evaluated by Word (`\pi` or `\cdot`) 
 
 
 References

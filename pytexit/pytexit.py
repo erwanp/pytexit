@@ -215,14 +215,16 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
 
     # Parse
     pt = ast.parse(expr)
-    if output == 'tex':
+    if output == 'tex':  # LaTex output
         Visitor = LatexVisitor(dummy_var=dummy_var, upperscript=upperscript,
                                lowerscript=lowerscript, verbose=verbose,
                                simplify=simplify_output)
-    elif output == 'word':
+    elif output == 'word':  # Word output
         Visitor = WordVisitor(dummy_var=dummy_var, upperscript=upperscript,
                               lowerscript=lowerscript, verbose=verbose,
                               simplify=simplify_output)
+    else:
+        raise ValueError('Unexpected output: {0}'.format(output))
     if isinstance(pt.body[0], ast.Expr):
         # To deal with cases such as 'x=something'
         # TODO : one single command to start the visit?
