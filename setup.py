@@ -3,15 +3,19 @@ from setuptools import setup, find_packages
 import os
 import codecs
 from os.path import join, dirname
+from setuptips import yield_sphinx_only_markup
 
 long_description = 'Convert a Python expression in a LaTeX formula'
-if os.path.exists('README.rst'):
-    long_description = codecs.open('README.rst', encoding="utf-8").read()
+
+readme = codecs.open('README.rst', encoding="utf-8").read()
+long_description = yield_sphinx_only_markup(readme)
+#readme_lines = codecs.open('README.rst', encoding="utf-8").readlines()
+#long_description = ''.join(yield_sphinx_only_markup(readme_lines))
 
 # Read version number from file
 with open(join(dirname(__file__),'pytexit', '__version__.txt')) as version_file:
     __version__ = version_file.read().strip()
-    
+
 setup(name='pytexit',
       version=__version__,
       description='Convert a Python expression in a LaTeX formula',
@@ -22,6 +26,7 @@ setup(name='pytexit',
       license='CeCILL-2.1',
       packages=find_packages(),
       platforms="any",
+      keywords=["latex", "py2tex"],
       classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',

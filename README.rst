@@ -6,11 +6,11 @@
 .. image:: https://img.shields.io/travis/erwanp/pytexit.svg
     :target: https://travis-ci.org/erwanp/pytexit
     :alt: Tests
-    
+
 .. image:: https://codecov.io/gh/erwanp/pytexit/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/erwanp/pytexit
     :alt: Coverage
-  
+
 =======
 pytexit
 =======
