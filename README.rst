@@ -97,7 +97,7 @@ Arbitrary syntax:
 - Variables named after Greek names are turned into LaTeX syntax
 
 - 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard 
-scientific module names are removed beforehand)
+  scientific module names are removed beforehand)
 
 - quad() is converted into integrals
 
@@ -111,11 +111,11 @@ identifiers in their Unicode equivalent::
     \alpha --> [Tab] --> α
     
 - pytexit will recognize those Unicode characters and convert them again in 
-latex expressions
+  latex expressions
 
 - there is a mode to output Python expressions in Word syntax. From version 2007
-Word converts most LaTeX expressions in its own graphical representation. The 
-Word mode here was just about replacing those LaTeX {} with Word ()::
+  Word converts most LaTeX expressions in its own graphical representation. The 
+  Word mode here was just about replacing those LaTeX {} with Word ()::
 
     py2tex('sqrt(5/3)',output='word')
 
