@@ -199,7 +199,7 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
     See Also
     --------
     
-    :func:`~pytexit.for2tex`
+    :func:`~pytexit.pytexit.for2tex`
     
     '''
 
@@ -278,7 +278,7 @@ def for2tex(a, **kwargs):
     See Also
     --------
     
-    :func:`~pytexit.core.fortran.for2py`, :func:`~pytexit.py2tex`
+    :func:`~pytexit.core.fortran.for2py`, :func:`~pytexit.pytexit.py2tex`
     
     '''
     

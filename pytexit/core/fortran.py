@@ -8,13 +8,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import re
 
 def for2py(a):
-    
     ''' Converts FORTRAN formula to Python Formula
     
     Examples
     --------
     
-    convert FORTRAN formula to LaTeX with py2tex:
+    convert FORTRAN formula to LaTeX with py2tex::
     
         py2tex(for2py($FORTRAN_FORMULA))
     

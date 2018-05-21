@@ -1,16 +1,20 @@
 
+.. image:: https://readthedocs.org/projects/pytexit/badge/
+    :target: https://pytexit.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+  
 .. image:: https://img.shields.io/pypi/v/pytexit.svg
     :target: https://pypi.python.org/pypi/pytexit
     :alt: PyPI
-
+    
 .. image:: https://img.shields.io/travis/erwanp/pytexit.svg
     :target: https://travis-ci.org/erwanp/pytexit
     :alt: Tests
-    
+
 .. image:: https://codecov.io/gh/erwanp/pytexit/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/erwanp/pytexit
     :alt: Coverage
-  
+
 =======
 pytexit
 =======
@@ -20,7 +24,7 @@ Convert a Python expression in a LaTeX formula
 Install
 -------
 
-`pytexit` is on PyPi::
+``pytexit`` is on PyPi::
 
     pip install pytexit
 
@@ -28,11 +32,14 @@ Install
 Use
 ---
 
-In a Terminal::
+``pytexit`` features the :func:`~pytexit.pytexit.py2tex`, :func:`~pytexit.pytexit.for2tex`
+and :func:`~pytexit.core.fortran.for2py` functions.
+
+In a Terminal, use ``py2tex``::
 
     py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
 
-In a Python console::
+In a Python console, use :func:`~pytexit.pytexit.py2tex`::
 
     from pytexit import py2tex
     py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
@@ -57,12 +64,14 @@ formulas directly from the Python expression), and check my Python formulas are 
 (once printed LaTeX is much more readable that a multiline Python expression)
 
 
-`pytexit` can also convert FORTRAN formulas to Python (`for2py`) and LaTeX (`for2tex`)::
+``pytexit`` can also convert FORTRAN formulas to Python (:func:`~pytexit.for2py`) 
+and LaTeX (:func:`~pytexit.for2tex`)::
 
 	from pytexit import for2tex
 	for2tex(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)')
 
-Finally, `pytexit` output can be made compatible with Word equation editor with the `output='word'` option::
+Finally, ``pytexit`` output can be made compatible with Word equation editor with 
+the ``output='word'`` option of :func:`~pytexit.pytexit.py2tex`::
 
 	from pytexit import py2tex
 	py2tex(r'2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2', output='word')
@@ -97,7 +106,7 @@ Arbitrary syntax:
 - Variables named after Greek names are turned into LaTeX syntax
 
 - 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard 
-scientific module names are removed beforehand)
+  scientific module names are removed beforehand)
 
 - quad() is converted into integrals
 
@@ -111,11 +120,11 @@ identifiers in their Unicode equivalent::
     \alpha --> [Tab] --> α
     
 - pytexit will recognize those Unicode characters and convert them again in 
-latex expressions
+  latex expressions
 
 - there is a mode to output Python expressions in Word syntax. From version 2007
-Word converts most LaTeX expressions in its own graphical representation. The 
-Word mode here was just about replacing those LaTeX {} with Word ()::
+  Word converts most LaTeX expressions in its own graphical representation. The 
+  Word mode here was just about replacing those LaTeX {} with Word ()::
 
     py2tex('sqrt(5/3)',output='word')
 
@@ -158,7 +167,6 @@ Todo:
 Links
 -----
 
-Github::
-
-    https://github.com/erwanp/pytexit
-
+- Github: https://github.com/erwanp/pytexit
+- Documentation: https://pytexit.readthedocs.io
+    

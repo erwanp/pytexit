@@ -1,0 +1,2 @@
+sphinx-autodoc-annotation
+sphinx==1.7.0
