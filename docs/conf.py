@@ -32,7 +32,7 @@ def run_apidoc(_):
 #    sys.path.append(join(dirname(__file__), '..'))
     cur_dir = abspath(dirname(__file__))
     source_dir = abspath(join(cur_dir, 'source'))
-    module = join(cur_dir,"..","radis")
+    module = join(cur_dir,"..","pytexit")
     main(['-e', '-o', source_dir, module, '--force'])
 
 def setup(app):
