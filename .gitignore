@@ -18,6 +18,10 @@
 .coverage
 
 
+# Sphinx documentation
+docs/_build/
+docs/source/
+
 
 
 # =========================

@@ -1,4 +1,8 @@
 
+.. image:: https://readthedocs.org/projects/climt/badge/
+    :target: https://pytexit.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+  
 .. image:: https://img.shields.io/pypi/v/pytexit.svg
     :target: https://pypi.python.org/pypi/pytexit
     :alt: PyPI
@@ -20,7 +24,7 @@ Convert a Python expression in a LaTeX formula
 Install
 -------
 
-`pytexit` is on PyPi::
+``pytexit`` is on PyPi::
 
     pip install pytexit
 
@@ -28,11 +32,14 @@ Install
 Use
 ---
 
-In a Terminal::
+``pytexit`` features the :func:`~pytexit.pytexit.py2tex`, :func:`~pytexit.pytexit.for2tex`
+and :func:`~pytexit.core.fortran.for2py` functions.
+
+In a Terminal, use ``py2tex``::
 
     py2tex 'x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2'
 
-In a Python console::
+In a Python console, use :func:`~pytexit.pytexit.py2tex`::
 
     from pytexit import py2tex
     py2tex('x = 2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2')
@@ -57,12 +64,14 @@ formulas directly from the Python expression), and check my Python formulas are 
 (once printed LaTeX is much more readable that a multiline Python expression)
 
 
-`pytexit` can also convert FORTRAN formulas to Python (`for2py`) and LaTeX (`for2tex`)::
+``pytexit`` can also convert FORTRAN formulas to Python (:func:`~pytexit.for2py`) 
+and LaTeX (:func:`~pytexit.for2tex`)::
 
 	from pytexit import for2tex
 	for2tex(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)')
 
-Finally, `pytexit` output can be made compatible with Word equation editor with the `output='word'` option::
+Finally, ``pytexit`` output can be made compatible with Word equation editor with 
+the ``output='word'`` option of :func:`~pytexit.pytexit.py2tex`::
 
 	from pytexit import py2tex
 	py2tex(r'2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2', output='word')
@@ -162,3 +171,7 @@ Github::
 
     https://github.com/erwanp/pytexit
 
+Documentation:
+
+    https://pytexit.readthedocs.io
+    
