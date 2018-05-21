@@ -1,5 +1,5 @@
 
-.. image:: https://readthedocs.org/projects/climt/badge/
+.. image:: https://readthedocs.org/projects/pytexit/badge/
     :target: https://pytexit.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
   
@@ -167,11 +167,6 @@ Todo:
 Links
 -----
 
-Github::
-
-    https://github.com/erwanp/pytexit
-
-Documentation:
-
-    https://pytexit.readthedocs.io
+- Github: https://github.com/erwanp/pytexit
+- Documentation: https://pytexit.readthedocs.io
     
