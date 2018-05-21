@@ -1,8 +1,4 @@
 
-.. image:: https://readthedocs.org/projects/pytexit/badge/
-    :target: https://pytexit.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-  
 .. image:: https://img.shields.io/pypi/v/pytexit.svg
     :target: https://pypi.python.org/pypi/pytexit
     :alt: PyPI
@@ -44,8 +40,7 @@ Install
 Use
 ---
 
-``pytexit`` features the ``py2tex``, ``for2tex``
-and :func:`~pytexit.core.fortran.for2py` functions.
+``pytexit`` features the ``py2tex``, ``for2tex`` ``for2py`` functions.
 
 In a Terminal, use ``py2tex``::
 
