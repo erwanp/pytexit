@@ -13,7 +13,7 @@ Welcome to pytexit's documentation!
    
    
    
-.. include:: ../README.rst
+.. include:: userguide.rst
 
    
 
