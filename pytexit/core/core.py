@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Parser and core Routines 
+Parser and core Routines
 """
 
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -39,6 +39,15 @@ unicode_tbl = {
     'Λ': 'Lambda',
     'Σ': 'Sigma',
     'Ξ': 'Xi'
+}
+
+fracs = {
+    0.5: ['', 1, 2],
+    -0.5: ['-', 1, 2],
+    0.75: ['', 3, 4],
+    -0.75: ['-', 3, 4],
+    0.25: ['', 1, 4],
+    -0.25: ['-', 1, 4]
 }
 
 # Modules removed from expressions:
@@ -82,8 +91,8 @@ class LatexVisitor(ast.NodeVisitor):
         return getattr(self, 'prec_' + n.__class__.__name__, getattr(self, 'generic_prec'))(n)
 
     def visit_ListComp(self, n, kwout=False):
-        ''' Analyse a list comprehension 
-        Output : 
+        ''' Analyse a list comprehension
+        Output :
         - kw : used by some functions to display nice formulas (e.g : sum)
         - args : standard output to display a range in other cases
         '''
@@ -157,6 +166,9 @@ class LatexVisitor(ast.NodeVisitor):
             return r'\cosh^{-1}(%s)' % args
         elif func in ['arctanh']:
             return r'\tanh^{-1}(%s)' % args
+        elif func in ['power']:
+            args = args.split(',')
+            return self.power(self.parenthesis(args[0]), args[1])
         elif func in ['abs', 'fabs']:
             return r'|%s|' % args
 
@@ -169,7 +181,7 @@ class LatexVisitor(ast.NodeVisitor):
         elif func in ['quad']:
             (f,a,b) = list(map(self.visit, n.args))
             return r'\int_{%s}^{%s} %s(%s) d%s' %(a,b,f,self.dummy_var,self.dummy_var)
-#                
+#
         # Sum
         elif func in ['sum']:
             if blist:
@@ -194,7 +206,7 @@ class LatexVisitor(ast.NodeVisitor):
         - Recognize upperscripts in identifiers names (default: ˆ, valid in Python3)
         Note that using ˆ is not recommanded in variable names because it may
         be confused with the operator ^, but in some special cases of extensively
-        long formulas with lots of indices, it may help the readability of the 
+        long formulas with lots of indices, it may help the readability of the
         code
         '''
 
@@ -204,15 +216,15 @@ class LatexVisitor(ast.NodeVisitor):
                 warn('Only one upperscript character supported per identifier')
 
         def build_tree(expr, level=1):
-            ''' Builds a tree out of a valid Python identifier, according to the 
+            ''' Builds a tree out of a valid Python identifier, according to the
             following proposed formalism:
 
             Formalism
-            ----------    
+            ----------
                 Python -> Real
 
                 k_i_j  -> k_i,j
-                k_i__j -> k_(i_j) 
+                k_i__j -> k_(i_j)
                 k_iˆj -> k_i^j
                 k_iˆˆj -> k_(i^j)
                 k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)
@@ -220,7 +232,7 @@ class LatexVisitor(ast.NodeVisitor):
             Even if one may agree that this last expression isn't a very
             readable variable name.
 
-            The idea behind this is that I want my Python formula to be the 
+            The idea behind this is that I want my Python formula to be the
             same objects as the LaTeX formula I write in my reports / papers
 
             It allows me to:
@@ -280,7 +292,6 @@ class LatexVisitor(ast.NodeVisitor):
 
     def convert_symbols(self, expr):
         m = expr
-
         # Standard greek letters
         if m in ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta',
                  'iota', 'kappa', 'mu', 'nu', 'xi', 'pi', 'rho', 'sigma',
@@ -318,7 +329,7 @@ class LatexVisitor(ast.NodeVisitor):
     def visit_UnaryOp(self, n):
         # Note: removed space between {0} and {1}... so that 10**-3 yields
         # $$10^{-3}$$ and not $$10^{- 3}$$
-        
+
         if self.prec(n.op) > self.prec(n.operand):
             return r'{0}{1}'.format(self.visit(n.op), self.parenthesis(self.visit(n.operand)))
         else:
@@ -336,18 +347,33 @@ class LatexVisitor(ast.NodeVisitor):
             right = self.parenthesis(self.visit(n.right))
         else:
             right = self.visit(n.right)
-            
+
         # Special binary operators
         if isinstance(n.op, ast.Div):
+            def looks_like_int(a):
+                try:
+                    value = float(a.split('.')[1]) == 0.0
+                except IndexError, ValueError:
+                    value = False
+                return value
+            left_is_int = looks_like_int(left)
+            right_is_int = looks_like_int(right)
+            if left_is_int or right_is_int:
+                if left_is_int and right_is_int:
+                    return self.division('%d' % int(float(left)), '%d' % int(float(right)))
+                elif left_is_int:
+                    return self.division('%d' % int(float(left)), self.visit(n.right))
+                else:
+                    return self.division(self.visit(n.left), '%d' % int(float(right)))
             return self.division(self.visit(n.left), self.visit(n.right))
         elif isinstance(n.op, ast.FloorDiv):
             return r'\left\lfloor\frac{%s}{%s}\right\rfloor' % (self.visit(n.left), self.visit(n.right))
         elif isinstance(n.op, ast.Pow):
             return self.power(left, self.visit(n.right))
         elif isinstance(n.op, ast.Mult):
-            
+
             if self.simplify:
-                    
+
                 def looks_like_float(a):
                     ''' Care for the special case of 2 floats/integer
                     We don't want 'a*2' where we could have simply written '2a' '''
@@ -356,22 +382,22 @@ class LatexVisitor(ast.NodeVisitor):
                         return True
                     except ValueError:
                         return False
-    
+
                 left_is_float = looks_like_float(left)
                 right_is_float = looks_like_float(right)
-                
+
                 # Get multiplication operator. Force x if floats are involved
                 if left_is_float or right_is_float:
                     operator = r'\times'
                 else: # get standard Mult operator (see visit_Mult)
                     operator = self.visit(n.op)
-    
+
                 # Simplify in some cases
                 if right_is_float and not left[0].isdigit(): # simplify (a*2 --> 2a)
                     return r'{0}{1}'.format(right, left)
                 elif left_is_float and not right[0].isdigit(): # simplify (2*a --> 2a)
                     return r'{0}{1}'.format(left, right)
-                else: 
+                else:
                     return r'{0}{1}{2}'.format(left, operator, right)
             else:
                 return r'{0}{1}{2}'.format(left, self.visit(n.op), right)
@@ -455,6 +481,9 @@ class LatexVisitor(ast.NodeVisitor):
         return 800
 
     def visit_Num(self, n):
+        if any([n.n == key for key in fracs.keys()]):
+            string = r'{0}\frac{{{1}}}{{{2}}}'.format(*fracs[n.n])
+            return string
         return str(n.n)
 
     def prec_Num(self, n):
@@ -513,7 +542,7 @@ class LatexVisitor(ast.NodeVisitor):
             return expr
         else:
             return self.brackets(expr)
-        
+
     def parenthesis(self,expr):
         return r'\left({0}\right)'.format(expr)
 
@@ -535,13 +564,13 @@ class LatexVisitor(ast.NodeVisitor):
 
 def clean(expr):
     ''' Removes unnessary calls to libraries
-    
+
     Examples
     --------
-    
-        np.exp(-3) would be read exp(-3)  
+
+        np.exp(-3) would be read exp(-3)
     '''
-    
+
     expr = expr.strip()  # remove spaces on the side
 
     for m in clear_modules:
@@ -554,41 +583,41 @@ def clean(expr):
 
 def simplify(s):
     ''' Cleans the generated text in post-processing '''
-    
-    # Remove unecessary parenthesis? 
+
+    # Remove unecessary parenthesis?
     # -------------
-    # TODO: look for groups that looks like \(\([\(.+\)]*\)\ ), 
-    # (2 pairs of external parenthesis around any number (even 0) of closed pairs 
-    # of parenthesis)  -> then remove one of the the two external parenthesis 
+    # TODO: look for groups that looks like \(\([\(.+\)]*\)\ ),
+    # (2 pairs of external parenthesis around any number (even 0) of closed pairs
+    # of parenthesis)  -> then remove one of the the two external parenthesis
     # TRied with re.findall(r'\(\([^\(^\)]*(\([^\(^\)]+\))*[^\(^\)]*\)\)', s)  but
     # it doesnt work. One should better try to look for inner pairs and remove that
-    # one after one.. 
-    
-    
+    # one after one..
+
+
     # Improve readability:
-    
-    
+
+
     # Replace 'NUMBER e NUMBER' with powers of 10
     # ------------
     regexp = re.compile(r'(\d*\.{0,1}\d+)[e]([-+]?\d*\.{0,1}\d+)')
-    
+
     matches = regexp.findall(s)
     splits = regexp.split(s)
     assert len(splits) == (len(matches) + 1) + (2 * len(matches))
-    #                     splitted groups             prefactor, exponent  
-    
+    #                     splitted groups             prefactor, exponent
+
     new_s = ''
-    # loop over all match and replace 
+    # loop over all match and replace
     # ... I didnt find any better way to do that given that we want a conditional
     # ... replace (.sub wouldnt work)
     for i, (prefactor, exponent) in enumerate(matches):
         new_s += splits[3*i]
-        
+
         if len(exponent) == 1:
             exp_str = r'{0}'.format(exponent)
         else:
             exp_str = r'{'+'{0}'.format(exponent)+'}'
-        
+
         if prefactor == '1':
             new_s += r'10^{0}'.format(exp_str)
         else:
@@ -596,5 +625,5 @@ def simplify(s):
     if len(splits) % 3 == 1:  # add last ones
         new_s += splits[-1]
     s = new_s
-    
-    return s 
+
+    return s
