@@ -71,7 +71,14 @@ def uprint(*expr):
         f = lambda expr: expr.encode(sys.stdout.encoding, errors='replace')
         print(*list(map(f, expr)))
 
-
+def looks_like_int(a):
+    if not isinstance(a, str):
+        a = str(a)
+    try:
+        value = float(a.split('.')[1]) == 0.0
+    except IndexError, ValueError:
+        value = False
+    return value
 
 class LatexVisitor(ast.NodeVisitor):
 
@@ -169,6 +176,9 @@ class LatexVisitor(ast.NodeVisitor):
         elif func in ['power']:
             args = args.split(',')
             return self.power(self.parenthesis(args[0]), args[1])
+        elif func in ['divide']:
+            args = args.split(',')
+            return self.division(args[0], args[1])
         elif func in ['abs', 'fabs']:
             return r'|%s|' % args
 
@@ -350,12 +360,6 @@ class LatexVisitor(ast.NodeVisitor):
 
         # Special binary operators
         if isinstance(n.op, ast.Div):
-            def looks_like_int(a):
-                try:
-                    value = float(a.split('.')[1]) == 0.0
-                except IndexError, ValueError:
-                    value = False
-                return value
             left_is_int = looks_like_int(left)
             right_is_int = looks_like_int(right)
             if left_is_int or right_is_int:
@@ -484,6 +488,8 @@ class LatexVisitor(ast.NodeVisitor):
         if any([n.n == key for key in fracs.keys()]):
             string = r'{0}\frac{{{1}}}{{{2}}}'.format(*fracs[n.n])
             return string
+        if looks_like_int(n.n):
+            return '%d' % n.n
         return str(n.n)
 
     def prec_Num(self, n):
