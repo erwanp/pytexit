@@ -71,19 +71,14 @@ def uprint(*expr):
         f = lambda expr: expr.encode(sys.stdout.encoding, errors='replace')
         print(*list(map(f, expr)))
 
-def looks_like_int(a):
-    if not isinstance(a, str):
-        a = str(a)
-    try:
-        value = float(a.split('.')[1]) == 0.0
-    except (IndexError, ValueError):
-        value = False
-    return value
+
+
 
 class LatexVisitor(ast.NodeVisitor):
 
     def __init__(self, dummy_var='u', upperscript='ˆ', lowerscript='_',
-                 verbose=False, simplify=True, simplify_fractions=False):
+                 verbose=False, simplify=True, simplify_fractions=False,
+                 simplify_ints=False):
         super(LatexVisitor, self).__init__()
         # super().__init__()  # doesn't work in Python 2.x
         self.dummy_var = dummy_var
@@ -92,7 +87,22 @@ class LatexVisitor(ast.NodeVisitor):
         self.lower = lowerscript
 
         self.verbose = verbose
-        self.simplify=simplify
+        self.simplify = simplify
+        self.simplify_fractions = simplify_fractions
+        self.simplify_ints = simplify_ints
+
+    def looks_like_int(self, a):
+        """ Check if the input ``a`` looks like an integer """
+        if self.simplify_ints:
+            if not isinstance(a, str):
+                a = str(a)
+            try:
+                value = float(a.split('.')[1]) == 0.0
+            except (IndexError, ValueError):
+                value = False
+            return value
+        else:
+            return False
 
     def prec(self, n):
         return getattr(self, 'prec_' + n.__class__.__name__, getattr(self, 'generic_prec'))(n)
@@ -341,7 +351,8 @@ class LatexVisitor(ast.NodeVisitor):
         # $$10^{-3}$$ and not $$10^{- 3}$$
 
         if self.prec(n.op) > self.prec(n.operand):
-            return r'{0}{1}'.format(self.visit(n.op), self.parenthesis(self.visit(n.operand)))
+            return r'{0}{1}'.format(self.visit(n.op),
+                                    self.parenthesis(self.visit(n.operand)))
         else:
             return r'{0}{1}'.format(self.visit(n.op), self.visit(n.operand))
 
@@ -360,9 +371,9 @@ class LatexVisitor(ast.NodeVisitor):
 
         # Special binary operators
         if isinstance(n.op, ast.Div):
-            if simplify_fractions:
-                left_is_int = looks_like_int(left)
-                right_is_int = looks_like_int(right)
+            if self.simplify_fractions:
+                left_is_int = self.looks_like_int(left)
+                right_is_int = self.looks_like_int(right)
                 if left_is_int or right_is_int:
                     if left_is_int and right_is_int:
                         return self.division('%d' % int(float(left)),
@@ -490,10 +501,11 @@ class LatexVisitor(ast.NodeVisitor):
         return 800
 
     def visit_Num(self, n):
-        if any([n.n == key for key in fracs.keys()]):
-            string = r'{0}\frac{{{1}}}{{{2}}}'.format(*fracs[n.n])
-            return string
-        if looks_like_int(n.n):
+        if self.simplify_fractions:
+            if any([n.n == key for key in fracs.keys()]):
+                string = r'{0}\frac{{{1}}}{{{2}}}'.format(*fracs[n.n])
+                return string
+        if self.looks_like_int(n.n):
             return '%d' % n.n
         return str(n.n)
 
