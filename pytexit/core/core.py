@@ -76,14 +76,14 @@ def looks_like_int(a):
         a = str(a)
     try:
         value = float(a.split('.')[1]) == 0.0
-    except IndexError, ValueError:
+    except (IndexError, ValueError):
         value = False
     return value
 
 class LatexVisitor(ast.NodeVisitor):
 
     def __init__(self, dummy_var='u', upperscript='ˆ', lowerscript='_',
-                 verbose=False, simplify=True):
+                 verbose=False, simplify=True, simplify_fractions=False):
         super(LatexVisitor, self).__init__()
         # super().__init__()  # doesn't work in Python 2.x
         self.dummy_var = dummy_var
@@ -360,18 +360,23 @@ class LatexVisitor(ast.NodeVisitor):
 
         # Special binary operators
         if isinstance(n.op, ast.Div):
-            left_is_int = looks_like_int(left)
-            right_is_int = looks_like_int(right)
-            if left_is_int or right_is_int:
-                if left_is_int and right_is_int:
-                    return self.division('%d' % int(float(left)), '%d' % int(float(right)))
-                elif left_is_int:
-                    return self.division('%d' % int(float(left)), self.visit(n.right))
-                else:
-                    return self.division(self.visit(n.left), '%d' % int(float(right)))
+            if simplify_fractions:
+                left_is_int = looks_like_int(left)
+                right_is_int = looks_like_int(right)
+                if left_is_int or right_is_int:
+                    if left_is_int and right_is_int:
+                        return self.division('%d' % int(float(left)),
+                                             '%d' % int(float(right)))
+                    elif left_is_int:
+                        return self.division('%d' % int(float(left)),
+                                             self.visit(n.right))
+                    else:
+                        return self.division(self.visit(n.left),
+                                             '%d' % int(float(right)))
             return self.division(self.visit(n.left), self.visit(n.right))
         elif isinstance(n.op, ast.FloorDiv):
-            return r'\left\lfloor\frac{%s}{%s}\right\rfloor' % (self.visit(n.left), self.visit(n.right))
+            return r'\left\lfloor\frac{%s}{%s}\right\rfloor' % \
+                (self.visit(n.left), self.visit(n.right))
         elif isinstance(n.op, ast.Pow):
             return self.power(left, self.visit(n.right))
         elif isinstance(n.op, ast.Mult):
