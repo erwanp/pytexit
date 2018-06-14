@@ -184,6 +184,12 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
     simplify_output: boolean
         if True, simplify output. Ex: 1x10^-5 --> 10^-5. Default True
 
+    simplify_ints: boolean
+        if True, simplify integers. Ex: 1.0 --> 1.  Default False
+
+    simplify_fractions: boolean
+        if True, simplify common fractions.  Ex: 0.5 --> 1/2. Default False
+
     Output
     ------
 
