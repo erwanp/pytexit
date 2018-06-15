@@ -14,7 +14,7 @@ Install
 
     pip install pytexit
 
-	
+
 Use
 ---
 
@@ -30,19 +30,19 @@ In a Python console::
 returns the corresponding LaTeX formula (to re-use in papers)::
 
     $$x=2\\sqrt{\\frac{2\\pi k T_e}{m_e}} \\left(\\frac{\\Delta E}{k T_e}\\right)^2 a_0^2$$
-    
+
 and (in ipython console only) prints the equation:
 
 .. image:: https://github.com/erwanp/pytexit/blob/master/docs/output.png
 
-	
+
 Notes
 -----
-	
-This module isn't unit aware and isn't designed to perform calculations. It is 
+
+This module isn't unit aware and isn't designed to perform calculations. It is
 a mere translator from Python expressions into LaTeX syntax. The idea behind it
-was I wanted my Python formula to be the same objects as the LaTeX formula I 
-write in my reports / papers. It allows me to gain time (I can write my LaTeX 
+was I wanted my Python formula to be the same objects as the LaTeX formula I
+write in my reports / papers. It allows me to gain time (I can write my LaTeX
 formulas directly from the Python expression), and check my Python formulas are correct
 (once printed LaTeX is much more readable that a multiline Python expression)
 
@@ -53,10 +53,10 @@ Based on a code sample from Geoff Reedy on `StackOverflow <http://stackoverflow.
 
 
 You may also be interested in the similar development from `BekeJ <https://github.com/BekeJ/py2tex>`__ that was built
-on top of the same sample. 
-BekeJ's code is designed to be used exclusively in an iPython console using 
+on top of the same sample.
+BekeJ's code is designed to be used exclusively in an iPython console using
 %magic commands to perform unit aware calculations and return result in a nice
-LaTeX format. 
+LaTeX format.
 
 Sympy also has some nice LaTeX output, but it requires declaring your symbolic
 variables and isn't as fast as a one-line console command in pytexit.
@@ -64,32 +64,32 @@ variables and isn't as fast as a one-line console command in pytexit.
 Current Features
 ----------------
 
-Successfully deal with most of the one or two parameter functions. Run the 
-_test() function to have an idea of what's possible. 
+Successfully deal with most of the one or two parameter functions. Run the
+_test() function to have an idea of what's possible.
 
 Arbitrary syntax:
 
 - Variables named after Greek names are turned into LaTeX syntax
 
-- 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard 
+- 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard
 scientific module names are removed beforehand)
 
 - quad() is converted into integrals
 
-- list comprehensions are converted into LaTex syntaX. 
+- list comprehensions are converted into LaTex syntaX.
 
 - 'a_p' variables are converted with "p" as subscript
 
-Also note that iPython uses auto-completion to convert most of the latex 
+Also note that iPython uses auto-completion to convert most of the latex
 identifiers in their Unicode equivalent::
 
     \alpha --> [Tab] --> α
-    
-- pytexit will recognize those Unicode characters and convert them again in 
+
+- pytexit will recognize those Unicode characters and convert them again in
 latex expressions
 
 - there is a mode to output Python expressions in Word syntax. From version 2007
-Word converts most LaTeX expressions in its own graphical representation. The 
+Word converts most LaTeX expressions in its own graphical representation. The
 Word mode here was just about replacing those LaTeX {} with Word ()::
 
     py2tex('sqrt(5/3)',output='word')
@@ -98,11 +98,11 @@ Word mode here was just about replacing those LaTeX {} with Word ()::
 Test
 ----
 
-In order to enforce cross-version compatibility and non-regression, `pytexit` is 
+In order to enforce cross-version compatibility and non-regression, `pytexit` is
 now tested with `pytest` and Travis. Run the test suite locally from a terminal with::
 
-    pip install pytest 
-    pytest 
+    pip install pytest
+    pytest
 
 
 Changes
@@ -122,14 +122,14 @@ Still WIP
 
 Todo:
 
-- allow syntax "a*b = c" (not a valid Python expression, but convenient to type 
+- allow syntax "a*b = c" (not a valid Python expression, but convenient to type
   some LaTeX formula)
-    
+
 - code for numbered equations
 
-- export all the conversions on an external text file 
-    
-	
+- export all the conversions on an external text file
+
+
 Links
 -----
 
@@ -162,20 +162,21 @@ except:
     pass
 
 def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='tex',
-           simplify_output=True, upperscript='ˆ', lowerscript='_', verbose=False):
-    ''' Return the LaTeX expression of a Python formula 
-    
+           simplify_output=True, upperscript='ˆ', lowerscript='_', verbose=False,
+           simplify_fractions=False, simplify_ints=False):
+    ''' Return the LaTeX expression of a Python formula
+
     Parameters
-    ----------    
+    ----------
     expr: string
         a Python expression
-        
+
     print_latex: boolean
         if True, prints the latex expression in the console
-        
+
     dummy_var: string
-        dummy variable displayed in integrals    
-        
+        dummy variable displayed in integrals
+
     output: 'tex' / 'word'
         if 'tex', output latex formula. If word, output a Word MathTex formula
         (may be a little different)
@@ -183,24 +184,30 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
     simplify_output: boolean
         if True, simplify output. Ex: 1x10^-5 --> 10^-5. Default True
 
+    simplify_ints: boolean
+        if True, simplify integers. Ex: 1.0 --> 1.  Default False
+
+    simplify_fractions: boolean
+        if True, simplify common fractions.  Ex: 0.5 --> 1/2. Default False
+
     Output
     ------
-    
-    returns the latex expression in raw text, to be used in your reports or 
+
+    returns the latex expression in raw text, to be used in your reports or
     to display in an IPython notebook
-    
+
     Notes
     -----
-    
-    Will return '\\' instead of '\' because we don't want those to be 
+
+    Will return '\\' instead of '\' because we don't want those to be
     interpreted as regular expressions. Use print(result) to get the correct
-    LaTex formula. 
+    LaTex formula.
 
     See Also
     --------
-    
+
     :func:`~pytexit.pytexit.for2tex`
-    
+
     '''
 
     try:
@@ -218,7 +225,9 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
     if output == 'tex':  # LaTex output
         Visitor = LatexVisitor(dummy_var=dummy_var, upperscript=upperscript,
                                lowerscript=lowerscript, verbose=verbose,
-                               simplify=simplify_output)
+                               simplify=simplify_output,
+                               simplify_fractions=simplify_fractions,
+                               simplify_ints=simplify_ints)
     elif output == 'word':  # Word output
         Visitor = WordVisitor(dummy_var=dummy_var, upperscript=upperscript,
                               lowerscript=lowerscript, verbose=verbose,
@@ -231,7 +240,7 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
         s = Visitor.visit(pt.body[0].value)
     else:  # For Compare / Assign expressions
         s = Visitor.visit(pt.body[0])
-      
+
     # Simplify if asked for
     if simplify_output:
         s = simplify(s)
@@ -254,42 +263,41 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
 
 def for2tex(a, **kwargs):
     ''' Converts FORTRAN formula to Python Formula
-    
+
     Parameters
     ----------
-    
+
     a: str
         FORTRAN formula
-        
+
     Other Parameters
     ----------------
-    
+
     kwargs: dict
-        forwarded to :func:`~pytexit.py2tex` function. See :func:`~pytexit.py2tex` 
+        forwarded to :func:`~pytexit.py2tex` function. See :func:`~pytexit.py2tex`
         doc.
-    
+
     Examples
     --------
-    
+
     convert FORTRAN formula to LaTeX with for2tex:
-    
+
         for2tex(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)')
-    
+
     See Also
     --------
-    
+
     :func:`~pytexit.core.fortran.for2py`, :func:`~pytexit.pytexit.py2tex`
-    
+
     '''
-    
+
     from pytexit import py2tex
-    
+
     return py2tex(for2py(a), **kwargs)
 
 
 
 if __name__ == '__main__':
-    
+
     from test.test_functions import run_all_tests
     uprint('Test =', bool(run_all_tests(True)))
-    
