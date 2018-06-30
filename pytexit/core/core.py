@@ -91,6 +91,26 @@ class LatexVisitor(ast.NodeVisitor):
         self.simplify_fractions = simplify_fractions
         self.simplify_ints = simplify_ints
 
+        self.precdic = {"Pow": 700,
+                        "Div": 400,
+                        "FloorDiv": 400,
+                        "Mult": 400,
+                        "Invert": 800,
+                        "Compare": 300,
+                        "Uadd": 800,
+                        "Not": 800,
+                        "USub": 800,
+                        "Num": 1000,
+                        "Assign": 300,
+                        "Sub": 300,
+                        "Add": 300,
+                        "Mod": 500,
+                        "ListComp": 1000,
+                        "list": 1000,
+                        "Call": 1000,
+                        "Name": 1000
+                        }
+
     def looks_like_int(self, a):
         """ Check if the input ``a`` looks like an integer """
         if self.simplify_ints:
@@ -105,7 +125,10 @@ class LatexVisitor(ast.NodeVisitor):
             return False
 
     def prec(self, n):
-        return getattr(self, 'prec_' + n.__class__.__name__, getattr(self, 'generic_prec'))(n)
+        if n.__class__.__name__ in self.precdic:
+            return self.precdic[n.__class__.__name__]
+        else:
+            return getattr(self, 'prec_' + n.__class__.__name__, getattr(self, 'generic_prec'))(n)        
 
     def visit_ListComp(self, n, kwout=False):
         ''' Analyse a list comprehension
@@ -138,14 +161,8 @@ class LatexVisitor(ast.NodeVisitor):
         else:
             return args
 
-    def prec_ListComp(self, n):
-        return 1000
-
     def visit_list(self, n):
         self.generic_visit(n)
-
-    def prec_list(self, n):
-        return 1000
 
     def visit_Call(self, n):
         ''' Node details : n.args, n.func, n.keywords, n.kwargs'''
@@ -216,9 +233,6 @@ class LatexVisitor(ast.NodeVisitor):
 
         else:
             return self.operator(func, args)
-
-    def prec_Call(self, n):
-        return 1000
 
     def visit_Name(self, n):
         ''' Special features:
@@ -343,9 +357,6 @@ class LatexVisitor(ast.NodeVisitor):
 
         return m
 
-    def prec_Name(self, n):
-        return 1000
-
     def visit_UnaryOp(self, n):
         # Note: removed space between {0} and {1}... so that 10**-3 yields
         # $$10^{-3}$$ and not $$10^{- 3}$$
@@ -430,36 +441,15 @@ class LatexVisitor(ast.NodeVisitor):
     def visit_Sub(self, n):
         return '-'
 
-    def prec_Sub(self, n):
-        return 300
-
     def visit_Add(self, n):
         return '+'
-
-    def prec_Add(self, n):
-        return 300
 
     def visit_Mult(self, n):
 #        return r'\cdot'   # no space in LaTeX (before:   r'\;'   )
         return r' '   # no space in LaTeX (before:   r'\;'   )
 
-    def prec_Mult(self, n):
-        return 400
-
     def visit_Mod(self, n):
         return '\\bmod'
-
-    def prec_Mod(self, n):
-        return 500
-
-    def prec_Pow(self, n):
-        return 700
-
-    def prec_Div(self, n):
-        return 400
-
-    def prec_FloorDiv(self, n):
-        return 400
 
     def visit_LShift(self, n):
         return self.operator('shiftLeft')
@@ -479,26 +469,14 @@ class LatexVisitor(ast.NodeVisitor):
     def visit_Invert(self, n):
         return self.operator('invert')
 
-    def prec_Invert(self, n):
-        return 800
-
     def visit_Not(self, n):
         return '\\neg'
-
-    def prec_Not(self, n):
-        return 800
 
     def visit_UAdd(self, n):
         return '+'
 
-    def prec_UAdd(self, n):
-        return 800
-
     def visit_USub(self, n):
         return '-'
-
-    def prec_USub(self, n):
-        return 800
 
     def visit_Num(self, n):
         if self.simplify_fractions:
@@ -509,16 +487,10 @@ class LatexVisitor(ast.NodeVisitor):
             return '%d' % n.n
         return str(n.n)
 
-    def prec_Num(self, n):
-        return 1000
-
     # New visits
     def visit_Assign(self, n):
         ' Rewrite Assign function (instead of executing it)'
         return r'%s=%s' % (self.visit(n.targets[0]), self.visit(n.value))
-
-    def prec_Assign(self, n):
-        return 300  # arbitrary ?
 
     def visit_Compare(self, n):
         ' Rewrite Compare function (instead of executing it)'
@@ -540,9 +512,6 @@ class LatexVisitor(ast.NodeVisitor):
 
         return r'%s%s' % (self.visit(n.left), ''.join(['%s%s' % (visit_Op(n.ops[i]),
                                                                  self.visit(n.comparators[i])) for i in range(len(n.comparators))]))
-
-    def prec_Compare(self, n):
-        return 300  # arbitrary ?
 
     # Default
     def generic_visit(self, n):
