@@ -106,8 +106,15 @@ def test_hardcoded_names(verbose=True, **kwargs):
     assert py2tex('log(x)', print_latex=False) == '$$\\ln(x)$$'
     assert py2tex('np.log10(x)', print_latex=False) == '$$\\log(x)$$'
     assert py2tex('numpy.arccos(x)', print_latex=False) == '$$\\arccos(x)$$'
-    assert py2tex('arcsin(α)', print_latex=False) == '$$\\arcsin(\\alpha)$$'
-    assert py2tex('arctan(α)', print_latex=False) == '$$\\arctan(\\alpha)$$'
+    
+    # the test below uses unicode symbol, which is valid only in Python2
+    if sys.version_info[0] != 3:
+        assert py2tex('arcsin(α)', print_latex=False) == '$$\\arcsin(\\alpha)$$'
+        assert py2tex('arctan(α)', print_latex=False) == '$$\\arctan(\\alpha)$$'
+    else:
+        assert py2tex('arcsin(alpha)', print_latex=False) == '$$\\arcsin(\\alpha)$$'
+        assert py2tex('arctan(alpha)', print_latex=False) == '$$\\arctan(\\alpha)$$'
+    
     assert py2tex('arcsinh(x)', print_latex=False) == '$$\sinh^{-1}(x)$$'
     assert py2tex('arccosh(x)', print_latex=False) == '$$\\cosh^{-1}(x)$$'
     

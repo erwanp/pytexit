@@ -14,11 +14,11 @@ import sys
 import ast
 import six
 try:
-    from pytexit.core.core import clean, LatexVisitor, uprint, simplify
+    from pytexit.core.core import preprocessing, LatexVisitor, uprint, simplify
     from pytexit.core.docx import WordVisitor
     from pytexit.core.fortran import for2py
 except:     # if run locally as a script
-    from core.core import clean, LatexVisitor, uprint, simplify
+    from core.core import preprocessing, LatexVisitor, uprint, simplify
     from core.docx import WordVisitor
     from core.fortran import for2py
 try:
@@ -111,7 +111,7 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
     except AssertionError:
         raise ValueError('Input must be a string')
       
-    expr = clean(expr)  # removes module calls, etc.
+    expr = preprocessing(expr)  # removes unicode, module calls, etc.
 
     # Parse
     pt = ast.parse(expr)

@@ -360,8 +360,9 @@ class LatexVisitor(ast.NodeVisitor):
             m = r'\%s' % m
 
         # Unicode
-        elif m in unicode_tbl:
-            m = r'\%s' % unicode_tbl[m]
+#        elif m in unicode_tbl:
+#            m = r'\%s' % unicode_tbl[m]
+        # @EP: unicode is now removed in pre-processing, before Parsing begins.
 
         elif m in ['eps']:
             m = r'\epsilon'
@@ -592,6 +593,25 @@ class LatexVisitor(ast.NodeVisitor):
         else:
             return r'\operatorname{{{0}}}\left({1}\right)'.format(func, args)
 
+def preprocessing(expr):
+    ''' Pre-process a string. In particular:
+        
+    - replace unicode values (so that even a Python 2 pytexit can parse formula
+      with unicode, valid in Python 3 only)
+    - clean: remove calls to librairies
+    '''
+    
+    expr = replace_unicode(expr)
+    expr = clean(expr)
+
+    return expr
+
+def replace_unicode(expr):
+    
+    for u in unicode_tbl:
+        expr = expr.replace(u, unicode_tbl[u])
+        
+    return expr
 
 def clean(expr):
     ''' Removes unnessary calls to libraries
