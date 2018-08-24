@@ -194,7 +194,10 @@ class LatexVisitor(ast.NodeVisitor):
         func = self.visit(n.func)
 
         # Deal with list comprehension and complex formats
-        blist = isinstance(n.args[0], ast.ListComp)
+        if len(n.args)>0:
+            blist = isinstance(n.args[0], ast.ListComp)
+        else:
+            blist = False
 
         if blist:
             args, kwargs = self.visit_ListComp(n.args[0], kwout=True)

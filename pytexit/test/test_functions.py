@@ -23,12 +23,9 @@ def test_py2tex(verbose=True, **kwargs):
                 r'arctanh(x/sqrt(x))',
                 r'quad(f,0,np.inf)',
                 # ------------------
-                r'2*4',
-                r'-2*3',
                 r'1<2<a<=5',
                 r'np.std([f(i) for i in range(20)])',
                 r'np.sum([i**2 for i in range(1,100)])==328350',
-                # -------------------
                 ]
     
     expr_tex = [r'$$Re_x=\frac{\rho v x}{\mu}$$',
@@ -37,12 +34,9 @@ def test_py2tex(verbose=True, **kwargs):
                 r"$$\tanh^{-1}(\frac{x}{\sqrt{x}})$$",
                 r"$$\int_{0}^{\infty} f(u) du$$",
                 # -------------------
-                r'$$2\times4$$',
-                r'$$-2\times3$$',
                 r'$$1<2<a<=5$$',
                 r'$$\operatorname{std}\left(f{\left(i\right)}, i=0..20\right)$$',
                 r'$$\sum_{i=1}^{100} i^2=328350$$',
-                # ------------------
                 ]
     
     for i, expr in enumerate(expr_py):
@@ -103,10 +97,21 @@ def test_hardcoded_names(verbose=True, **kwargs):
     conventions (ex: eps for \\epsilon)
     '''
     
+    # Operators
+    assert py2tex('a>2', print_latex=False) == '$$a>2$$'
+    assert py2tex('a>=2', print_latex=False) == '$$a>=2$$'
+    assert py2tex('3%2', print_latex=False) == '$$3\\bmod2$$'
+    assert py2tex('a & b', print_latex=False) == '$$a\\operatorname{and}b$$'
+    assert py2tex('a | b', print_latex=False) == '$$a\\operatorname{or}b$$'
+    assert py2tex('a ^ b', print_latex=False) == '$$a\\operatorname{xor}b$$'
+    assert py2tex('4 << 5', print_latex=False) == '$$4\\operatorname{shiftLeft}5$$'
+    assert py2tex('4 >> 5', print_latex=False) == '$$4\\operatorname{shiftRight}5$$'
+    assert py2tex('~n == -n - 1', print_latex=False) == '$$\\operatorname{invert}n=-n-1$$'
+    
+    # Math Functions
     assert py2tex('log(x)', print_latex=False) == '$$\\ln(x)$$'
     assert py2tex('np.log10(x)', print_latex=False) == '$$\\log(x)$$'
     assert py2tex('numpy.arccos(x)', print_latex=False) == '$$\\arccos(x)$$'
-    
     # the test below uses unicode symbol, which is valid only in Python2
     if sys.version_info[0] != 3:
         assert py2tex('arcsin(α)', print_latex=False) == '$$\\arcsin(\\alpha)$$'
@@ -114,15 +119,16 @@ def test_hardcoded_names(verbose=True, **kwargs):
     else:
         assert py2tex('arcsin(alpha)', print_latex=False) == '$$\\arcsin(\\alpha)$$'
         assert py2tex('arctan(alpha)', print_latex=False) == '$$\\arctan(\\alpha)$$'
-    
     assert py2tex('arcsinh(x)', print_latex=False) == '$$\sinh^{-1}(x)$$'
     assert py2tex('arccosh(x)', print_latex=False) == '$$\\cosh^{-1}(x)$$'
     
     assert py2tex('np.power(2, 10)', print_latex=False) == '$$\\left(2\\right)^{ 10}$$'
     # Additional function (conventions)
     assert py2tex('kron(i, j)', print_latex=False) == '$$\\delta_{i, j}$$'
+    # unknown function:
+    assert py2tex('myFunc()') == '$$\\operatorname{myFunc}\\left(\\right)$$'
 
-    # Special characters:
+    # Special characters (conventions):
     assert py2tex('eps*lbd+Lbd', print_latex=False) == '$$\\epsilon \\lambda+\\Lambda$$'
 
     
@@ -136,7 +142,7 @@ def test_simplify(verbose=True, **kwargs):
 def test_simplify_parser(verbose=True, **kwargs):
     ''' Test simplifications during Parsing. 
     
-    implemented by alexhagen 
+    simplify_ints and simplify_fractions implemented by alexhagen 
     See PR 7: https://github.com/erwanp/pytexit/pull/7
     '''
 
@@ -147,6 +153,12 @@ def test_simplify_parser(verbose=True, **kwargs):
     # Test simplify_fractions:
     assert py2tex('0.5', simplify_fractions=False, print_latex=False) == '$$0.5$$'
     assert py2tex('0.5', simplify_fractions=True, print_latex=False) == '$$\\frac{1}{2}$$'
+    
+    # Test simplify_multpliers
+    assert py2tex('2*4', print_latex=False) == '$$2\\times4$$'
+    assert py2tex('-2*3', print_latex=False) == '$$-2\\times3$$'
+    assert py2tex('a*-2', simplify_multipliers=True, print_latex=False) == '$$-2a$$'
+    assert py2tex('a*-2', simplify_multipliers=False, print_latex=False) == '$$a\\times-2$$'
     
     
 
