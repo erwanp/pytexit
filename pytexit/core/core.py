@@ -340,14 +340,14 @@ class LatexVisitor(ast.NodeVisitor):
 
         return read_tree(build_tree(n.id))
 
-    def convert_underscores(self, expr):
-
-        s = expr.split(self.lower)
-
-        for i, m in enumerate(s):
-            s[i] = self.convert_symbols(m)
-
-        return s
+#    def convert_underscores(self, expr):
+#
+#        s = expr.split(self.lower)
+#
+#        for i, m in enumerate(s):
+#            s[i] = self.convert_symbols(m)
+#
+#        return s
 
     def convert_symbols(self, expr):
         m = expr

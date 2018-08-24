@@ -98,18 +98,61 @@ def test_py2tex_py3only(verbose=True, **kwargs):
             assert expr_tex[i] == s
 
     
+def test_hardcoded_names(verbose=True, **kwargs):
+    ''' Test special numpy functions, greek letters (unicode), and hardcoded 
+    conventions (ex: eps for \\epsilon)
+    '''
+    
+    assert py2tex('log(x)', print_latex=False) == '$$\\ln(x)$$'
+    assert py2tex('np.log10(x)', print_latex=False) == '$$\\log(x)$$'
+    assert py2tex('numpy.arccos(x)', print_latex=False) == '$$\\arccos(x)$$'
+    assert py2tex('arcsin(α)', print_latex=False) == '$$\\arcsin(\\alpha)$$'
+    assert py2tex('arctan(α)', print_latex=False) == '$$\\arctan(\\alpha)$$'
+    assert py2tex('arcsinh(x)', print_latex=False) == '$$\sinh^{-1}(x)$$'
+    assert py2tex('arccosh(x)', print_latex=False) == '$$\\cosh^{-1}(x)$$'
+    
+    assert py2tex('np.power(2, 10)', print_latex=False) == '$$\\left(2\\right)^{ 10}$$'
+    # Additional function (conventions)
+    assert py2tex('kron(i, j)', print_latex=False) == '$$\\delta_{i, j}$$'
+
+    # Special characters:
+    assert py2tex('eps*lbd+Lbd', print_latex=False) == '$$\\epsilon \\lambda+\\Lambda$$'
+
     
 
 def test_simplify(verbose=True, **kwargs):
+    ''' Post-processing simplifications '''
     
     assert simplify('1e-20*11e2') == r'10^{-20}*11\times10^2'
     assert simplify('1e-20*11e-20+5+2') == r'10^{-20}*11\times10^{-20}+5+2'
+
+def test_simplify_parser(verbose=True, **kwargs):
+    ''' Test simplifications during Parsing. 
+    
+    implemented by alexhagen 
+    See PR 7: https://github.com/erwanp/pytexit/pull/7
+    '''
+
+    # Test simplify_ints:
+    assert py2tex('1./5.2', simplify_ints=True, print_latex=False) == '$$\\frac{1}{5.2}$$'
+    assert py2tex('1./5.2', simplify_ints=False, print_latex=False) == '$$\\frac{1.0}{5.2}$$'
+    
+    # Test simplify_fractions:
+    assert py2tex('0.5', simplify_fractions=False, print_latex=False) == '$$0.5$$'
+    assert py2tex('0.5', simplify_fractions=True, print_latex=False) == '$$\\frac{1}{2}$$'
+    
+    
 
 def run_all_tests(verbose=True, **kwargs):
     
     test_py2tex(verbose=verbose, **kwargs)
     test_py2tex_py3only(verbose=verbose, **kwargs)
+    test_hardcoded_names(verbose=verbose, **kwargs)
     test_simplify(verbose=verbose, **kwargs)
+    test_simplify_parser(verbose=verbose, **kwargs)
+    
+    return True
 
 if __name__ == '__main__':
     run_all_tests(verbose=True)
+    

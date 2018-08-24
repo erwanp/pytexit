@@ -28,7 +28,7 @@ except:
 
 def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='tex',
            simplify_output=True, upperscript='ˆ', lowerscript='_', verbose=False,
-           simplify_fractions=False, simplify_ints=False, simplify_multipliers=True):
+           simplify_fractions=False, simplify_ints=True, simplify_multipliers=True):
     ''' Return the LaTeX expression of a Python formula
 
     Parameters
@@ -58,12 +58,12 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
         Default ``True``
 
     simplify_ints: boolean
-        if ``True``, simplify integers. Ex:: 
+        if ``True``, simplify integers (useful for Python 2 expressions). Ex:: 
             
-            1.0 --> 1.  
+            1. --> 1.  
             
         See :class:`~pytexit.core.core.LatexVisitor` for more information.
-        Default ``False``
+        Default ``True``
 
     simplify_fractions: boolean
         if ``True``, simplify common fractions.  Ex:: 
@@ -195,4 +195,4 @@ def for2tex(a, **kwargs):
 if __name__ == '__main__':
 
     from test.test_functions import run_all_tests
-    uprint('Test =', bool(run_all_tests(True)))
+    uprint('Test completed: ', bool(run_all_tests(True)))
