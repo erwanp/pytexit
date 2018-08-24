@@ -41,6 +41,6 @@ branches:
 after_success:
   # codecoverage for Python 3 only
   - if [[ "$TRAVIS_PYTHON_VERSION" != "2.7" ]]; then
-      codecov
+      codecov;
     fi
     
