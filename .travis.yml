@@ -23,7 +23,7 @@ install:
 
   # Create conda environment
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pytest
-  - pip install codecov pytest-cov
+  - pip install pytest-cov
   - python setup.py install
 
 script:
@@ -41,6 +41,7 @@ branches:
 after_success:
   # codecoverage for Python 3 only
   - if [[ "$TRAVIS_PYTHON_VERSION" != "2.7" ]]; then
+      pip install codecov;
       codecov;
     fi
     
