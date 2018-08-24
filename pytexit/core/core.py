@@ -75,10 +75,35 @@ def uprint(*expr):
 
 
 class LatexVisitor(ast.NodeVisitor):
-
+    ''' 
+    Parameters
+    ----------
+    
+    simplify_multipliers: bool
+        if ``True``, simplify expression if multiplier is a float. Ex::
+            
+            2*a -> 2a 
+            
+            a * 3.5 -> 3.5 
+            
+        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more 
+        information. Default ``True``.
+    
+    simplify_fractions: bool
+        if ``True``, simplify fractions. 
+        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more 
+        information. Default ``False``.
+        
+    simplify_ints: bool
+        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more 
+        information. Default ``False``.
+        
+    '''
+    
     def __init__(self, dummy_var='u', upperscript='ˆ', lowerscript='_',
-                 verbose=False, simplify=True, simplify_fractions=False,
+                 verbose=False, simplify_multipliers=True, simplify_fractions=False,
                  simplify_ints=False):
+        
         super(LatexVisitor, self).__init__()
         # super().__init__()  # doesn't work in Python 2.x
         self.dummy_var = dummy_var
@@ -87,7 +112,7 @@ class LatexVisitor(ast.NodeVisitor):
         self.lower = lowerscript
 
         self.verbose = verbose
-        self.simplify = simplify
+        self.simplify_multipliers = simplify_multipliers
         self.simplify_fractions = simplify_fractions
         self.simplify_ints = simplify_ints
 
@@ -403,35 +428,49 @@ class LatexVisitor(ast.NodeVisitor):
             return self.power(left, self.visit(n.right))
         elif isinstance(n.op, ast.Mult):
 
-            if self.simplify:
+            def looks_like_float(a):
+                ''' Care for the special case of 2 floats/integer
+                We don't want 'a*2' where we could have simply written '2a' '''
+                try:
+                    float(a)
+                    return True
+                except ValueError:
+                    return False
 
-                def looks_like_float(a):
-                    ''' Care for the special case of 2 floats/integer
-                    We don't want 'a*2' where we could have simply written '2a' '''
-                    try:
-                        float(a)
-                        return True
-                    except ValueError:
-                        return False
+            left_is_float = looks_like_float(left)
+            right_is_float = looks_like_float(right)
 
-                left_is_float = looks_like_float(left)
-                right_is_float = looks_like_float(right)
+            # Get multiplication operator. Force x if floats are involved
+            if left_is_float or right_is_float:
+                operator = r'\times'
+            else: # get standard Mult operator (see visit_Mult)
+                operator = self.visit(n.op)
+                    
+            if self.simplify_multipliers:
+                
+                # We simplify in some cases, for instance: a*2 -> 2a
+                # First we need to know if both terms start with numbers
+                if left[0] == '-':
+                    left_starts_with_digit = left[1].isdigit()
+                else:
+                    left_starts_with_digit = left[0].isdigit()
+                    
+                if right[0] == '-':
+                    right_starts_with_digit = right[1].isdigit()
+                else:
+                    right_starts_with_digit = right[0].isdigit()
 
-                # Get multiplication operator. Force x if floats are involved
-                if left_is_float or right_is_float:
-                    operator = r'\times'
-                else: # get standard Mult operator (see visit_Mult)
-                    operator = self.visit(n.op)
-
-                # Simplify in some cases
-                if right_is_float and not left[0].isdigit(): # simplify (a*2 --> 2a)
+                # Simplify
+                # ... simplify (a*2 --> 2a)
+                if right_is_float and not left_starts_with_digit: 
                     return r'{0}{1}'.format(right, left)
-                elif left_is_float and not right[0].isdigit(): # simplify (2*a --> 2a)
+                # ... simplify (2*a --> 2a)
+                elif left_is_float and not right_starts_with_digit:
                     return r'{0}{1}'.format(left, right)
                 else:
                     return r'{0}{1}{2}'.format(left, operator, right)
             else:
-                return r'{0}{1}{2}'.format(left, self.visit(n.op), right)
+                return r'{0}{1}{2}'.format(left, operator, right)
         else:
             return r'{0}{1}{2}'.format(left, self.visit(n.op), right)
 

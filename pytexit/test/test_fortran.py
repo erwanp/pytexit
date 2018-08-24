@@ -20,10 +20,10 @@ def test_for2py(verbose=True, *args, **kwargs):
 
 def test_for2tex(verbose=True, *args, **kwargs):
 
-    assert (for2tex((r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)'),
+    assert (for2tex((r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/T_gas)'),
            simplify_output=True) == 
            "$$2.8\\times10^{-11}\\operatorname{exp}\\left(\\frac{-\\left(26500-0.5\\times"+\
-           "1.97\\times11600\\right)}{Tgas}\\right)$$")
+           "1.97\\times11600\\right)}{T_{gas}}\\right)$$")
 
 
 if __name__ == '__main__':
