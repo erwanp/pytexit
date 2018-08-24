@@ -24,8 +24,8 @@ def test_py2tex(verbose=True, **kwargs):
                 r'quad(f,0,np.inf)',
                 # ------------------
                 r'1<2<a<=5',
-                r'np.std([f(i) for i in range(20)])',
-                r'np.sum([i**2 for i in range(1,100)])==328350',
+                r'np.std([f(i) for i in range(21)])',
+                r'np.sum([i**2 for i in range(1,101)])==328350',
                 ]
     
     expr_tex = [r'$$Re_x=\frac{\rho v x}{\mu}$$',
@@ -107,6 +107,11 @@ def test_hardcoded_names(verbose=True, **kwargs):
     assert py2tex('4 << 5', print_latex=False) == '$$4\\operatorname{shiftLeft}5$$'
     assert py2tex('4 >> 5', print_latex=False) == '$$4\\operatorname{shiftRight}5$$'
     assert py2tex('~n == -n - 1', print_latex=False) == '$$\\operatorname{invert}n=-n-1$$'
+    
+    # Python syntax
+    assert py2tex('sum([k for k in range(1, N)])', print_latex=False) == '$$\sum_{k=1}^{N-1} k$$'
+    assert py2tex('sum([k for k in range(1, N+1)])', print_latex=False) == '$$\sum_{k=1}^{N} k$$'
+    assert py2tex('sum([k for k in range(1, 11)])', print_latex=False) == '$$\sum_{k=1}^{10} k$$'
     
     # Math Functions
     assert py2tex('log(x)', print_latex=False) == '$$\\ln(x)$$'
