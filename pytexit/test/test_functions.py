@@ -25,7 +25,7 @@ def test_py2tex(verbose=True, **kwargs):
                 # ------------------
                 r'1<2<a<=5',
                 r'np.std([f(i) for i in range(21)])',
-                r'np.sum([i**2 for i in range(1,101)])==328350',
+                r'np.sum([i**2 for i in range(1,101)])==338350',
                 ]
     
     expr_tex = [r'$$Re_x=\frac{\rho v x}{\mu}$$',
@@ -36,7 +36,7 @@ def test_py2tex(verbose=True, **kwargs):
                 # -------------------
                 r'$$1<2<a<=5$$',
                 r'$$\operatorname{std}\left(f{\left(i\right)}, i=0..20\right)$$',
-                r'$$\sum_{i=1}^{100} i^2=328350$$',
+                r'$$\sum_{i=1}^{100} i^2=338350$$',
                 ]
     
     for i, expr in enumerate(expr_py):
