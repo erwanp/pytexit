@@ -412,6 +412,9 @@ class LatexVisitor(ast.NodeVisitor):
     def visit_BinOp(self, n):
         if self.prec(n.op) > self.prec(n.left):
             left = self.parenthesis(self.visit(n.left))
+        elif isinstance(n.op, ast.Pow) and self.prec(n.op) == self.prec(n.left):
+            # Special case for power, which needs parantheses when combined to the left
+            left = self.parenthesis(self.visit(n.left))
         else:
             left = self.visit(n.left)
         if self.prec(n.op) > self.prec(n.right):
@@ -592,7 +595,7 @@ class LatexVisitor(ast.NodeVisitor):
         return r'\left({0}\right)'.format(expr)
 
     def power(self, expr, power):
-        return r'{0}^{1}'.format(expr, self.group(power))
+        return r'{0}^{1}'.format(self.group(expr), self.group(power))
 
     def division(self,up,down):
         return r'\frac{0}{1}'.format(self.brackets(up), self.brackets(down))

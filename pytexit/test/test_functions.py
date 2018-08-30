@@ -26,10 +26,11 @@ def test_py2tex(verbose=True, **kwargs):
                 r'1<2<a<=5',
                 r'np.std([f(i) for i in range(21)])',
                 r'np.sum([i**2 for i in range(1,101)])==338350',
+                r'(a**b)**c',
                 ]
     
     expr_tex = [r'$$Re_x=\frac{\rho v x}{\mu}$$',
-                r"$$2\sqrt{\frac{2\pi k T_e}{m_e}} \left(\frac{\Delta E}{k T_e}\right)^2 a_0^2$$",
+                r"$$2\sqrt{\frac{2\pi k T_e}{m_e}} {\left(\frac{\Delta E}{k T_e}\right)}^2 {a_0}^2$$",
                 r"$$f{\left(\frac{x^2}{y^3}\right)}$$",
                 r"$$\tanh^{-1}(\frac{x}{\sqrt{x}})$$",
                 r"$$\int_{0}^{\infty} f(u) du$$",
@@ -37,6 +38,7 @@ def test_py2tex(verbose=True, **kwargs):
                 r'$$1<2<a<=5$$',
                 r'$$\operatorname{std}\left(f{\left(i\right)}, i=0..20\right)$$',
                 r'$$\sum_{i=1}^{100} i^2=338350$$',
+                r'$${\left(a^b\right)}^c$$',
                 ]
     
     for i, expr in enumerate(expr_py):
@@ -127,7 +129,7 @@ def test_hardcoded_names(verbose=True, **kwargs):
     assert py2tex('arcsinh(x)', print_latex=False) == '$$\sinh^{-1}(x)$$'
     assert py2tex('arccosh(x)', print_latex=False) == '$$\\cosh^{-1}(x)$$'
     
-    assert py2tex('np.power(2, 10)', print_latex=False) == '$$\\left(2\\right)^{ 10}$$'
+    assert py2tex('np.power(2, 10)', print_latex=False) == '$${\\left(2\\right)}^{ 10}$$'
     # Additional function (conventions)
     assert py2tex('kron(i, j)', print_latex=False) == '$$\\delta_{i, j}$$'
     # unknown function:
