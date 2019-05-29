@@ -16,28 +16,6 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
 
-# ------------------------------------
-# Added EP 2018:
-# Auto-generate files with sphinx.apidoc
-# (else it requires /docs/source files to be generated manually and commited
-# to the git directory)
-# 
-# Reference: 
-# https://github.com/rtfd/readthedocs.org/issues/1139
-
-def run_apidoc(_):
-    from sphinx.apidoc import main
-    from os.path import join, abspath, dirname
-#    import sys
-#    sys.path.append(join(dirname(__file__), '..'))
-    cur_dir = abspath(dirname(__file__))
-    source_dir = abspath(join(cur_dir, 'source'))
-    module = join(cur_dir,"..","pytexit")
-    main(['-e', '-o', source_dir, module, '--force'])
-
-def setup(app):
-    app.connect('builder-inited', run_apidoc)
-
 
 # -- Project information -----------------------------------------------------
 
@@ -67,7 +45,8 @@ extensions = [
     'sphinx.ext.autodoc',
     #'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
-    'sphinx.ext.napoleon',
+    'sphinx.ext.napoleon',,
+    'sphinxcontrib.apidoc',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
