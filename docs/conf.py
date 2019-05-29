@@ -46,8 +46,49 @@ extensions = [
     #'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',,
-    'sphinxcontrib.apidoc',
+    'sphinxcontrib.apidoc'
 ]
+apidoc_module_dir = '../pytexit'
+apidoc_output_dir = 'source'
+apidoc_excluded_paths = []
+apidoc_separate_modules = True
+
+# %% ------------------------------------
+# Added EP 2018:
+# Auto-generate files with sphinx.apidoc
+# (else it requires /docs/source files to be generated manually and commited
+# to the git directory)
+# 
+# Reference: 
+# https://github.com/rtfd/readthedocs.org/issues/1139
+#
+
+def run_apidoc(_):
+    ignore_paths = [
+    ]
+
+    argv = [
+        "-f",
+        "-T",
+        "-e",
+        "-M",
+        "-o", "source",
+        ".."
+    ] + ignore_paths
+
+    try:
+        # Sphinx 1.7+
+        from sphinx.ext import apidoc
+        apidoc.main(argv)
+    except ImportError:
+        # Sphinx 1.6 (and earlier)
+        from sphinx import apidoc
+        argv.insert(0, apidoc.__file__)
+        apidoc.main(argv)
+
+def setup(app):
+    app.connect('builder-inited', run_apidoc)
+# %%
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
