@@ -91,7 +91,7 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
     Notes
     -----
 
-    Will return ``'\\'`` instead of ``'\'`` because we don't want those to be
+    Will return ``'\\\\'`` instead of ``'\\'`` because we don't want those to be
     interpreted as regular expressions. Use ``print(result)`` to get the correct
     LaTex formula.
 
