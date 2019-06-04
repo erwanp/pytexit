@@ -91,8 +91,8 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
     Notes
     -----
 
-    Will return '\\' instead of '\' because we don't want those to be
-    interpreted as regular expressions. Use print(result) to get the correct
+    Will return ``'\\'`` instead of ``'\'`` because we don't want those to be
+    interpreted as regular expressions. Use ``print(result)`` to get the correct
     LaTex formula.
 
     See Also
@@ -175,7 +175,7 @@ def for2tex(a, **kwargs):
     Examples
     --------
 
-    convert FORTRAN formula to LaTeX with for2tex:
+    convert FORTRAN formula to LaTeX with for2tex::
 
         for2tex(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)')
 
