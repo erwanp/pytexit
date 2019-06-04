@@ -1,4 +1,11 @@
 
+============================================
+`pytexit <https://pytexit.readthedocs.io>`__
+============================================
+
+Convert a Python expression to a LaTeX formula
+
+
 .. image:: https://img.shields.io/pypi/v/pytexit.svg
     :target: https://pypi.python.org/pypi/pytexit
     :alt: PyPI
@@ -10,12 +17,6 @@
 .. image:: https://codecov.io/gh/erwanp/pytexit/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/erwanp/pytexit
     :alt: Coverage
-
-=======
-pytexit
-=======
-
-Convert a Python expression in a LaTeX formula
 
 
 Documentation
