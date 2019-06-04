@@ -6,6 +6,7 @@ import codecs
 from os.path import join, dirname, abspath, exists
 from setuptips import yield_sphinx_only_markup
 
+description = 'Convert a Python expression to a LaTeX formula'
 # Build description from README (PyPi compatible)
 # (note: README.rst has been converted to README.md by register.py, and cleaned afterwards )
 readme_path = join(abspath(dirname(__file__)), 'README.md')
@@ -21,7 +22,7 @@ with open(join(dirname(__file__),'pytexit', '__version__.txt')) as version_file:
 
 setup(name='pytexit',
       version=__version__,
-      description='Convert a Python expression to a LaTeX formula',
+      description=description,
       long_description=long_description,
       long_description_content_type='text/markdown',
       url='http://pytexit.readthedocs.io/',
