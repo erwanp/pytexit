@@ -3,7 +3,7 @@
 pytexit
 =======
 
-Convert a Python expression in a LaTeX formula
+Convert a Python expression to a LaTeX formula
 
 Install
 -------
