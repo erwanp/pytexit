@@ -45,7 +45,7 @@ extensions = [
     'sphinx.ext.autodoc',
     #'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
-    'sphinx.ext.napoleon',,
+    'sphinx.ext.napoleon',
     'sphinxcontrib.apidoc'
 ]
 apidoc_module_dir = '../pytexit'
@@ -64,17 +64,14 @@ apidoc_separate_modules = True
 #
 
 def run_apidoc(_):
-    ignore_paths = [
-    ]
 
     argv = [
         "-f",
-        "-T",
         "-e",
-        "-M",
         "-o", "source",
-        ".."
-    ] + ignore_paths
+        "--separate",
+        "../pytexit"
+    ]
 
     try:
         # Sphinx 1.7+
@@ -129,7 +126,20 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'description': "Convert Python formula in LaTeX",
+    #'logo': 'radis_ico.png',
+    'logo_name': True, 
+    'github_user': 'erwanp',
+    'github_repo': 'pytexit',
+    'github_button': True, 
+    'github_type': 'watch',
+    'github_banner': False,
+    'travis_button': True,
+    'codecov_button': True,
+    'sidebar_includehidden': False,
+    }
+
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
