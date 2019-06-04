@@ -1,8 +1,4 @@
 
-=======
-pytexit
-=======
-
 Convert a Python expression to a LaTeX formula
 
 Install
