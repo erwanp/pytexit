@@ -128,7 +128,6 @@ html_theme = 'alabaster'
 #
 html_theme_options = {
     'description': "Convert Python formula in LaTeX",
-    #'logo': 'radis_ico.png',
     'logo_name': True, 
     'github_user': 'erwanp',
     'github_repo': 'pytexit',
@@ -140,6 +139,9 @@ html_theme_options = {
     'sidebar_includehidden': False,
     }
 
+# The name of an image file (relative to this directory) to place at the top
+# of the sidebar.
+html_logo = 'py2tex.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
