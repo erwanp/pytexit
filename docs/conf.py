@@ -127,7 +127,7 @@ html_theme = 'alabaster'
 # documentation.
 #
 html_theme_options = {
-    'description': "Convert Python formula in LaTeX",
+    'description': "Convert a Python formula to LaTeX",
     'logo_name': True, 
     'github_user': 'erwanp',
     'github_repo': 'pytexit',
@@ -156,7 +156,16 @@ html_static_path = ['_static']
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-# html_sidebars = {}
+html_sidebars = {
+    '**': [
+        'about.html',
+        'navigation.html',
+        #'relations.html',
+        #'description.html',
+        #'example.html',
+        'searchbox.html',
+    ]
+}
 
 
 # -- Options for HTMLHelp output ---------------------------------------------
