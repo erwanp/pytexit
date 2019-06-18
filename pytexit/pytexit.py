@@ -99,7 +99,18 @@ def py2tex(expr, print_latex=True, print_formula=True, dummy_var='u', output='te
     --------
 
     :func:`~pytexit.pytexit.for2tex`
+    
+    References
+    ----------
+    
+    Initial work from Geoff Reedy on StackOverflow: https://stackoverflow.com/a/3874621/5622825 . Kudos. 
 
+    Similar projects:
+
+    - https://github.com/iogf/lax  : "A pythonic way of writting latex." 
+    - https://github.com/JelteF/PyLaTeX : "A Python library for creating LaTeX files"
+    - sympy can also write LaTeX output. 
+    
     '''
     
     # Check inputs
