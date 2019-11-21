@@ -11,7 +11,7 @@ Convert a Python expression to a LaTeX formula
     :alt: PyPI
     
 .. image:: https://img.shields.io/travis/erwanp/pytexit.svg
-    :target: https://travis-ci.org/erwanp/pytexit
+    :target: https://travis-ci.com/erwanp/pytexit
     :alt: Tests
 
 .. image:: https://codecov.io/gh/erwanp/pytexit/branch/master/graph/badge.svg
