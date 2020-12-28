@@ -659,7 +659,10 @@ def simplify(s):
     # TRied with re.findall(r'\(\([^\(^\)]*(\([^\(^\)]+\))*[^\(^\)]*\)\)', s)  but
     # it doesnt work. One should better try to look for inner pairs and remove that
     # one after one..
-
+    
+    # Replace '\left(NUMBER\right)' with 'NUMBER'
+    # ------------
+    s = re.sub(r"\\left\(([\d\.]+)\\right\)", r"\1", s)
 
     # Improve readability:
 
