@@ -126,6 +126,7 @@ class LatexVisitor(ast.NodeVisitor):
                         "Not": 800,
                         "USub": 800,
                         "Num": 1000,
+                        "Constant": 1000,
                         "Assign": 300,
                         "Sub": 300,
                         "Add": 300,
@@ -410,10 +411,11 @@ class LatexVisitor(ast.NodeVisitor):
         return self.prec(n.op)
 
     def visit_BinOp(self, n):
+    
         if self.prec(n.op) > self.prec(n.left):
             left = self.parenthesis(self.visit(n.left))
         elif isinstance(n.op, ast.Pow) and self.prec(n.op) == self.prec(n.left):
-            # Special case for power, which needs parantheses when combined to the left
+            # Special case for power, which needs parentheses when combined to the left
             left = self.parenthesis(self.visit(n.left))
         else:
             left = self.visit(n.left)
@@ -421,7 +423,7 @@ class LatexVisitor(ast.NodeVisitor):
             right = self.parenthesis(self.visit(n.right))
         else:
             right = self.visit(n.right)
-
+ 
         # Special binary operators
         if isinstance(n.op, ast.Div):
             if self.simplify_fractions:
@@ -462,7 +464,7 @@ class LatexVisitor(ast.NodeVisitor):
                 operator = r'\times'
             else: # get standard Mult operator (see visit_Mult)
                 operator = self.visit(n.op)
-                    
+
             if self.simplify_multipliers:
                 
                 # We simplify in some cases, for instance: a*2 -> 2a
@@ -659,7 +661,10 @@ def simplify(s):
     # TRied with re.findall(r'\(\([^\(^\)]*(\([^\(^\)]+\))*[^\(^\)]*\)\)', s)  but
     # it doesnt work. One should better try to look for inner pairs and remove that
     # one after one..
-
+    
+    # Replace '\left(NUMBER\right)' with 'NUMBER'
+    # ------------
+    s = re.sub(r"\\left\(([\d\.]+)\\right\)", r"\1", s)
 
     # Improve readability:
 
