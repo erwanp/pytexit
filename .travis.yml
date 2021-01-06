@@ -1,47 +1,21 @@
 language: python
 python:
-  # We don't actually use the Travis Python, but this keeps it organized.
   - "2.7"
   - "3.6"
+  - "3.7"
+  - "3.8"
+  - "3.9"
+  
 install:
-  - sudo apt-get update
-  # Install Anaconda 
-  # We do this conditionally because it saves us some downloading if the
-  # version is the same.
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
-
-  # Create conda environment
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pytest
   - pip install pytest-cov
   - python setup.py install
 
 script:
-  # Your test script goes here
-  - echo ">>> Running tests"
   - pytest --cov=./   
-
-# safelist
-branches:
-  only:
-  - master
-  - develop
   
- 
 after_success:
   # codecoverage for Python 3 only
   - if [[ "$TRAVIS_PYTHON_VERSION" != "2.7" ]]; then
       pip install codecov;
       codecov;
     fi
-    
