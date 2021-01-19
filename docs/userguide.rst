@@ -83,16 +83,42 @@ _test() function to have an idea of what's possible.
 
 Arbitrary syntax:
 
-- Variables named after Greek names are turned into LaTeX syntax
+- Variables named after Greek names are turned into LaTeX syntax::
+
+    py2tex("Re_x=(rho*v*x)/mu")
+    
+.. math::
+    Re_x=\frac{\rho v x}{\mu}
+    
 
 - 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard 
-  scientific module names are removed beforehand)
+  scientific module names are removed beforehand)::
+  
+    py2tex('numpy.arccos(x)')
 
-- quad() is converted into integrals
+.. math::
+    \\arccos(x)
 
-- list comprehensions are converted into LaTex syntaX. 
+- quad() is converted into integrals::
 
-- 'a_p' variables are converted with "p" as subscript
+    py2tex("quad(f,0,np.inf)")
+    
+.. math::
+        \int_{0}^{\infty} f(u) du
+
+- list comprehensions are converted into LaTex syntaX::
+
+    py2tex("np.sum([i**2 for i in range(1,101)])==338350")
+    
+.. math::
+    \sum_{i=1}^{100} i^2=338350
+
+- 'a_p' variables are converted with "p" as subscript::
+
+    py2tex('k_i__1_i__2ˆj__1ˆj__2')
+
+.. math::
+    k_{i_1,i_2}^{j_1,j_2}
 
 Also note that iPython uses auto-completion to convert most of the latex 
 identifiers in their Unicode equivalent::
@@ -100,7 +126,12 @@ identifiers in their Unicode equivalent::
     \alpha --> [Tab] --> α
     
 - pytexit will recognize those Unicode characters and convert them again in 
-  latex expressions
+  latex expressions::
+  
+    py2tex('arcsin(α)')
+    
+.. math::
+    \arcsin(\alpha)
 
 - there is a mode to output Python expressions in Word syntax. From version 2007
   Word converts most LaTeX expressions in its own graphical representation. The 
