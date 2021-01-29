@@ -75,35 +75,35 @@ def uprint(*expr):
 
 
 class LatexVisitor(ast.NodeVisitor):
-    ''' 
+    '''
     Parameters
     ----------
-    
+
     simplify_multipliers: bool
         if ``True``, simplify expression if multiplier is a float. Ex::
-            
-            2*a -> 2a 
-            
-            a * 3.5 -> 3.5 
-            
-        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more 
+
+            2*a -> 2a
+
+            a * 3.5 -> 3.5
+
+        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more
         information. Default ``True``.
-    
+
     simplify_fractions: bool
-        if ``True``, simplify fractions. 
-        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more 
+        if ``True``, simplify fractions.
+        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more
         information. Default ``False``.
-        
+
     simplify_ints: bool
-        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more 
+        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more
         information. Default ``False``.
-        
+
     '''
-    
+
     def __init__(self, dummy_var='u', upperscript='ˆ', lowerscript='_',
                  verbose=False, simplify_multipliers=True, simplify_fractions=False,
                  simplify_ints=False):
-        
+
         super(LatexVisitor, self).__init__()
         # super().__init__()  # doesn't work in Python 2.x
         self.dummy_var = dummy_var
@@ -154,7 +154,7 @@ class LatexVisitor(ast.NodeVisitor):
         if n.__class__.__name__ in self.precdic:
             return self.precdic[n.__class__.__name__]
         else:
-            return getattr(self, 'prec_' + n.__class__.__name__, getattr(self, 'generic_prec'))(n)        
+            return getattr(self, 'prec_' + n.__class__.__name__, getattr(self, 'generic_prec'))(n)
 
     def visit_ListComp(self, n, kwout=False):
         ''' Analyse a list comprehension
@@ -177,7 +177,7 @@ class LatexVisitor(ast.NodeVisitor):
             else:
                 kw['min'] = 0
                 kw['max'] = self.visit(comp.iter.args[0])
-            # Remove 1 for range max 
+            # Remove 1 for range max
             try:
                 kw['max'] = int(kw['max'])-1
             except ValueError:
@@ -224,21 +224,21 @@ class LatexVisitor(ast.NodeVisitor):
         # by default log refers to log10 in Python. Unless people import it as
         # ln
         elif func in ['log', 'ln']:
-            return r'\ln(%s)' % args
+            return r'\ln%s' % self.parenthesis(args)
         elif func in ['log10']:
-            return r'\log(%s)' % args
+            return r'\log%s' % self.parenthesis(args)
         elif func in ['arccos', 'acos']:
-            return r'\arccos(%s)' % args
+            return r'\arccos%s' % self.parenthesis(args)
         elif func in ['arcsin', 'asin']:
-            return r'\arcsin(%s)' % args
+            return r'\arcsin%s' % self.parenthesis(args)
         elif func in ['atan', 'arctan']:
-            return r'\arctan(%s)' % args
+            return r'\arctan%s' % self.parenthesis(args)
         elif func in ['arcsinh']:
-            return r'\sinh^{-1}(%s)' % args
+            return r'\sinh^{-1}%s' % self.parenthesis(args)
         elif func in ['arccosh']:
-            return r'\cosh^{-1}(%s)' % args
+            return r'\cosh^{-1}%s' % self.parenthesis(args)
         elif func in ['arctanh']:
-            return r'\tanh^{-1}(%s)' % args
+            return r'\tanh^{-1}%s' % self.parenthesis(args)
         elif func in ['power']:
             args = args.split(',')
             return self.power(self.parenthesis(args[0]), args[1])
@@ -256,7 +256,7 @@ class LatexVisitor(ast.NodeVisitor):
         # TODO : add this integral in a visit_tripOp function???
         elif func in ['quad']:
             (f,a,b) = list(map(self.visit, n.args))
-            return r'\int_{%s}^{%s} %s(%s) d%s' %(a,b,f,self.dummy_var,self.dummy_var)
+            return r'\int_{%s}^{%s} %s%s d%s' %(a,b,f,self.parenthesis(self.dummy_var),self.dummy_var)
 #
         # Sum
         elif func in ['sum']:
@@ -411,7 +411,7 @@ class LatexVisitor(ast.NodeVisitor):
         return self.prec(n.op)
 
     def visit_BinOp(self, n):
-    
+
         if self.prec(n.op) > self.prec(n.left):
             left = self.parenthesis(self.visit(n.left))
         elif isinstance(n.op, ast.Pow) and self.prec(n.op) == self.prec(n.left):
@@ -423,7 +423,7 @@ class LatexVisitor(ast.NodeVisitor):
             right = self.parenthesis(self.visit(n.right))
         else:
             right = self.visit(n.right)
- 
+
         # Special binary operators
         if isinstance(n.op, ast.Div):
             if self.simplify_fractions:
@@ -466,14 +466,14 @@ class LatexVisitor(ast.NodeVisitor):
                 operator = self.visit(n.op)
 
             if self.simplify_multipliers:
-                
+
                 # We simplify in some cases, for instance: a*2 -> 2a
                 # First we need to know if both terms start with numbers
                 if left[0] == '-':
                     left_starts_with_digit = left[1].isdigit()
                 else:
                     left_starts_with_digit = left[0].isdigit()
-                    
+
                 if right[0] == '-':
                     right_starts_with_digit = right[1].isdigit()
                 else:
@@ -481,7 +481,7 @@ class LatexVisitor(ast.NodeVisitor):
 
                 # Simplify
                 # ... simplify (a*2 --> 2a)
-                if right_is_float and not left_starts_with_digit: 
+                if right_is_float and not left_starts_with_digit:
                     return r'{0}{1}'.format(right, left)
                 # ... simplify (2*a --> 2a)
                 elif left_is_float and not right_starts_with_digit:
@@ -613,22 +613,22 @@ class LatexVisitor(ast.NodeVisitor):
 
 def preprocessing(expr):
     ''' Pre-process a string. In particular:
-        
+
     - replace unicode values (so that even a Python 2 pytexit can parse formula
       with unicode, valid in Python 3 only)
     - clean: remove calls to librairies
     '''
-    
+
     expr = replace_unicode(expr)
     expr = clean(expr)
 
     return expr
 
 def replace_unicode(expr):
-    
+
     for u in unicode_tbl:
         expr = expr.replace(u, unicode_tbl[u])
-        
+
     return expr
 
 def clean(expr):
@@ -661,7 +661,7 @@ def simplify(s):
     # TRied with re.findall(r'\(\([^\(^\)]*(\([^\(^\)]+\))*[^\(^\)]*\)\)', s)  but
     # it doesnt work. One should better try to look for inner pairs and remove that
     # one after one..
-    
+
     # Replace '\left(NUMBER\right)' with 'NUMBER'
     # ------------
     s = re.sub(r"\\left\(([\d\.]+)\\right\)", r"\1", s)
