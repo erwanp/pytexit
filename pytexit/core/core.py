@@ -11,6 +11,11 @@ import ast
 from warnings import warn
 from six.moves import range
 from six.moves import map
+from sympy.core.sympify import sympify
+from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_xor
+from sympy.printing.latex import latex
+from sympy.simplify.simplify import simplify
+from sympy import cancel
 
 unicode_tbl = {
     'α': 'alpha',
@@ -372,18 +377,17 @@ class LatexVisitor(ast.NodeVisitor):
         # Special binary operators
         if isinstance(n.op, ast.Div):
             if self.simplify_fractions:
-                left_is_int = self.looks_like_int(left)
-                right_is_int = self.looks_like_int(right)
-                if left_is_int or right_is_int:
-                    if left_is_int and right_is_int:
-                        return self.division('%d' % int(float(left)),
-                                             '%d' % int(float(right)))
-                    elif left_is_int:
-                        return self.division('%d' % int(float(left)),
-                                             self.visit(n.right))
-                    else:
-                        return self.division(self.visit(n.left),
-                                             '%d' % int(float(right)))
+                expression = left + ' / ' + right
+                transformations = (standard_transformations + (implicit_multiplication_application,) + (convert_xor,))
+                left = left.replace('E', 'Y').strip()
+                right = right.replace('E', 'Y').strip()
+                parsed_left = parse_expr(left,
+                                         transformations=transformations)
+                parsed_right = parse_expr(right,
+                                          transformations=transformations)
+                expression = cancel(parsed_left / parsed_right)
+                print(latex(expression))
+                return latex(expression)
             return self.division(self.visit(n.left), self.visit(n.right))
         elif isinstance(n.op, ast.FloorDiv):
             return r'\left\lfloor\frac{%s}{%s}\right\rfloor' % \

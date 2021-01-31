@@ -40,6 +40,7 @@ setup(name='pytexit',
         "Operating System :: OS Independent"],
       install_requires=[
                  'six',  # python 2-3 compatibility],
+                 'sympy'
                  ],
       scripts=[
           'scripts/py2tex'],
