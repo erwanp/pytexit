@@ -12,7 +12,7 @@ from warnings import warn
 from six.moves import range
 from six.moves import map
 from sympy.core.sympify import sympify
-from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_xor
+from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_xor, split_symbols_custom, _token_splittable
 from sympy.printing.latex import latex
 from sympy.simplify.simplify import simplify
 from sympy import cancel
@@ -377,17 +377,24 @@ class LatexVisitor(ast.NodeVisitor):
         # Special binary operators
         if isinstance(n.op, ast.Div):
             if self.simplify_fractions:
-                expression = left + ' / ' + right
-                transformations = (standard_transformations + (implicit_multiplication_application,) + (convert_xor,))
+                transformations = (standard_transformations
+                    + (implicit_multiplication_application,) + (convert_xor,))
                 left = left.replace('E', 'Y').strip()
                 right = right.replace('E', 'Y').strip()
                 parsed_left = parse_expr(left,
                                          transformations=transformations)
                 parsed_right = parse_expr(right,
                                           transformations=transformations)
+                print(parsed_left)
+                print(parsed_right)
                 expression = cancel(parsed_left / parsed_right)
-                print(latex(expression))
-                return latex(expression)
+                if False: #TODO [ahagen]: insert a `needs_latex` command here
+                    expression = latex(expression)
+                else:
+                    expression = str(expression)
+                expression = expression.replace('Y', 'E')
+                print(expression)
+                return expression
             return self.division(self.visit(n.left), self.visit(n.right))
         elif isinstance(n.op, ast.FloorDiv):
             return r'\left\lfloor\frac{%s}{%s}\right\rfloor' % \
