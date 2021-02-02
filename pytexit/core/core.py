@@ -379,21 +379,19 @@ class LatexVisitor(ast.NodeVisitor):
             if self.simplify_fractions:
                 transformations = (standard_transformations
                     + (implicit_multiplication_application,) + (convert_xor,))
+                # TODO[ahagen]: Find a way to replace with something that wont ever occur
                 left = left.replace('E', 'Y').strip()
                 right = right.replace('E', 'Y').strip()
                 parsed_left = parse_expr(left,
                                          transformations=transformations)
                 parsed_right = parse_expr(right,
                                           transformations=transformations)
-                print(parsed_left)
-                print(parsed_right)
                 expression = cancel(parsed_left / parsed_right)
-                if False: #TODO [ahagen]: insert a `needs_latex` command here
+                if isinstance(n.right, ast.Name):
                     expression = latex(expression)
                 else:
                     expression = str(expression)
                 expression = expression.replace('Y', 'E')
-                print(expression)
                 return expression
             return self.division(self.visit(n.left), self.visit(n.right))
         elif isinstance(n.op, ast.FloorDiv):
