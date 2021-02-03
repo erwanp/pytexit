@@ -17,6 +17,8 @@ from sympy.printing.latex import latex
 from sympy.simplify.simplify import simplify
 from sympy import cancel
 
+alphabet = 'TUVWXYZ'
+
 unicode_tbl = {
     'α': 'alpha',
     'β': 'beta',
@@ -379,19 +381,29 @@ class LatexVisitor(ast.NodeVisitor):
             if self.simplify_fractions:
                 transformations = (standard_transformations
                     + (implicit_multiplication_application,) + (convert_xor,))
-                # TODO[ahagen]: Find a way to replace with something that wont ever occur
-                left = left.replace('E', 'Y').strip()
-                right = right.replace('E', 'Y').strip()
+                # replace E with an unused letter - sympy thinks E=exp(1)
+                unused_letter = 'A'
+                for letter in alphabet:
+                    if letter not in left and letter not in right:
+                        unused_letter = letter
+                        break
+                left = left.replace('E', unused_letter).strip()
+                right = right.replace('E', unused_letter).strip()
+                # parse the expression into a sympy expression and simplify
                 parsed_left = parse_expr(left,
                                          transformations=transformations)
                 parsed_right = parse_expr(right,
                                           transformations=transformations)
                 expression = cancel(parsed_left / parsed_right)
                 if isinstance(n.right, ast.Name):
+                    # if the right is not a division op, then we need to convert
+                    # to latex
                     expression = latex(expression)
                 else:
+                    # otherwise we need to use sympy-ish expressions
                     expression = str(expression)
-                expression = expression.replace('Y', 'E')
+                # turn everything back to E
+                expression = expression.replace(unused_letter, 'E')
                 return expression
             return self.division(self.visit(n.left), self.visit(n.right))
         elif isinstance(n.op, ast.FloorDiv):
