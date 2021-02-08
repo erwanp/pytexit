@@ -135,6 +135,16 @@ class LatexVisitor(ast.NodeVisitor):
             else:
                 kw['min'] = 0
                 kw['max'] = self.visit(comp.iter.args[0])
+            # Remove 1 for range max
+            try:
+                kw['max'] = int(kw['max'])-1
+            except ValueError:
+                if kw['max'].endswith(r'+1'):
+                    # write 'sum([... range(N+1)])' as (sum^N)
+                    kw['max'] = kw['max'][:-2]
+                else:
+                    # write 'sum([... range(N)])' as (sum^N-1)
+                    kw['max'] = r'{0}-1'.format(kw['max'])
             kw['content'] = self.visit(n.elt)
 
         args = r'%s, %s=%s..%s' % (
