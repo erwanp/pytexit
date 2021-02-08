@@ -17,12 +17,15 @@ import os
 import shutil
 
 package_name = 'pytexit'
+try:
+    # Convert readme to Markdown format
+    os.system('pandoc README.rst -o README.md')
+    os.system('python setup.py sdist')
+    os.system('python setup.py bdist_wheel --universal')
+    os.system("twine check dist/*")
+    os.system("twine upload dist/*")
+finally:
+    # Clean
+    os.remove('README.md')
+    shutil.rmtree('dist')
 
-# All the rest below is standard:
-os.system('python setup.py sdist')
-os.system('python setup.py bdist_wheel --universal')
-os.system("twine upload dist/*")
-# Clean
-shutil.rmtree('dist')
-
-print('All done')

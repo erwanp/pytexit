@@ -1,26 +1,31 @@
 from __future__ import absolute_import
 from setuptools import setup, find_packages
 import os
+import io
 import codecs
-from os.path import join, dirname
+from os.path import join, dirname, abspath, exists
 from setuptips import yield_sphinx_only_markup
 
-long_description = 'Convert a Python expression in a LaTeX formula'
-
-readme = codecs.open('README.rst', encoding="utf-8").read()
-long_description = yield_sphinx_only_markup(readme)
-#readme_lines = codecs.open('README.rst', encoding="utf-8").readlines()
-#long_description = ''.join(yield_sphinx_only_markup(readme_lines))
-
+description = 'Convert a Python expression to a LaTeX formula'
+# Build description from README (PyPi compatible)
+# (note: README.rst has been converted to README.md by register.py, and cleaned afterwards )
+readme_path = join(abspath(dirname(__file__)), 'README.md')
+if not exists(readme_path):
+    long_description = description
+else:
+    with io.open(readme_path, encoding='utf-8') as f:
+        long_description = f.read()
+    
 # Read version number from file
 with open(join(dirname(__file__),'pytexit', '__version__.txt')) as version_file:
     __version__ = version_file.read().strip()
 
 setup(name='pytexit',
       version=__version__,
-      description='Convert a Python expression in a LaTeX formula',
+      description=description,
       long_description=long_description,
-      url='https://github.com/erwanp/pytexit',
+      long_description_content_type='text/markdown',
+      url='http://pytexit.readthedocs.io/',
       author='Erwan Pannier',
       author_email='erwan.pannier@gmail.com',
       license='CeCILL-2.1',

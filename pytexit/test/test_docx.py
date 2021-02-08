@@ -18,7 +18,7 @@ def test_py2tex_wordoutput(verbose=True, **kwargs):
     expr_py = [r'2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2',
                 ]
     
-    expr_docx = [r'2\sqrt((2\pi\cdotk\cdotT_(e)/m_(e)))\cdot((\Delta E/k\cdotT_(e)))^(2)\cdota_(0)^(2)']
+    expr_docx = [r'2\sqrt((2\pi\cdotk\cdotT_(e)/m_(e)))\cdot(((\Delta E/k\cdotT_(e))))^(2)\cdot(a_(0))^(2)']
     
     for i, expr in enumerate(expr_py):
         if verbose: 

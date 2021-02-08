@@ -16,28 +16,6 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
 
-# ------------------------------------
-# Added EP 2018:
-# Auto-generate files with sphinx.apidoc
-# (else it requires /docs/source files to be generated manually and commited
-# to the git directory)
-# 
-# Reference: 
-# https://github.com/rtfd/readthedocs.org/issues/1139
-
-def run_apidoc(_):
-    from sphinx.apidoc import main
-    from os.path import join, abspath, dirname
-#    import sys
-#    sys.path.append(join(dirname(__file__), '..'))
-    cur_dir = abspath(dirname(__file__))
-    source_dir = abspath(join(cur_dir, 'source'))
-    module = join(cur_dir,"..","pytexit")
-    main(['-e', '-o', source_dir, module, '--force'])
-
-def setup(app):
-    app.connect('builder-inited', run_apidoc)
-
 
 # -- Project information -----------------------------------------------------
 
@@ -68,7 +46,46 @@ extensions = [
     #'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
+    'sphinxcontrib.apidoc'
 ]
+apidoc_module_dir = '../pytexit'
+apidoc_output_dir = 'source'
+apidoc_excluded_paths = []
+apidoc_separate_modules = True
+
+# %% ------------------------------------
+# Added EP 2018:
+# Auto-generate files with sphinx.apidoc
+# (else it requires /docs/source files to be generated manually and commited
+# to the git directory)
+# 
+# Reference: 
+# https://github.com/rtfd/readthedocs.org/issues/1139
+#
+
+def run_apidoc(_):
+
+    argv = [
+        "-f",
+        "-e",
+        "-o", "source",
+        "--separate",
+        "../pytexit"
+    ]
+
+    try:
+        # Sphinx 1.7+
+        from sphinx.ext import apidoc
+        apidoc.main(argv)
+    except ImportError:
+        # Sphinx 1.6 (and earlier)
+        from sphinx import apidoc
+        argv.insert(0, apidoc.__file__)
+        apidoc.main(argv)
+
+def setup(app):
+    app.connect('builder-inited', run_apidoc)
+# %%
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -109,7 +126,22 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'description': "Convert a Python formula to LaTeX",
+    'logo_name': True, 
+    'github_user': 'erwanp',
+    'github_repo': 'pytexit',
+    'github_button': True, 
+    'github_type': 'watch',
+    'github_banner': False,
+    'travis_button': True,
+    'codecov_button': True,
+    'sidebar_includehidden': False,
+    }
+
+# The name of an image file (relative to this directory) to place at the top
+# of the sidebar.
+html_logo = 'py2tex.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -124,7 +156,16 @@ html_static_path = ['_static']
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-# html_sidebars = {}
+html_sidebars = {
+    '**': [
+        'about.html',
+        'navigation.html',
+        #'relations.html',
+        #'description.html',
+        #'example.html',
+        'searchbox.html',
+    ]
+}
 
 
 # -- Options for HTMLHelp output ---------------------------------------------
