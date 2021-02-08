@@ -78,10 +78,35 @@ def uprint(*expr):
 
 
 class LatexVisitor(ast.NodeVisitor):
+    '''
+    Parameters
+    ----------
+
+    simplify_multipliers: bool
+        if ``True``, simplify expression if multiplier is a float. Ex::
+
+            2*a -> 2a
+
+            a * 3.5 -> 3.5
+
+        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more
+        information. Default ``True``.
+
+    simplify_fractions: bool
+        if ``True``, simplify fractions.
+        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more
+        information. Default ``False``.
+
+    simplify_ints: bool
+        see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more
+        information. Default ``False``.
+
+    '''
 
     def __init__(self, dummy_var='u', upperscript='ˆ', lowerscript='_',
-                 verbose=False, simplify=True, simplify_fractions=False,
+                 verbose=False, simplify_multipliers=True, simplify_fractions=False,
                  simplify_ints=False):
+
         super(LatexVisitor, self).__init__()
         # super().__init__()  # doesn't work in Python 2.x
         self.dummy_var = dummy_var
@@ -90,9 +115,30 @@ class LatexVisitor(ast.NodeVisitor):
         self.lower = lowerscript
 
         self.verbose = verbose
-        self.simplify = simplify
+        self.simplify_multipliers = simplify_multipliers
         self.simplify_fractions = simplify_fractions
         self.simplify_ints = simplify_ints
+
+        self.precdic = {"Pow": 700,
+                        "Div": 400,
+                        "FloorDiv": 400,
+                        "Mult": 400,
+                        "Invert": 800,
+                        "Compare": 300,
+                        "Uadd": 800,
+                        "Not": 800,
+                        "USub": 800,
+                        "Num": 1000,
+                        "Constant": 1000,
+                        "Assign": 300,
+                        "Sub": 300,
+                        "Add": 300,
+                        "Mod": 500,
+                        "ListComp": 1000,
+                        "list": 1000,
+                        "Call": 1000,
+                        "Name": 1000
+                        }
 
     def looks_like_int(self, a):
         """ Check if the input ``a`` looks like an integer """
@@ -108,7 +154,10 @@ class LatexVisitor(ast.NodeVisitor):
             return False
 
     def prec(self, n):
-        return getattr(self, 'prec_' + n.__class__.__name__, getattr(self, 'generic_prec'))(n)
+        if n.__class__.__name__ in self.precdic:
+            return self.precdic[n.__class__.__name__]
+        else:
+            return getattr(self, 'prec_' + n.__class__.__name__, getattr(self, 'generic_prec'))(n)
 
     def visit_ListComp(self, n, kwout=False):
         ''' Analyse a list comprehension
@@ -151,21 +200,18 @@ class LatexVisitor(ast.NodeVisitor):
         else:
             return args
 
-    def prec_ListComp(self, n):
-        return 1000
-
     def visit_list(self, n):
         self.generic_visit(n)
-
-    def prec_list(self, n):
-        return 1000
 
     def visit_Call(self, n):
         ''' Node details : n.args, n.func, n.keywords, n.kwargs'''
         func = self.visit(n.func)
 
         # Deal with list comprehension and complex formats
-        blist = isinstance(n.args[0], ast.ListComp)
+        if len(n.args)>0:
+            blist = isinstance(n.args[0], ast.ListComp)
+        else:
+            blist = False
 
         if blist:
             args, kwargs = self.visit_ListComp(n.args[0], kwout=True)
@@ -181,21 +227,21 @@ class LatexVisitor(ast.NodeVisitor):
         # by default log refers to log10 in Python. Unless people import it as
         # ln
         elif func in ['log', 'ln']:
-            return r'\ln(%s)' % args
+            return r'\ln%s' % self.parenthesis(args)
         elif func in ['log10']:
-            return r'\log(%s)' % args
+            return r'\log%s' % self.parenthesis(args)
         elif func in ['arccos', 'acos']:
-            return r'\arccos(%s)' % args
+            return r'\arccos%s' % self.parenthesis(args)
         elif func in ['arcsin', 'asin']:
-            return r'\arcsin(%s)' % args
+            return r'\arcsin%s' % self.parenthesis(args)
         elif func in ['atan', 'arctan']:
-            return r'\arctan(%s)' % args
+            return r'\arctan%s' % self.parenthesis(args)
         elif func in ['arcsinh']:
-            return r'\sinh^{-1}(%s)' % args
+            return r'\sinh^{-1}%s' % self.parenthesis(args)
         elif func in ['arccosh']:
-            return r'\cosh^{-1}(%s)' % args
+            return r'\cosh^{-1}%s' % self.parenthesis(args)
         elif func in ['arctanh']:
-            return r'\tanh^{-1}(%s)' % args
+            return r'\tanh^{-1}%s' % self.parenthesis(args)
         elif func in ['power']:
             args = args.split(',')
             return self.power(self.parenthesis(args[0]), args[1])
@@ -213,7 +259,7 @@ class LatexVisitor(ast.NodeVisitor):
         # TODO : add this integral in a visit_tripOp function???
         elif func in ['quad']:
             (f,a,b) = list(map(self.visit, n.args))
-            return r'\int_{%s}^{%s} %s(%s) d%s' %(a,b,f,self.dummy_var,self.dummy_var)
+            return r'\int_{%s}^{%s} %s%s d%s' %(a,b,f,self.parenthesis(self.dummy_var),self.dummy_var)
 #
         # Sum
         elif func in ['sum']:
@@ -229,9 +275,6 @@ class LatexVisitor(ast.NodeVisitor):
 
         else:
             return self.operator(func, args)
-
-    def prec_Call(self, n):
-        return 1000
 
     def visit_Name(self, n):
         ''' Special features:
@@ -314,14 +357,14 @@ class LatexVisitor(ast.NodeVisitor):
 
         return read_tree(build_tree(n.id))
 
-    def convert_underscores(self, expr):
-
-        s = expr.split(self.lower)
-
-        for i, m in enumerate(s):
-            s[i] = self.convert_symbols(m)
-
-        return s
+#    def convert_underscores(self, expr):
+#
+#        s = expr.split(self.lower)
+#
+#        for i, m in enumerate(s):
+#            s[i] = self.convert_symbols(m)
+#
+#        return s
 
     def convert_symbols(self, expr):
         m = expr
@@ -334,8 +377,9 @@ class LatexVisitor(ast.NodeVisitor):
             m = r'\%s' % m
 
         # Unicode
-        elif m in unicode_tbl:
-            m = r'\%s' % unicode_tbl[m]
+#        elif m in unicode_tbl:
+#            m = r'\%s' % unicode_tbl[m]
+        # @EP: unicode is now removed in pre-processing, before Parsing begins.
 
         elif m in ['eps']:
             m = r'\epsilon'
@@ -356,9 +400,6 @@ class LatexVisitor(ast.NodeVisitor):
 
         return m
 
-    def prec_Name(self, n):
-        return 1000
-
     def visit_UnaryOp(self, n):
         # Note: removed space between {0} and {1}... so that 10**-3 yields
         # $$10^{-3}$$ and not $$10^{- 3}$$
@@ -373,7 +414,11 @@ class LatexVisitor(ast.NodeVisitor):
         return self.prec(n.op)
 
     def visit_BinOp(self, n):
+
         if self.prec(n.op) > self.prec(n.left):
+            left = self.parenthesis(self.visit(n.left))
+        elif isinstance(n.op, ast.Pow) and self.prec(n.op) == self.prec(n.left):
+            # Special case for power, which needs parentheses when combined to the left
             left = self.parenthesis(self.visit(n.left))
         else:
             left = self.visit(n.left)
@@ -424,35 +469,49 @@ class LatexVisitor(ast.NodeVisitor):
             return self.power(left, self.visit(n.right))
         elif isinstance(n.op, ast.Mult):
 
-            if self.simplify:
+            def looks_like_float(a):
+                ''' Care for the special case of 2 floats/integer
+                We don't want 'a*2' where we could have simply written '2a' '''
+                try:
+                    float(a)
+                    return True
+                except ValueError:
+                    return False
 
-                def looks_like_float(a):
-                    ''' Care for the special case of 2 floats/integer
-                    We don't want 'a*2' where we could have simply written '2a' '''
-                    try:
-                        float(a)
-                        return True
-                    except ValueError:
-                        return False
+            left_is_float = looks_like_float(left)
+            right_is_float = looks_like_float(right)
 
-                left_is_float = looks_like_float(left)
-                right_is_float = looks_like_float(right)
+            # Get multiplication operator. Force x if floats are involved
+            if left_is_float or right_is_float:
+                operator = r'\times'
+            else: # get standard Mult operator (see visit_Mult)
+                operator = self.visit(n.op)
 
-                # Get multiplication operator. Force x if floats are involved
-                if left_is_float or right_is_float:
-                    operator = r'\times'
-                else: # get standard Mult operator (see visit_Mult)
-                    operator = self.visit(n.op)
+            if self.simplify_multipliers:
 
-                # Simplify in some cases
-                if right_is_float and not left[0].isdigit(): # simplify (a*2 --> 2a)
+                # We simplify in some cases, for instance: a*2 -> 2a
+                # First we need to know if both terms start with numbers
+                if left[0] == '-':
+                    left_starts_with_digit = left[1].isdigit()
+                else:
+                    left_starts_with_digit = left[0].isdigit()
+
+                if right[0] == '-':
+                    right_starts_with_digit = right[1].isdigit()
+                else:
+                    right_starts_with_digit = right[0].isdigit()
+
+                # Simplify
+                # ... simplify (a*2 --> 2a)
+                if right_is_float and not left_starts_with_digit:
                     return r'{0}{1}'.format(right, left)
-                elif left_is_float and not right[0].isdigit(): # simplify (2*a --> 2a)
+                # ... simplify (2*a --> 2a)
+                elif left_is_float and not right_starts_with_digit:
                     return r'{0}{1}'.format(left, right)
                 else:
                     return r'{0}{1}{2}'.format(left, operator, right)
             else:
-                return r'{0}{1}{2}'.format(left, self.visit(n.op), right)
+                return r'{0}{1}{2}'.format(left, operator, right)
         else:
             return r'{0}{1}{2}'.format(left, self.visit(n.op), right)
 
@@ -462,36 +521,15 @@ class LatexVisitor(ast.NodeVisitor):
     def visit_Sub(self, n):
         return '-'
 
-    def prec_Sub(self, n):
-        return 300
-
     def visit_Add(self, n):
         return '+'
-
-    def prec_Add(self, n):
-        return 300
 
     def visit_Mult(self, n):
 #        return r'\cdot'   # no space in LaTeX (before:   r'\;'   )
         return r' '   # no space in LaTeX (before:   r'\;'   )
 
-    def prec_Mult(self, n):
-        return 400
-
     def visit_Mod(self, n):
         return '\\bmod'
-
-    def prec_Mod(self, n):
-        return 500
-
-    def prec_Pow(self, n):
-        return 700
-
-    def prec_Div(self, n):
-        return 400
-
-    def prec_FloorDiv(self, n):
-        return 400
 
     def visit_LShift(self, n):
         return self.operator('shiftLeft')
@@ -511,26 +549,14 @@ class LatexVisitor(ast.NodeVisitor):
     def visit_Invert(self, n):
         return self.operator('invert')
 
-    def prec_Invert(self, n):
-        return 800
-
     def visit_Not(self, n):
         return '\\neg'
-
-    def prec_Not(self, n):
-        return 800
 
     def visit_UAdd(self, n):
         return '+'
 
-    def prec_UAdd(self, n):
-        return 800
-
     def visit_USub(self, n):
         return '-'
-
-    def prec_USub(self, n):
-        return 800
 
     def visit_Num(self, n):
         if self.simplify_fractions:
@@ -541,16 +567,10 @@ class LatexVisitor(ast.NodeVisitor):
             return '%d' % n.n
         return str(n.n)
 
-    def prec_Num(self, n):
-        return 1000
-
     # New visits
     def visit_Assign(self, n):
         ' Rewrite Assign function (instead of executing it)'
         return r'%s=%s' % (self.visit(n.targets[0]), self.visit(n.value))
-
-    def prec_Assign(self, n):
-        return 300  # arbitrary ?
 
     def visit_Compare(self, n):
         ' Rewrite Compare function (instead of executing it)'
@@ -572,9 +592,6 @@ class LatexVisitor(ast.NodeVisitor):
 
         return r'%s%s' % (self.visit(n.left), ''.join(['%s%s' % (visit_Op(n.ops[i]),
                                                                  self.visit(n.comparators[i])) for i in range(len(n.comparators))]))
-
-    def prec_Compare(self, n):
-        return 300  # arbitrary ?
 
     # Default
     def generic_visit(self, n):
@@ -602,7 +619,7 @@ class LatexVisitor(ast.NodeVisitor):
         return r'\left({0}\right)'.format(expr)
 
     def power(self, expr, power):
-        return r'{0}^{1}'.format(expr, self.group(power))
+        return r'{0}^{1}'.format(self.group(expr), self.group(power))
 
     def division(self,up,down):
         return r'\frac{0}{1}'.format(self.brackets(up), self.brackets(down))
@@ -616,6 +633,25 @@ class LatexVisitor(ast.NodeVisitor):
         else:
             return r'\operatorname{{{0}}}\left({1}\right)'.format(func, args)
 
+def preprocessing(expr):
+    ''' Pre-process a string. In particular:
+
+    - replace unicode values (so that even a Python 2 pytexit can parse formula
+      with unicode, valid in Python 3 only)
+    - clean: remove calls to librairies
+    '''
+
+    expr = replace_unicode(expr)
+    expr = clean(expr)
+
+    return expr
+
+def replace_unicode(expr):
+
+    for u in unicode_tbl:
+        expr = expr.replace(u, unicode_tbl[u])
+
+    return expr
 
 def clean(expr):
     ''' Removes unnessary calls to libraries
@@ -648,6 +684,9 @@ def simplify(s):
     # it doesnt work. One should better try to look for inner pairs and remove that
     # one after one..
 
+    # Replace '\left(NUMBER\right)' with 'NUMBER'
+    # ------------
+    s = re.sub(r"\\left\(([\d\.]+)\\right\)", r"\1", s)
 
     # Improve readability:
 
