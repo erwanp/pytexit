@@ -11,11 +11,7 @@ import ast
 from warnings import warn
 from six.moves import range
 from six.moves import map
-from sympy.core.sympify import sympify
-from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_xor, split_symbols_custom, _token_splittable
-from sympy.printing.latex import latex
-from sympy.simplify.simplify import simplify
-from sympy import cancel
+
 
 alphabet = 'TUVWXYZ'
 
@@ -389,6 +385,11 @@ class LatexVisitor(ast.NodeVisitor):
         # Special binary operators
         if isinstance(n.op, ast.Div):
             if self.simplify_fractions:
+                from sympy.core.sympify import sympify
+                from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_xor, split_symbols_custom, _token_splittable
+                from sympy.printing.latex import latex
+                from sympy.simplify.simplify import simplify
+                from sympy import cancel
                 transformations = (standard_transformations
                     + (implicit_multiplication_application,) + (convert_xor,))
                 # replace E with an unused letter - sympy thinks E=exp(1)
