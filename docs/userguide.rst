@@ -1,5 +1,5 @@
 
-Convert a Python expression to a LaTeX formula
+Convert a Python expression to a LaTeX formula 
 
 Install
 -------
@@ -32,6 +32,85 @@ and (in ipython console only) prints the equation:
 
 .. image:: output.png
 
+Current Features
+----------------
+
+Successfully deal with most of the one or two parameter functions. Run the 
+_test() function to have an idea of what's possible. 
+
+Arbitrary syntax:
+
+- Variables named after Greek names are turned into LaTeX syntax::
+
+    py2tex("Re_x=(rho*v*x)/mu")
+    
+.. math::
+    Re_x=\frac{\rho v x}{\mu}
+    
+
+- 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard 
+  scientific module names are removed beforehand)::
+  
+    py2tex('numpy.arccos(x)')
+
+.. math::
+    \\arccos(x)
+
+- quad() is converted into integrals::
+
+    py2tex("quad(f,0,np.inf)")
+    
+.. math::
+        \int_{0}^{\infty} f(u) du
+
+- list comprehensions are converted into LaTex syntaX::
+
+    py2tex("np.sum([i**2 for i in range(1,101)])==338350")
+    
+.. math::
+    \sum_{i=1}^{100} i^2=338350
+
+- 'a_subˆsuper' variables are converted with "sub" as subscript and "super" as superscript, note that "ˆ" is the circumflex accent instead of the caret sign "^"::
+
+    py2tex('a_subˆsuper')
+
+.. math::
+    a_{sub}^{super}
+
+    complex sub/superscript such as second order sub/superscript and comma are supported::
+
+    py2tex('k_i__1_i__2ˆj__1ˆj__2') 
+
+.. math::
+    k_{i_1,i_2}^{j_1,j_2}
+
+    more detailed rules::
+        python -> latex::
+        k_i_j  -> k_i,j::
+        k_i__j -> k_(i_j)::
+        k_iˆj -> k_i^j::
+        k_iˆˆj -> k_(i^j)::
+        k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)::
+
+
+Also note that iPython uses auto-completion to convert most of the latex 
+identifiers in their Unicode equivalent::
+
+    \alpha --> [Tab] --> α
+    
+- pytexit will recognize those Unicode characters and convert them again in 
+  latex expressions::
+  
+    py2tex('arcsin(α)')
+    
+.. math::
+    \arcsin(\alpha)
+
+- there is a mode to output Python expressions in Word syntax. From version 2007
+  Word converts most LaTeX expressions in its own graphical representation. The 
+  Word mode here was just about replacing those LaTeX {} with Word ()::
+
+    py2tex('sqrt(5/3)',output='word')
 	
 Notes
 -----
@@ -75,69 +154,6 @@ LaTeX format.
 Sympy also has some nice LaTeX output, but it requires declaring your symbolic
 variables and isn't as fast as a one-line console command in pytexit.
 
-Current Features
-----------------
-
-Successfully deal with most of the one or two parameter functions. Run the 
-_test() function to have an idea of what's possible. 
-
-Arbitrary syntax:
-
-- Variables named after Greek names are turned into LaTeX syntax::
-
-    py2tex("Re_x=(rho*v*x)/mu")
-    
-.. math::
-    Re_x=\frac{\rho v x}{\mu}
-    
-
-- 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard 
-  scientific module names are removed beforehand)::
-  
-    py2tex('numpy.arccos(x)')
-
-.. math::
-    \\arccos(x)
-
-- quad() is converted into integrals::
-
-    py2tex("quad(f,0,np.inf)")
-    
-.. math::
-        \int_{0}^{\infty} f(u) du
-
-- list comprehensions are converted into LaTex syntaX::
-
-    py2tex("np.sum([i**2 for i in range(1,101)])==338350")
-    
-.. math::
-    \sum_{i=1}^{100} i^2=338350
-
-- 'a_p' variables are converted with "p" as subscript::
-
-    py2tex('k_i__1_i__2ˆj__1ˆj__2')
-
-.. math::
-    k_{i_1,i_2}^{j_1,j_2}
-
-Also note that iPython uses auto-completion to convert most of the latex 
-identifiers in their Unicode equivalent::
-
-    \alpha --> [Tab] --> α
-    
-- pytexit will recognize those Unicode characters and convert them again in 
-  latex expressions::
-  
-    py2tex('arcsin(α)')
-    
-.. math::
-    \arcsin(\alpha)
-
-- there is a mode to output Python expressions in Word syntax. From version 2007
-  Word converts most LaTeX expressions in its own graphical representation. The 
-  Word mode here was just about replacing those LaTeX {} with Word ()::
-
-    py2tex('sqrt(5/3)',output='word')
 
 
 Test
