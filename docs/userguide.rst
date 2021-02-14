@@ -70,33 +70,38 @@ Arbitrary syntax:
 .. math::
     \sum_{i=1}^{100} i^2=338350
 
-- 'a_subˆsuper' variables are converted with "sub" as subscript and "super" as superscript, note that "ˆ" is the circumflex accent instead of the caret sign "^"::
+- ``a_subˆsuper`` variables are converted with "sub" as subscript and "super" as superscript::
 
     py2tex('a_subˆsuper')
 
 .. math::
     a_{sub}^{super}
 
-    complex sub/superscript such as second order sub/superscript and comma are supported::
+Note that "ˆ" is the circumflex accent instead of the caret sign "^", and is a valid Python variable name::
+   
+   a_iˆj=1      # valid in Python3 
+
+- complex sub/superscript such as second order sub/superscript and comma are supported::
 
     py2tex('k_i__1_i__2ˆj__1ˆj__2') 
 
 .. math::
     k_{i_1,i_2}^{j_1,j_2}
 
-    more detailed rules::
-        python -> latex::
-        k_i_j  -> k_i,j::
-        k_i__j -> k_(i_j)::
-        k_iˆj -> k_i^j::
-        k_iˆˆj -> k_(i^j)::
-        k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)::
+  More detailed rules::
+   
+        python -> latex
+        k_i_j  -> k_i,j
+        k_i__j -> k_(i_j)
+        k_iˆj -> k_i^j
+        k_iˆˆj -> k_(i^j)
+        k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)
 
 
 Also note that iPython uses auto-completion to convert most of the latex 
 identifiers in their Unicode equivalent::
 
-    \alpha --> [Tab] --> α
+    \alpha --> [press Tab] --> α
     
 - pytexit will recognize those Unicode characters and convert them again in 
   latex expressions::
