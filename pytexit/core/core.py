@@ -12,6 +12,9 @@ from warnings import warn
 from six.moves import range
 from six.moves import map
 
+
+alphabet = 'TUVWXYZ'
+
 unicode_tbl = {
     'α': 'alpha',
     'β': 'beta',
@@ -427,18 +430,37 @@ class LatexVisitor(ast.NodeVisitor):
         # Special binary operators
         if isinstance(n.op, ast.Div):
             if self.simplify_fractions:
-                left_is_int = self.looks_like_int(left)
-                right_is_int = self.looks_like_int(right)
-                if left_is_int or right_is_int:
-                    if left_is_int and right_is_int:
-                        return self.division('%d' % int(float(left)),
-                                             '%d' % int(float(right)))
-                    elif left_is_int:
-                        return self.division('%d' % int(float(left)),
-                                             self.visit(n.right))
-                    else:
-                        return self.division(self.visit(n.left),
-                                             '%d' % int(float(right)))
+                from sympy.core.sympify import sympify
+                from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_xor, split_symbols_custom, _token_splittable
+                from sympy.printing.latex import latex
+                from sympy.simplify.simplify import simplify
+                from sympy import cancel
+                transformations = (standard_transformations
+                    + (implicit_multiplication_application,) + (convert_xor,))
+                # replace E with an unused letter - sympy thinks E=exp(1)
+                unused_letter = 'A'
+                for letter in alphabet:
+                    if letter not in left and letter not in right:
+                        unused_letter = letter
+                        break
+                left = left.replace('E', unused_letter).strip()
+                right = right.replace('E', unused_letter).strip()
+                # parse the expression into a sympy expression and simplify
+                parsed_left = parse_expr(left,
+                                         transformations=transformations)
+                parsed_right = parse_expr(right,
+                                          transformations=transformations)
+                expression = cancel(parsed_left / parsed_right)
+                if isinstance(n.right, ast.Name):
+                    # if the right is not a division op, then we need to convert
+                    # to latex
+                    expression = latex(expression)
+                else:
+                    # otherwise we need to use sympy-ish expressions
+                    expression = str(expression)
+                # turn everything back to E
+                expression = expression.replace(unused_letter, 'E')
+                return expression
             return self.division(self.visit(n.left), self.visit(n.right))
         elif isinstance(n.op, ast.FloorDiv):
             return r'\left\lfloor\frac{%s}{%s}\right\rfloor' % \
