@@ -1,5 +1,5 @@
 
-Convert a Python expression to a LaTeX formula 
+Convert a Python expression to a LaTeX formula
 
 Install
 -------
@@ -8,7 +8,7 @@ Install
 
     pip install pytexit
 
-	
+
 Use
 ---
 
@@ -27,7 +27,7 @@ In a Python console, use :func:`~pytexit.pytexit.py2tex`::
 returns the corresponding LaTeX formula (to re-use in papers)::
 
     $$x=2\\sqrt{\\frac{2\\pi k T_e}{m_e}} \\left(\\frac{\\Delta E}{k T_e}\\right)^2 a_0^2$$
-    
+
 and (in ipython console only) prints the equation:
 
 .. image:: output.png
@@ -35,22 +35,22 @@ and (in ipython console only) prints the equation:
 Current Features
 ----------------
 
-Successfully deal with most of the one or two parameter functions. Run the 
-_test() function to have an idea of what's possible. 
+Successfully deal with most of the one or two parameter functions. Run the
+_test() function to have an idea of what's possible.
 
 Arbitrary syntax:
 
 - Variables named after Greek names are turned into LaTeX syntax::
 
     py2tex("Re_x=(rho*v*x)/mu")
-    
+
 .. math::
     Re_x=\frac{\rho v x}{\mu}
-    
 
-- 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard 
+
+- 'numpy.sin / math.sin / np.sin' syntax still work as expected (all standard
   scientific module names are removed beforehand)::
-  
+
     py2tex('numpy.arccos(x)')
 
 .. math::
@@ -59,14 +59,14 @@ Arbitrary syntax:
 - quad() is converted into integrals::
 
     py2tex("quad(f,0,np.inf)")
-    
+
 .. math::
         \int_{0}^{\infty} f(u) du
 
 - list comprehensions are converted into LaTex syntaX::
 
     py2tex("np.sum([i**2 for i in range(1,101)])==338350")
-    
+
 .. math::
     \sum_{i=1}^{100} i^2=338350
 
@@ -78,18 +78,18 @@ Arbitrary syntax:
     a_{sub}^{super}
 
 Note that "ˆ" is the circumflex accent instead of the caret sign "^", and is a valid Python variable name::
-   
-   a_iˆj=1      # valid in Python3 
+
+   a_iˆj=1      # valid in Python3
 
 - complex sub/superscript such as second order sub/superscript and comma are supported::
 
-    py2tex('k_i__1_i__2ˆj__1ˆj__2') 
+    py2tex('k_i__1_i__2ˆj__1ˆj__2')
 
 .. math::
     k_{i_1,i_2}^{j_1,j_2}
 
   More detailed rules::
-   
+
         python -> latex
         k_i_j  -> k_i,j
         k_i__j -> k_(i_j)
@@ -98,50 +98,50 @@ Note that "ˆ" is the circumflex accent instead of the caret sign "^", and is a 
         k_i__1_i__2ˆj__1ˆˆj__2 -> k_(i_1,i_2)^(j_1,j_2)
 
 
-Also note that iPython uses auto-completion to convert most of the latex 
+Also note that iPython uses auto-completion to convert most of the latex
 identifiers in their Unicode equivalent::
 
     \alpha --> [press Tab] --> α
-    
-- pytexit will recognize those Unicode characters and convert them again in 
+
+- pytexit will recognize those Unicode characters and convert them again in
   latex expressions::
-  
+
     py2tex('arcsin(α)')
-    
+
 .. math::
     \arcsin(\alpha)
 
 - there is a mode to output Python expressions in Word syntax. From version 2007
-  Word converts most LaTeX expressions in its own graphical representation. The 
+  Word converts most LaTeX expressions in its own graphical representation. The
   Word mode here was just about replacing those LaTeX {} with Word ()::
 
     py2tex('sqrt(5/3)',output='word')
-	
+
 Notes
 -----
-	
-This module isn't unit aware and isn't designed to perform calculations. It is 
+
+This module isn't unit aware and isn't designed to perform calculations. It is
 a mere translator from Python expressions into LaTeX syntax. The idea behind it
-was I wanted my Python formula to be the same objects as the LaTeX formula I 
-write in my reports / papers. It allows me to gain time (I can write my LaTeX 
+was I wanted my Python formula to be the same objects as the LaTeX formula I
+write in my reports / papers. It allows me to gain time (I can write my LaTeX
 formulas directly from the Python expression), and check my Python formulas are correct
 (once printed LaTeX is much more readable that a multiline Python expression)
 
 
-``pytexit`` can also convert FORTRAN formulas to Python (:func:`~pytexit.core.fortran.for2py`) 
+``pytexit`` can also convert FORTRAN formulas to Python (:func:`~pytexit.core.fortran.for2py`)
 and LaTeX (:func:`~pytexit.pytexit.for2tex`)::
 
 	from pytexit import for2tex
 	for2tex(r'2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/Tgas)')
 
-Finally, ``pytexit`` output can be made compatible with Word equation editor with 
+Finally, ``pytexit`` output can be made compatible with Word equation editor with
 the ``output='word'`` option of :func:`~pytexit.pytexit.py2tex`::
 
 	from pytexit import py2tex
 	py2tex(r'2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2', output='word')
-	
+
 The latest output will typically replace all brackets {} with parenthesis () that are correctly
-interpreted by Word, and keep keywords that are correctly evaluated by Word (`\pi` or `\cdot`) 
+interpreted by Word, and keep keywords that are correctly evaluated by Word (`\pi` or `\cdot`)
 
 
 References
@@ -151,10 +151,10 @@ Based on a code sample from Geoff Reedy on `StackOverflow <http://stackoverflow.
 
 
 You may also be interested in the similar development from `BekeJ <https://github.com/BekeJ/py2tex>`__ that was built
-on top of the same sample. 
-BekeJ's code is designed to be used exclusively in an iPython console using 
+on top of the same sample.
+BekeJ's code is designed to be used exclusively in an iPython console using
 %magic commands to perform unit aware calculations and return result in a nice
-LaTeX format. 
+LaTeX format.
 
 Sympy also has some nice LaTeX output, but it requires declaring your symbolic
 variables and isn't as fast as a one-line console command in pytexit.
@@ -164,11 +164,11 @@ variables and isn't as fast as a one-line console command in pytexit.
 Test
 ----
 
-In order to enforce cross-version compatibility and non-regression, `pytexit` is 
+In order to enforce cross-version compatibility and non-regression, `pytexit` is
 now tested with `pytest` and Travis. Run the test suite locally from a terminal with::
 
-    pip install pytest 
-    pytest 
+    pip install pytest
+    pytest
 
 
 Changes
@@ -188,10 +188,10 @@ Still WIP
 
 Todo:
 
-- allow syntax "a*b = c" (not a valid Python expression, but convenient to type 
+- allow syntax "a*b = c" (not a valid Python expression, but convenient to type
   some LaTeX formula)
-    
+
 - code for numbered equations
 
-- export all the conversions on an external text file 
-    
+- export all the conversions on an external text file
+

@@ -6,7 +6,7 @@ Tools to deal with Word equations format
 See Also
 --------
 
-if working with Word and Python, you may be interested in the python-docx 
+if working with Word and Python, you may be interested in the python-docx
 package although equations are not yet supported.
 
 """

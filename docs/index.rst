@@ -10,7 +10,7 @@ pytexit
 
 .. include:: userguide.rst
 
-   
+
 Indices and tables
 ==================
 
@@ -27,4 +27,3 @@ User Guide
    :maxdepth: 2
 
    userguide
-   
