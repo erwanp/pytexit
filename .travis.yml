@@ -18,6 +18,7 @@ jobs:
     - stage: lint
       name: Code quality checks
       install:
+        - pyenv global 3.7.1
         - pip install pre-commit
       script:
         - pre-commit run --all-files
