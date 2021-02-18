@@ -5,12 +5,12 @@ Parser and core Routines
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import sys
-import re
 import ast
+import re
+import sys
 from warnings import warn
-from six.moves import range
-from six.moves import map
+
+from six.moves import map, range
 
 unicode_tbl = {
     "α": "alpha",

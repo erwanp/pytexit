@@ -1,9 +1,12 @@
 from __future__ import absolute_import
-from setuptools import setup, find_packages
-import os
-import io
+
 import codecs
-from os.path import join, dirname, abspath, exists
+import io
+import os
+from os.path import abspath, dirname, exists, join
+
+from setuptools import find_packages, setup
+
 from setuptips import yield_sphinx_only_markup
 
 description = "Convert a Python expression to a LaTeX formula"

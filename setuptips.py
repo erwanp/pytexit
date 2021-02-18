@@ -5,6 +5,7 @@ Utils for setup.py
 
 import re
 
+
 # Utils to format RST
 def yield_sphinx_only_markup(lines):
     """

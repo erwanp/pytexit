@@ -6,7 +6,8 @@ Test pytextit
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
-from pytexit import py2tex, uprint, simplify
+
+from pytexit import py2tex, simplify, uprint
 
 
 def test_py2tex(verbose=True, **kwargs):

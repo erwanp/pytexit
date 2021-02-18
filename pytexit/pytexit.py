@@ -5,21 +5,19 @@ Convert a Python expression in a LaTeX formula
 
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-import sys
 import ast
+import sys
+
 import six
 
 try:
-    from pytexit.core.core import preprocessing, LatexVisitor, uprint, simplify
+    from pytexit.core.core import LatexVisitor, preprocessing, simplify, uprint
     from pytexit.core.docx import WordVisitor
     from pytexit.core.fortran import for2py
 except:  # if run locally as a script
-    from core.core import preprocessing, LatexVisitor, uprint, simplify
+    from core.core import LatexVisitor, preprocessing, simplify, uprint
     from core.docx import WordVisitor
     from core.fortran import for2py
 try:
