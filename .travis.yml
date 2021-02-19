@@ -1,6 +1,5 @@
 language: python
 python:
-  - "2.7"
   - "3.6"
   - "3.7"
   - "3.8"
@@ -19,7 +18,6 @@ jobs:
       name: Code quality checks
       install:
         - pip install pre-commit
-        - pyenv global 3.7.1
       script:
         - pre-commit run --all-files
 after_success:

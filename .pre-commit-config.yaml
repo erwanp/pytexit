@@ -4,14 +4,12 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
-        language_version: python3.7
 
   - repo: https://github.com/timothycrosley/isort
     rev: 5.6.4
     hooks:
       - id: isort
         args: ["--profile", "black"]
-        language_version: python3.7
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.3.0
