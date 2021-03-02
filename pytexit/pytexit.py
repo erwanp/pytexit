@@ -39,6 +39,7 @@ def py2tex(
     simplify_fractions=False,
     simplify_ints=True,
     simplify_multipliers=True,
+    tex_enclosure='$$'
 ):
     """Return the LaTeX expression of a Python formula
 
@@ -171,7 +172,8 @@ def py2tex(
         s = simplify(s)
 
     if output == "tex":
-        s = "$$" + s + "$$"
+        s = tex_enclosure + s + tex_enclosure
+
 
     # Output
     if print_latex and output == "tex":
