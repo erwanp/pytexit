@@ -227,10 +227,10 @@ def test_simplify_parser(verbose=True, **kwargs):
 def run_all_tests(verbose=True, **kwargs):
 
     test_py2tex(verbose=verbose, **kwargs)
-    # test_py2tex_py3only(verbose=verbose, **kwargs)
-    # test_hardcoded_names(verbose=verbose, **kwargs)
-    # test_simplify(verbose=verbose, **kwargs)
-    # test_simplify_parser(verbose=verbose, **kwargs)
+    test_py2tex_py3only(verbose=verbose, **kwargs)
+    test_hardcoded_names(verbose=verbose, **kwargs)
+    test_simplify(verbose=verbose, **kwargs)
+    test_simplify_parser(verbose=verbose, **kwargs)
 
     return True
 
