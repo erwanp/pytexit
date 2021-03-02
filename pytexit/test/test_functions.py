@@ -220,7 +220,7 @@ def test_simplify_parser(verbose=True, **kwargs):
     assert py2tex("a*-2", simplify_multipliers=True, print_latex=False) == "$$-2a$$"
     assert (
         py2tex("a*-2", simplify_multipliers=False, print_latex=False)
-        == "$$a\\times-2$$"
+        == "$$a\\times -2$$"
     )
 
 
