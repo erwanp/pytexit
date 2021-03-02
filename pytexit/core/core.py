@@ -87,7 +87,7 @@ math_symbols = {
     # to-do: allow some basic operation in the variable name: e.g., R_AminusB, f_plusinfinity
     "plus": "+", # positive sign
     "minus": "-", # negative sign
-    "times": r"\times", 
+    "times": r"\times ", 
     "divide": "/", # \frac command is not considered in variable name
 
     "O": r"\mathrm{O}", # initial state notation  
@@ -542,7 +542,7 @@ class LatexVisitor(ast.NodeVisitor):
 
             # Get multiplication operator. Force x if floats are involved
             if left_is_float or right_is_float:
-                operator = r"\times"
+                operator = r"\times "
             else:  # get standard Mult operator (see visit_Mult)
                 operator = self.visit(n.op)
 
