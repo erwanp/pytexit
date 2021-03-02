@@ -77,7 +77,7 @@ greek_letters= [
         ]
 
 math_symbols = {
-    '''--------straight forward conversion--------'''
+    #'''--------straight forward conversion--------'''
     "prime":  r"\prime",
     "dprime": r"\prime\prime",
     "tprime": r"\prime\prime\prime",
@@ -94,7 +94,7 @@ math_symbols = {
     "F": r"\mathrm{F}",  # fundamental state notation
     "C": r"\mathrm{C}",  # critical state notation
     
-    '''--------short-handed conversion---------'''
+    # '''--------short-handed conversion---------'''
     "eps": r"\epsilon",
     "lbd": r"\lambda",
     "Lbd": r"\Lambda",
@@ -467,6 +467,8 @@ class LatexVisitor(ast.NodeVisitor):
 
         # Replace Delta even if not full word  - Allow for expressions such as
         # ΔE
+        # if "Delta" in m:
+        #     m = m.replace("Delta", "\Delta ")
         
         return m
 
@@ -791,3 +793,9 @@ def simplify(s):
     s = new_s
 
     return s
+
+if __name__=='__main__':
+    import sys
+    print(sys.path)
+    sys.path.insert(0,'..')
+    print(math_symbols.keys())
