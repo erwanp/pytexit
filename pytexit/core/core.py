@@ -41,6 +41,70 @@ unicode_tbl = {
     "Ξ": "Xi",
 }
 
+greek_letters= [
+    "alpha",
+    "beta",
+    "gamma",
+    "delta",
+    "epsilon",
+    "zeta",
+    "eta",
+    "theta",
+    "iota",
+    "kappa",
+    "mu",
+    "nu",
+    "xi",
+    "pi",
+    "rho",
+    "sigma",
+    "tau",
+    "phi",
+    "chi",
+    "psi",
+    "omega",
+    "Gamma",
+    "Delta",
+    "Theta",
+    "Lambda",
+    "Xi",
+    "Pi",
+    "Sigma",
+    "Upsilon",
+    "Phi",
+    "Psi",
+    "Omega",
+        ]
+
+math_symbols = {
+    '''--------straight forward conversion--------'''
+    "prime":  r"\prime",
+    "dprime": r"\prime\prime",
+    "tprime": r"\prime\prime\prime",
+    "qprime": r"\prime\prime\prime\prime",
+    "nabla":  r"\nabla", # this enable nominal gradient, laplace and biharmonic operator 
+
+    # to-do: allow some basic operation in the variable name: e.g., R_AminusB, f_plusinfinity
+    "plus": "+", # positive sign
+    "minus": "-", # negative sign
+    "times": r"\times", 
+    "divide": "/", # \frac command is not considered in variable name
+
+    "O": r"\mathrm{O}", # initial state notation  
+    "F": r"\mathrm{F}",  # fundamental state notation
+    "C": r"\mathrm{C}",  # critical state notation
+    
+    '''--------short-handed conversion---------'''
+    "eps": r"\epsilon",
+    "lbd": r"\lambda",
+    "Lbd": r"\Lambda",
+
+    # if basic operation is possible, we can have +/-inifinity in the variale name as plusinf/plusinfinity/plusinfty
+    "inf": r"\infty", 
+    "infinity": r"\infty",
+    "infty": r"\infty",
+}
+
 fracs = {
     0.5: ["", 1, 2],
     -0.5: ["-", 1, 2],
@@ -384,68 +448,26 @@ class LatexVisitor(ast.NodeVisitor):
     #        return s
 
     def convert_symbols(self, expr):
+        # this function only work for expr which !!!ONLY!!! contains
+        # the symbol we provides in greek_letters and math_symbols, etc.
+
         m = expr
         # Standard greek letters
-        if m in [
-            "alpha",
-            "beta",
-            "gamma",
-            "delta",
-            "epsilon",
-            "zeta",
-            "eta",
-            "theta",
-            "iota",
-            "kappa",
-            "mu",
-            "nu",
-            "xi",
-            "pi",
-            "rho",
-            "sigma",
-            "tau",
-            "phi",
-            "chi",
-            "psi",
-            "omega",
-            "Gamma",
-            "Delta",
-            "Theta",
-            "Lambda",
-            "Xi",
-            "Pi",
-            "Sigma",
-            "Upsilon",
-            "Phi",
-            "Psi",
-            "Omega",
-        ]:
+        
+        if m in greek_letters:
             m = r"\%s" % m
+
+        if m in math_symbols.keys():
+            m = math_symbols[m]
 
         # Unicode
         #        elif m in unicode_tbl:
         #            m = r'\%s' % unicode_tbl[m]
         # @EP: unicode is now removed in pre-processing, before Parsing begins.
 
-        elif m in ["eps"]:
-            m = r"\epsilon"
-
-        elif m in [
-            "lbd"
-        ]:  # lambda is not a valid identifier in Python so people use other things
-            m = r"\lambda"
-
-        elif m in ["Lbd"]:
-            m = r"\Lambda"
-
-        elif m in ["inf", "infinity", "infty"]:
-            m = r"\infty"
-
         # Replace Delta even if not full word  - Allow for expressions such as
         # ΔE
-        elif "Delta" in m:
-            m = m.replace("Delta", "\Delta ")
-
+        
         return m
 
     def visit_UnaryOp(self, n):
@@ -699,6 +721,7 @@ def replace_unicode(expr):
         expr = expr.replace(u, unicode_tbl[u])
 
     return expr
+
 
 
 def clean(expr):

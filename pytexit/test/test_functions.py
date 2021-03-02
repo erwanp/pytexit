@@ -54,6 +54,7 @@ def test_py2tex(verbose=True, **kwargs):
             b = expr_tex[i] == s
             print(s)
             #            uprint('.. correct =', b)
+            print(s)
             if not b:
                 uprint("Expected:\n", expr_tex[i])
                 uprint("\n" * 3)
