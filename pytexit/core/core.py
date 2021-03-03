@@ -78,16 +78,17 @@ greek_letters= [
 
 math_symbols = {
     #'''--------straight forward conversion--------'''
-    "prime":  r"\prime",
-    "dprime": r"\prime\prime",
-    "tprime": r"\prime\prime\prime",
-    "qprime": r"\prime\prime\prime\prime",
-    "nabla":  r"\nabla", # this enable nominal gradient, laplace and biharmonic operator 
+    "prime":  r"\prime ",
+    "dprime": r"\prime\prime ",
+    "tprime": r"\prime\prime\prime ",
+    "qprime": r"\prime\prime\prime\prime ",
+    "nabla":  r"\nabla ", # this enable nominal gradient, laplace and biharmonic operator in the variable name
 
     # to-do: allow some basic operation in the variable name: e.g., R_AminusB, f_plusinfinity
     "plus": "+", # positive sign
     "minus": "-", # negative sign
     "times": r"\times ", 
+    "multiply": r"\cdot ", # must have a space acter
     "divide": "/", # \frac command is not considered in variable name
 
     "O": r"\mathrm{O}", # initial state notation  
@@ -95,14 +96,16 @@ math_symbols = {
     "C": r"\mathrm{C}",  # critical state notation
     
     # '''--------short-handed conversion---------'''
-    "eps": r"\epsilon",
-    "lbd": r"\lambda",
-    "Lbd": r"\Lambda",
+    "eps": r"\epsilon ",
+    "lbd": r"\lambda ",
+    "Lbd": r"\Lambda ",
 
     # if basic operation is possible, we can have +/-inifinity in the variale name as plusinf/plusinfinity/plusinfty
-    "inf": r"\infty", 
-    "infinity": r"\infty",
-    "infty": r"\infty",
+    "inf": r"\infty ", 
+    "infinity": r"\infty ",
+    "infty": r"\infty ",
+
+    "ø": ""
 }
 
 fracs = {
@@ -455,7 +458,7 @@ class LatexVisitor(ast.NodeVisitor):
         # Standard greek letters
         
         if m in greek_letters:
-            m = r"\%s" % m
+            m = r"\%s " % m
 
         if m in math_symbols.keys():
             m = math_symbols[m]
@@ -470,6 +473,12 @@ class LatexVisitor(ast.NodeVisitor):
         # if "Delta" in m:
         #     m = m.replace("Delta", "\Delta ")
         
+        # check if more than 1 options are available in the component name, 
+            # if yes, check whether they subsume each other
+                # if yes, auto-extract&replace&concat them in the decending order of completeness 
+                # if no, replace them directly no matter how many times each appears
+            # if no, replace it directly no matter how many times it appears
+
         return m
 
     def visit_UnaryOp(self, n):
@@ -787,7 +796,7 @@ def simplify(s):
         if prefactor == "1":
             new_s += r"10^{0}".format(exp_str)
         else:
-            new_s += r"{0}\times10^{1}".format(prefactor, exp_str)
+            new_s += r"{0}\times 10^{1}".format(prefactor, exp_str)
     if len(splits) % 3 == 1:  # add last ones
         new_s += splits[-1]
     s = new_s
