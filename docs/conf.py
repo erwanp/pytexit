@@ -133,7 +133,7 @@ html_theme_options = {
     "github_user": "erwanp",
     "github_repo": "pytexit",
     "github_button": True,
-    "github_type": "watch",
+    "github_type": "star",
     "github_banner": False,
     "travis_button": True,
     "codecov_button": True,
