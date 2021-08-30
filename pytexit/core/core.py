@@ -256,6 +256,9 @@ class LatexVisitor(ast.NodeVisitor):
             return self.division(args[0], args[1])
         elif func in ["abs", "fabs"]:
             return r"|%s|" % args
+        elif func in ["exp"]:
+            return r"e^{%s}" % args
+
 
         # Additionnal functions (convention names, not in numpy library)
         elif func in ["kronecher", "kron"]:
