@@ -588,7 +588,7 @@ class LatexVisitor(ast.NodeVisitor):
         return self.operator("invert")
 
     def visit_Not(self, n):
-        return "\\neg"
+        return "\\neg "
 
     def visit_UAdd(self, n):
         return "+"
