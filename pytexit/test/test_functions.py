@@ -161,7 +161,10 @@ def test_hardcoded_names(verbose=True, **kwargs):
     assert py2tex("arcsinh(x)", print_latex=False) == "$$\sinh^{-1}\\left(x\\right)$$"
     assert py2tex("arccosh(x)", print_latex=False) == "$$\\cosh^{-1}\\left(x\\right)$$"
 
-    assert py2tex("np.power(2, 10)", print_latex=False) == "$${2}^{ 10}$$"
+    assert py2tex("np.power(2, 10)", print_latex=False) == "$$2^{10}$$"
+    assert py2tex("np.power(ab, c)", print_latex=False) == "$${ab}^c$$"
+    assert py2tex("pow(a+b, c)", print_latex=False) == "$${\\left(a+b\\right)}^c$$"
+    
     # Additional function (conventions)
     assert py2tex("kron(i, j)", print_latex=False) == "$$\\delta_{i, j}$$"
     # unknown function:
