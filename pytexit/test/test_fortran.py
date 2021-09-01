@@ -29,8 +29,8 @@ def test_for2tex(verbose=True, *args, **kwargs):
             (r"2.8d-11 * exp(-(26500 - 0.5 * 1.97 * 11600 )/T_gas)"),
             simplify_output=True,
         )
-        == "$$2.8\\times10^{-11}\\operatorname{exp}\\left(\\frac{-\\left(26500-0.5\\times"
-        + "1.97\\times11600\\right)}{T_{gas}}\\right)$$"
+        == "$$2.8\\times10^{-11}e^{\\frac{-\\left(26500-0.5\\times"
+        + "1.97\\times11600\\right)}{T_{gas}}}$$"
     )
 
 
