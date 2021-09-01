@@ -9,7 +9,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ast
 import sys
-
 import six
 
 try:
@@ -32,6 +31,7 @@ def py2tex(
     print_formula=True,
     dummy_var="u",
     output="tex",
+    tex_enclosure="$$",
     simplify_output=True,
     upperscript="ˆ",
     lowerscript="_",
@@ -56,6 +56,9 @@ def py2tex(
     output: 'tex' / 'word'
         if 'tex', output latex formula. If word, output a Word MathTex formula
         (may be a little different)
+
+    tex_enclosure: string
+        enclosure for latex formula. Default: "$$""
 
     Other Parameters
     ----------------
@@ -171,7 +174,7 @@ def py2tex(
         s = simplify(s)
 
     if output == "tex":
-        s = "$$" + s + "$$"
+        s = tex_enclosure + s + tex_enclosure
 
     # Output
     if print_latex and output == "tex":
