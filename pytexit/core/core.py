@@ -131,7 +131,7 @@ class LatexVisitor(ast.NodeVisitor):
             "Mult": 400,
             "Invert": 800,
             "Compare": 300,
-            "Uadd": 800,
+            "UAdd": 800,
             "Not": 800,
             "USub": 800,
             "Num": 1000,
