@@ -248,17 +248,19 @@ class LatexVisitor(ast.NodeVisitor):
             return r"\cosh^{-1}%s" % self.parenthesis(args)
         elif func in ["arctanh"]:
             return r"\tanh^{-1}%s" % self.parenthesis(args)
-        elif func in ["power"]:
-            args = args.split(",")
-            return self.power(self.parenthesis(args[0]), args[1])
+        elif func in ["power", "pow"]:
+            args = [arg.strip() for arg in args.split(',')]
+            if '+' in args[0] or '-' in args[0]:
+                return self.power(self.parenthesis(args[0]), args[1])
+            else:
+                return self.power(args[0], args[1])
         elif func in ["divide"]:
-            args = args.split(",")
+            args = [arg.strip() for arg in args.split(',')]
             return self.division(args[0], args[1])
         elif func in ["abs", "fabs"]:
             return r"|%s|" % args
         elif func in ["exp"]:
             return r"e^{%s}" % args
-
 
         # Additionnal functions (convention names, not in numpy library)
         elif func in ["kronecher", "kron"]:
@@ -290,7 +292,7 @@ class LatexVisitor(ast.NodeVisitor):
 
         # Recurrent operator names
         elif func in ["f", "g", "h"]:
-            return r"%s{\left(%s\right)}" % (func, args)
+            return r"%s{%s}" % (func, self.parenthesis(args))
 
         else:
             return self.operator(func, args)
@@ -679,7 +681,7 @@ class LatexVisitor(ast.NodeVisitor):
         if args is None:
             return r"\operatorname{{{0}}}".format(func)
         else:
-            return r"\operatorname{{{0}}}\left({1}\right)".format(func, args)
+            return r"\operatorname{{{0}}}{1}".format(func, self.parenthesis(args))
 
 
 def preprocessing(expr):
