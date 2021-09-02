@@ -84,8 +84,7 @@ class LatexVisitor(ast.NodeVisitor):
         if ``True``, simplify expression if multiplier is a float. Ex::
 
             2*a -> 2a
-
-            a * 3.5 -> 3.5
+            a*3.5 -> 3.5a
 
         see :meth:`~pytexit.core.core.LatexVisitor.visit_BinOp` for more
         information. Default ``True``.
@@ -510,8 +509,10 @@ class LatexVisitor(ast.NodeVisitor):
         elif isinstance(n.op, ast.Mult):
 
             def looks_like_float(a):
-                """Care for the special case of 2 floats/integer
-                We don't want 'a*2' where we could have simply written '2a'"""
+                # Check if 'a' looks like a float
+                # Detect: 'float', '{float}', 'int', '{int}'
+                if a.startswith('{'):
+                    a = a[1:].split('}')[0]
                 try:
                     float(a)
                     return True
@@ -531,12 +532,11 @@ class LatexVisitor(ast.NodeVisitor):
 
                 # We simplify in some cases, for instance: a*2 -> 2a
                 # First we need to know if both terms start with numbers
-                if left[0] == "-":
+                if left[0] == "-" or left[0] == "{":
                     left_starts_with_digit = left[1].isdigit()
                 else:
                     left_starts_with_digit = left[0].isdigit()
-
-                if right[0] == "-":
+                if right[0] == "-" or right[0] == "{":
                     right_starts_with_digit = right[1].isdigit()
                 else:
                     right_starts_with_digit = right[0].isdigit()
@@ -565,8 +565,7 @@ class LatexVisitor(ast.NodeVisitor):
         return "+"
 
     def visit_Mult(self, n):
-        #        return r'\cdot'   # no space in LaTeX (before:   r'\;'   )
-        return r" "  # no space in LaTeX (before:   r'\;'   )
+        return r" "
 
     def visit_Mod(self, n):
         return "\\bmod"
