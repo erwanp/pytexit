@@ -32,6 +32,7 @@ def py2tex(
     dummy_var="u",
     output="tex",
     tex_enclosure="$$",
+    tex_multiplier=r"\times",
     simplify_output=True,
     upperscript="ˆ",
     lowerscript="_",
@@ -58,7 +59,17 @@ def py2tex(
         (may be a little different)
 
     tex_enclosure: string
-        enclosure for latex formula. Default: "$$""
+        enclosure for latex formula.
+
+        Default: "$$""
+
+    tex_multiplier: raw string
+        multiplication operator for latex formula.
+
+        r'\times':   2*2 -> 2 x 2 (Default)
+        r'{\times}': 2*2 -> 2x2
+        r'\cdot':    2*2 -> 2 · 2
+        r'{\cdot}':  2*2 -> 2·2
 
     Other Parameters
     ----------------
@@ -149,6 +160,7 @@ def py2tex(
             simplify_multipliers=simplify_multipliers,
             simplify_fractions=simplify_fractions,
             simplify_ints=simplify_ints,
+            tex_multiplier=tex_multiplier,
         )
     elif output == "word":  # Word output
         Visitor = WordVisitor(
@@ -159,6 +171,7 @@ def py2tex(
             simplify_multipliers=simplify_multipliers,
             simplify_fractions=simplify_fractions,
             simplify_ints=simplify_ints,
+            tex_multiplier=tex_multiplier,
         )
     else:
         raise ValueError("Unexpected output: {0}".format(output))
@@ -171,7 +184,7 @@ def py2tex(
 
     # Simplify if asked for
     if simplify_output:
-        s = simplify(s)
+        s = simplify(s, tex_multiplier)
 
     if output == "tex":
         s = tex_enclosure + s + tex_enclosure
