@@ -109,6 +109,7 @@ class LatexVisitor(ast.NodeVisitor):
         simplify_multipliers=True,
         simplify_fractions=False,
         simplify_ints=False,
+        tex_multiplier=r"\times",
     ):
 
         super(LatexVisitor, self).__init__()
@@ -122,6 +123,7 @@ class LatexVisitor(ast.NodeVisitor):
         self.simplify_multipliers = simplify_multipliers
         self.simplify_fractions = simplify_fractions
         self.simplify_ints = simplify_ints
+        self.tex_multiplier = tex_multiplier
 
         self.precdic = {
             "Pow": 700,
@@ -524,7 +526,7 @@ class LatexVisitor(ast.NodeVisitor):
 
             # Get multiplication operator. Force x if floats are involved
             if left_is_float or right_is_float:
-                operator = r"\times"
+                operator = self.tex_multiplier
             else:  # get standard Mult operator (see visit_Mult)
                 operator = self.visit(n.op)
 
@@ -724,7 +726,7 @@ def clean(expr):
     return expr
 
 
-def simplify(s):
+def simplify(s, multiplier=r"\times"):
     """ Cleans the generated text in post-processing """
 
     # Remove unecessary parenthesis?
@@ -766,7 +768,7 @@ def simplify(s):
         if prefactor == "1":
             new_s += r"10^{0}".format(exp_str)
         else:
-            new_s += r"{0}\times10^{1}".format(prefactor, exp_str)
+            new_s += r"{0}{1}10^{2}".format(prefactor, multiplier, exp_str)
     if len(splits) % 3 == 1:  # add last ones
         new_s += splits[-1]
     s = new_s
