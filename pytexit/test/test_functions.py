@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import sys
 
-from pytexit import py2tex, simplify, uprint
+from pytexit import py2tex, uprint
 
 
 def test_py2tex(verbose=True, **kwargs):
@@ -177,13 +177,6 @@ def test_hardcoded_names(verbose=True, **kwargs):
     assert py2tex("eps*lbd+Lbd", print_latex=False) == "$$\\epsilon \\lambda+\\Lambda$$"
 
 
-def test_simplify(verbose=True, **kwargs):
-    """ Post-processing simplifications """
-
-    assert simplify("1e-20*11e2") == r"10^{-20}*11\times10^2"
-    assert simplify("1e-20*11e-20+5+2") == r"10^{-20}*11\times10^{-20}+5+2"
-
-
 def test_simplify_parser(verbose=True, **kwargs):
     """Test simplifications during Parsing.
 
@@ -215,13 +208,22 @@ def test_simplify_parser(verbose=True, **kwargs):
         == "$$a\\times-2$$"
     )
 
+    # Test simplify_output
+    assert py2tex("2e7", simplify_output=True) == "$$2\\times{10}^7$$"
+    assert py2tex("2e7", simplify_output=False) == "$$20000000$$"
+    assert py2tex("1e7", simplify_output=True) == "$${10}^7$$"
+    assert py2tex("1e7", simplify_output=False) == "$$10000000$$"
+    assert py2tex("2e-7", simplify_output=True) == "$$2\\times{10}^{-7}$$"
+    assert py2tex("2e-7", simplify_output=False) == "$$2e-07$$"
+    assert py2tex("1e-7", simplify_output=True) == "$${10}^{-7}$$"
+    assert py2tex("1e-7", simplify_output=False) == "$$1e-07$$"
+
 
 def run_all_tests(verbose=True, **kwargs):
 
     test_py2tex(verbose=verbose, **kwargs)
     test_py2tex_py3only(verbose=verbose, **kwargs)
     test_hardcoded_names(verbose=verbose, **kwargs)
-    test_simplify(verbose=verbose, **kwargs)
     test_simplify_parser(verbose=verbose, **kwargs)
 
     return True
