@@ -12,11 +12,11 @@ import sys
 import six
 
 try:
-    from pytexit.core.core import LatexVisitor, preprocessing, simplify, uprint
+    from pytexit.core.core import LatexVisitor, preprocessing, simplify, uprint, replace_scientific
     from pytexit.core.docx import WordVisitor
     from pytexit.core.fortran import for2py
 except:  # if run locally as a script
-    from core.core import LatexVisitor, preprocessing, simplify, uprint
+    from core.core import LatexVisitor, preprocessing, simplify, uprint, replace_scientific
     from core.docx import WordVisitor
     from core.fortran import for2py
 try:
@@ -77,7 +77,7 @@ def py2tex(
     simplify_output: boolean
         if ``True``, simplify output. Ex::
 
-            1x10^-5 --> 10^-5.
+            1x10^-5 --> 10^-5
 
         See :func:`~pytexit.core.core.simplify` for more information.
         Default ``True``
@@ -85,7 +85,7 @@ def py2tex(
     simplify_ints: boolean
         if ``True``, simplify integers (useful for Python 2 expressions). Ex::
 
-            1. --> 1.
+            1. --> 1
 
         See :class:`~pytexit.core.core.LatexVisitor` for more information.
         Default ``True``
@@ -93,7 +93,7 @@ def py2tex(
     simplify_fractions: boolean
         if ``True``, simplify common fractions.  Ex::
 
-            0.5 --> 1/2.
+            0.5 --> 1/2
 
         See :class:`~pytexit.core.core.LatexVisitor` for more information.
         Default ``False``
@@ -147,7 +147,12 @@ def py2tex(
     except AssertionError:
         raise ValueError("Input must be a string")
 
-    expr = preprocessing(expr)  # removes unicode, module calls, etc.
+    expr = preprocessing(expr, simplify_output)  # removes unicode, module calls, etc.
+
+    # replace scientific notation with power of 10 (this needs to be done in
+    # preprocessing since the ast parser will replace 1e3 with 1000.0)
+    if simplify_output:
+        expr = replace_scientific(expr)
 
     # Parse
     pt = ast.parse(expr)
@@ -184,7 +189,7 @@ def py2tex(
 
     # Simplify if asked for
     if simplify_output:
-        s = simplify(s, tex_multiplier)
+        s = simplify(s)
 
     if output == "tex":
         s = tex_enclosure + s + tex_enclosure

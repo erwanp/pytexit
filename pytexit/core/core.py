@@ -102,14 +102,14 @@ class LatexVisitor(ast.NodeVisitor):
 
     def __init__(
         self,
-        dummy_var="u",
-        upperscript="ˆ",
-        lowerscript="_",
-        verbose=False,
-        simplify_multipliers=True,
-        simplify_fractions=False,
-        simplify_ints=False,
-        tex_multiplier=r"\times",
+        dummy_var,
+        upperscript,
+        lowerscript,
+        verbose,
+        simplify_multipliers,
+        simplify_fractions,
+        simplify_ints,
+        tex_multiplier,
     ):
 
         super(LatexVisitor, self).__init__()
@@ -149,14 +149,12 @@ class LatexVisitor(ast.NodeVisitor):
 
     def looks_like_int(self, a):
         """ Check if the input ``a`` looks like an integer """
+
         if self.simplify_ints:
-            if not isinstance(a, str):
-                a = str(a)
             try:
-                value = float(a.split(".")[1]) == 0.0
+                return float(str(a).split(".")[1]) == 0.0
             except (IndexError, ValueError):
-                value = False
-            return value
+                return False
         else:
             return False
 
@@ -428,11 +426,6 @@ class LatexVisitor(ast.NodeVisitor):
         ]:
             m = r"\%s" % m
 
-        # Unicode
-        #        elif m in unicode_tbl:
-        #            m = r'\%s' % unicode_tbl[m]
-        # @EP: unicode is now removed in pre-processing, before Parsing begins.
-
         elif m in ["eps"]:
             m = r"\epsilon"
 
@@ -602,8 +595,7 @@ class LatexVisitor(ast.NodeVisitor):
     def visit_Num(self, n):
         if self.simplify_fractions:
             if any([n.n == key for key in fracs.keys()]):
-                string = r"{0}\frac{{{1}}}{{{2}}}".format(*fracs[n.n])
-                return string
+                return r"{0}\frac{{{1}}}{{{2}}}".format(*fracs[n.n])
         if self.looks_like_int(n.n):
             return "%d" % n.n
         return str(n.n)
@@ -685,39 +677,17 @@ class LatexVisitor(ast.NodeVisitor):
             return r"\operatorname{{{0}}}{1}".format(func, self.parenthesis(args))
 
 
-def preprocessing(expr):
-    """Pre-process a string. In particular:
+def preprocessing(expr, simplify):
+    """Pre-process a string."""
 
-    - replace unicode values (so that even a Python 2 pytexit can parse formula
-      with unicode, valid in Python 3 only)
-    - clean: remove calls to librairies
-    """
-
-    expr = replace_unicode(expr)
-    expr = clean(expr)
-
-    return expr
-
-
-def replace_unicode(expr):
-
+    # replace unicode values (so that even a Python 2 pytexit can parse formula
+    #  with unicode, valid in Python 3 only)
     for u in unicode_tbl:
         expr = expr.replace(u, unicode_tbl[u])
 
-    return expr
-
-
-def clean(expr):
-    """Removes unnessary calls to libraries
-
-    Examples
-    --------
-
-        np.exp(-3) would be read exp(-3)
-    """
-
+    # remove unnessary calls to libraries
+    # Example: np.exp(-3) would be read exp(-3)
     expr = expr.strip()  # remove spaces on the side
-
     for m in clear_modules:
         # Todo: some regexp here. re(<(+- */)). To make sure we're not removing
         # a variable name
@@ -726,7 +696,33 @@ def clean(expr):
     return expr
 
 
-def simplify(s, multiplier=r"\times"):
+def replace_scientific(s):
+    """ Replace 'NUMBER e NUMBER' with powers of 10 """
+
+    regexp = re.compile(r"(\d*\.{0,1}\d+)[eE]([-+]?\d*\.{0,1}\d+)")
+
+    matches = regexp.findall(s)
+    splits = regexp.split(s)
+    assert len(splits) == (len(matches) + 1) + (2 * len(matches))
+    #                     splitted groups             prefactor, exponent
+
+    new_s = ""
+    # loop over all match and replace
+    # ... I didnt find any better way to do that given that we want a conditional
+    # ... replace (.sub wouldnt work)
+    for i, (prefactor, exponent) in enumerate(matches):
+        new_s += splits[3 * i]
+
+        if float(prefactor) == 1.0:
+            new_s += r"10**{}".format(exponent)
+        else:
+            new_s += r"{}*10**{}".format(prefactor, exponent)
+    if len(splits) % 3 == 1:  # add last ones
+        new_s += splits[-1]
+    return new_s
+
+
+def simplify(s):
     """ Cleans the generated text in post-processing """
 
     # Remove unecessary parenthesis?
@@ -741,36 +737,5 @@ def simplify(s, multiplier=r"\times"):
     # Replace '\left(NUMBER\right)' with 'NUMBER'
     # ------------
     s = re.sub(r"\\left\(([\d\.]+)\\right\)", r"\1", s)
-
-    # Improve readability:
-
-    # Replace 'NUMBER e NUMBER' with powers of 10
-    # ------------
-    regexp = re.compile(r"(\d*\.{0,1}\d+)[e]([-+]?\d*\.{0,1}\d+)")
-
-    matches = regexp.findall(s)
-    splits = regexp.split(s)
-    assert len(splits) == (len(matches) + 1) + (2 * len(matches))
-    #                     splitted groups             prefactor, exponent
-
-    new_s = ""
-    # loop over all match and replace
-    # ... I didnt find any better way to do that given that we want a conditional
-    # ... replace (.sub wouldnt work)
-    for i, (prefactor, exponent) in enumerate(matches):
-        new_s += splits[3 * i]
-
-        if len(exponent) == 1:
-            exp_str = r"{0}".format(exponent)
-        else:
-            exp_str = r"{" + "{0}".format(exponent) + "}"
-
-        if prefactor == "1":
-            new_s += r"10^{0}".format(exp_str)
-        else:
-            new_s += r"{0}{1}10^{2}".format(prefactor, multiplier, exp_str)
-    if len(splits) % 3 == 1:  # add last ones
-        new_s += splits[-1]
-    s = new_s
 
     return s
