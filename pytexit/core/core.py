@@ -448,10 +448,8 @@ class LatexVisitor(ast.NodeVisitor):
         return m
 
     def visit_UnaryOp(self, n):
-        # Note: removed space between {0} and {1}... so that 10**-3 yields
-        # $$10^{-3}$$ and not $$10^{- 3}$$
-
-        if self.prec(n.op) > self.prec(n.operand):
+        # Note: Unary operator followed by a power needs no parenthesis
+        if self.prec(n.op) > self.prec(n.operand) and not (hasattr(n.operand, 'op') and isinstance(n.operand.op, ast.Pow)):
             return r"{0}{1}".format(
                 self.visit(n.op), self.parenthesis(self.visit(n.operand))
             )
@@ -652,8 +650,9 @@ class LatexVisitor(ast.NodeVisitor):
         return r"{{{0}}}".format(expr)
 
     def group(self, expr):
-        """ Returns expr, add brackets if needed"""
-        if len(expr) == 1:
+        """ Returns expr, add brackets if needed """
+        # Note: No brackets required when in parenthesis
+        if len(expr) == 1 or expr.startswith(r'\left(') and expr.endswith(r'\right)'):
             return expr
         else:
             return self.brackets(expr)
