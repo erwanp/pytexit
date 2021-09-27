@@ -29,11 +29,14 @@ def test_py2tex(verbose=True, **kwargs):
         r"np.std([f(i) for i in range(21)])",
         r"np.sum([i**2 for i in range(1,101)])==338350",
         r"(a**b)**c",
+        r"-x**2",
+        r"-(x**2+y**2)",
+        r"-(x+y)**2",
     ]
 
     expr_tex = [
         r"$$Re_x=\frac{\rho v x}{\mu}$$",
-        r"$$2\sqrt{\frac{2\pi k T_e}{m_e}} {\left(\frac{\Delta E}{k T_e}\right)}^2 {a_0}^2$$",
+        r"$$2\sqrt{\frac{2\pi k T_e}{m_e}} \left(\frac{\Delta E}{k T_e}\right)^2 {a_0}^2$$",
         r"$$f{\left(\frac{x^2}{y^3}\right)}$$",
         r"$$\tanh^{-1}\left(\frac{x}{\sqrt{x}}\right)$$",
         r"$$\int_{0}^{\infty} f\left(u\right) du$$",
@@ -41,7 +44,10 @@ def test_py2tex(verbose=True, **kwargs):
         r"$$1<2<a<=5$$",
         r"$$\operatorname{std}\left(f{\left(i\right)}, i=0..20\right)$$",
         r"$$\sum_{i=1}^{100} i^2=338350$$",
-        r"$${\left(a^b\right)}^c$$",
+        r"$$\left(a^b\right)^c$$",
+        r"$$-x^2$$",
+        r"$$-\left(x^2+y^2\right)$$",
+        r"$$-\left(x+y\right)^2$$",
     ]
 
     for i, expr in enumerate(expr_py):
@@ -163,7 +169,7 @@ def test_hardcoded_names(verbose=True, **kwargs):
 
     assert py2tex("np.power(2, 10)", print_latex=False) == "$$2^{10}$$"
     assert py2tex("np.power(ab, c)", print_latex=False) == "$${ab}^c$$"
-    assert py2tex("pow(a+b, c)", print_latex=False) == "$${\\left(a+b\\right)}^c$$"
+    assert py2tex("pow(a+b, c)", print_latex=False) == "$$\\left(a+b\\right)^c$$"
 
     assert py2tex("5*25**2", print_latex=False, tex_multiplier=r"{\cdot}") == "$$5{\\cdot}{25}^2$$"
     assert py2tex("5*25**2/4", print_latex=False) == "$$\\frac{5\\times{25}^2}{4}$$"
