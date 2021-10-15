@@ -22,7 +22,8 @@ unicode_tbl = {
     "ψ": "psi",
     "θ": "theta",
     "κ": "kappa",
-    "λ": "lambda",
+    "λ": "lbd",
+    "lambda": "lbd", # lambda is not a valid identifier in Python
     "η": "eta",
     "ν": "nu",
     "π": "pi",
