@@ -72,7 +72,7 @@ def test_py2tex(verbose=True, **kwargs):
 
 
 def test_py2tex_py3only(verbose=True, **kwargs):
-    """ Some tests valid with Python 3 syntax only (Ex: unicodes: ˆ)"""
+    """Some tests valid with Python 3 syntax only (Ex: unicodes: ˆ)"""
 
     if sys.version_info[0] != 3:
         if verbose:
@@ -171,9 +171,12 @@ def test_hardcoded_names(verbose=True, **kwargs):
     assert py2tex("np.power(ab, c)", print_latex=False) == "$${ab}^c$$"
     assert py2tex("pow(a+b, c)", print_latex=False) == "$$\\left(a+b\\right)^c$$"
 
-    assert py2tex("5*25**2", print_latex=False, tex_multiplier=r"{\cdot}") == "$$5{\\cdot}{25}^2$$"
+    assert (
+        py2tex("5*25**2", print_latex=False, tex_multiplier=r"{\cdot}")
+        == "$$5{\\cdot}{25}^2$$"
+    )
     assert py2tex("5*25**2/4", print_latex=False) == "$$\\frac{5\\times{25}^2}{4}$$"
-    
+
     # Additional function (conventions)
     assert py2tex("kron(i, j)", print_latex=False) == "$$\\delta_{i, j}$$"
     # unknown function:

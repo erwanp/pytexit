@@ -9,14 +9,27 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ast
 import sys
+
 import six
 
 try:
-    from pytexit.core.core import LatexVisitor, preprocessing, simplify, uprint, replace_scientific
+    from pytexit.core.core import (
+        LatexVisitor,
+        preprocessing,
+        replace_scientific,
+        simplify,
+        uprint,
+    )
     from pytexit.core.docx import WordVisitor
     from pytexit.core.fortran import for2py
 except:  # if run locally as a script
-    from core.core import LatexVisitor, preprocessing, simplify, uprint, replace_scientific
+    from core.core import (
+        LatexVisitor,
+        preprocessing,
+        replace_scientific,
+        simplify,
+        uprint,
+    )
     from core.docx import WordVisitor
     from core.fortran import for2py
 try:

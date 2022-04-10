@@ -23,7 +23,7 @@ unicode_tbl = {
     "θ": "theta",
     "κ": "kappa",
     "λ": "lbd",
-    "lambda": "lbd", # lambda is not a valid identifier in Python
+    "lambda": "lbd",  # lambda is not a valid identifier in Python
     "η": "eta",
     "ν": "nu",
     "π": "pi",
@@ -67,7 +67,7 @@ clear_modules = [
 
 
 def uprint(*expr):
-    """ Deals with encoding problems """
+    """Deals with encoding problems"""
 
     try:
         print(*expr)
@@ -149,7 +149,7 @@ class LatexVisitor(ast.NodeVisitor):
         }
 
     def looks_like_int(self, a):
-        """ Check if the input ``a`` looks like an integer """
+        """Check if the input ``a`` looks like an integer"""
 
         if self.simplify_ints:
             try:
@@ -211,7 +211,7 @@ class LatexVisitor(ast.NodeVisitor):
         self.generic_visit(n)
 
     def visit_Call(self, n):
-        """ Node details : n.args, n.func, n.keywords, n.kwargs"""
+        """Node details : n.args, n.func, n.keywords, n.kwargs"""
         func = self.visit(n.func)
 
         # Deal with list comprehension and complex formats
@@ -249,13 +249,13 @@ class LatexVisitor(ast.NodeVisitor):
         elif func in ["arctanh"]:
             return r"\tanh^{-1}%s" % self.parenthesis(args)
         elif func in ["power", "pow"]:
-            args = [arg.strip() for arg in args.split(',')]
-            if '+' in args[0] or '-' in args[0]:
+            args = [arg.strip() for arg in args.split(",")]
+            if "+" in args[0] or "-" in args[0]:
                 return self.power(self.parenthesis(args[0]), args[1])
             else:
                 return self.power(args[0], args[1])
         elif func in ["divide"]:
-            args = [arg.strip() for arg in args.split(',')]
+            args = [arg.strip() for arg in args.split(",")]
             return self.division(args[0], args[1])
         elif func in ["abs", "fabs"]:
             return r"|%s|" % args
@@ -365,7 +365,7 @@ class LatexVisitor(ast.NodeVisitor):
             return t
 
         def read_tree(t):
-            """ Write a LaTeX readable name """
+            """Write a LaTeX readable name"""
             r = t["val"]
             if t["low"] != []:
                 #                child = [self.group(read_tree(tc)) for tc in t['low']]
@@ -450,7 +450,9 @@ class LatexVisitor(ast.NodeVisitor):
 
     def visit_UnaryOp(self, n):
         # Note: Unary operator followed by a power needs no parenthesis
-        if self.prec(n.op) > self.prec(n.operand) and not (hasattr(n.operand, 'op') and isinstance(n.operand.op, ast.Pow)):
+        if self.prec(n.op) > self.prec(n.operand) and not (
+            hasattr(n.operand, "op") and isinstance(n.operand.op, ast.Pow)
+        ):
             return r"{0}{1}".format(
                 self.visit(n.op), self.parenthesis(self.visit(n.operand))
             )
@@ -505,8 +507,8 @@ class LatexVisitor(ast.NodeVisitor):
             def looks_like_float(a):
                 # Check if 'a' looks like a float
                 # Detect: 'float', '{float}', 'int', '{int}'
-                if a.startswith('{'):
-                    a = a[1:].split('}')[0]
+                if a.startswith("{"):
+                    a = a[1:].split("}")[0]
                 try:
                     float(a)
                     return True
@@ -601,14 +603,14 @@ class LatexVisitor(ast.NodeVisitor):
 
     # New visits
     def visit_Assign(self, n):
-        " Rewrite Assign function (instead of executing it)"
+        "Rewrite Assign function (instead of executing it)"
         return r"%s=%s" % (self.visit(n.targets[0]), self.visit(n.value))
 
     def visit_Compare(self, n):
-        " Rewrite Compare function (instead of executing it)"
+        "Rewrite Compare function (instead of executing it)"
 
         def visit_Op(op):
-            " Note : not called by visit like other visit functions"
+            "Note : not called by visit like other visit functions"
             if isinstance(op, ast.Lt):
                 return "<"
             elif isinstance(op, ast.LtE):
@@ -647,13 +649,13 @@ class LatexVisitor(ast.NodeVisitor):
 
     # LaTeX blocs
     def brackets(self, expr):
-        """ Enclose expr in {...} """
+        """Enclose expr in {...}"""
         return r"{{{0}}}".format(expr)
 
     def group(self, expr):
-        """ Returns expr, add brackets if needed """
+        """Returns expr, add brackets if needed"""
         # Note: No brackets required when in parenthesis
-        if len(expr) == 1 or expr.startswith(r'\left(') and expr.endswith(r'\right)'):
+        if len(expr) == 1 or expr.startswith(r"\left(") and expr.endswith(r"\right)"):
             return expr
         else:
             return self.brackets(expr)
@@ -697,7 +699,7 @@ def preprocessing(expr, simplify):
 
 
 def replace_scientific(s):
-    """ Replace 'NUMBER e NUMBER' with powers of 10 """
+    """Replace 'NUMBER e NUMBER' with powers of 10"""
 
     regexp = re.compile(r"(\d*\.{0,1}\d+)[eE]([-+]?\d*\.{0,1}\d+)")
 
@@ -723,7 +725,7 @@ def replace_scientific(s):
 
 
 def simplify(s):
-    """ Cleans the generated text in post-processing """
+    """Cleans the generated text in post-processing"""
 
     # Remove unecessary parenthesis?
     # -------------
