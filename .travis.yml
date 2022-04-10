@@ -1,7 +1,7 @@
 language: python
 python:
   - "3.6"
-  - "3.7"
+  #- "3.7"
   - "3.8"
   - "3.9"
 
@@ -21,8 +21,6 @@ jobs:
       script:
         - pre-commit run --all-files
 after_success:
-  # codecoverage for Python 3 only
-  - if [[ "$TRAVIS_PYTHON_VERSION" != "2.7" ]]; then
-      pip install codecov;
-      codecov;
-    fi
+  # code coverage :
+  - pip install codecov
+  - codecov
