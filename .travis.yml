@@ -24,3 +24,9 @@ after_success:
   # code coverage :
   - pip install codecov
   - codecov
+  
+deploy:
+  provider: pypi
+  username: <username>
+  password: <encrypted password>
+  edge: true
