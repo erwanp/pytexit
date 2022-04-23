@@ -20,13 +20,13 @@ jobs:
         - pip install pre-commit
       script:
         - pre-commit run --all-files
-after_success:
-  # code coverage :
-  - pip install codecov
-  - codecov
-  
 deploy:
   provider: pypi
   username: <username>
   password: <encrypted password>
   edge: true
+after_test:
+  - ps: |
+      pip install wheel
+      python setup.py bdist_wheel
+      Get-ChildItem dist\*.whl | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
