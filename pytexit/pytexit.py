@@ -37,7 +37,7 @@ try:
 except:
     pass
 
-g_print_formula,g_print_latex = True,True
+PRINT_FORMULA,PRINT_LATEX = True,True
 
 def py2tex(
     expr,
