@@ -37,12 +37,13 @@ try:
 except:
     pass
 
-PRINT_FORMULA,PRINT_LATEX = True,True
+PRINT_FORMULA, PRINT_LATEX = True, True
+
 
 def py2tex(
     expr,
-    print_latex = None,
-    print_formula = None,
+    print_latex=None,
+    print_formula=None,
     dummy_var="u",
     output="tex",
     tex_enclosure="$$",
@@ -64,7 +65,7 @@ def py2tex(
 
     print_latex: boolean
         if True, prints the latex expression in the console
-    
+
     print_formula: boolean
         if True, prints the formula expression in the console
 
@@ -136,8 +137,8 @@ def py2tex(
     Will return ``'\\\\'`` instead of ``'\\'`` because we don't want those to be
     interpreted as regular expressions. Use ``print(result)`` to get the correct
     LaTex formula.
-    
-    You can also change the global variables ``pytexit.PRINT_FORMULA`` or ``pytexit.PRINT_LATEX`` 
+
+    You can also change the global variables ``pytexit.PRINT_FORMULA`` or ``pytexit.PRINT_LATEX``
     to avoid passing them as parameters every time you call the function.
 
     See Also
@@ -160,7 +161,7 @@ def py2tex(
 
     # Check print globals
     if PRINT_FORMULA is None:
-        print_formula = PRINT_FORMULA 
+        print_formula = PRINT_FORMULA
     if PRINT_LATEX is None:
         print_latex = PRINT_LATEX
 
@@ -263,7 +264,7 @@ def for2tex(a, **kwargs):
     """
 
     from pytexit import py2tex
-    
+
     return py2tex(for2py(a), **kwargs)
 
 
