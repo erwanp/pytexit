@@ -37,11 +37,12 @@ try:
 except:
     pass
 
+g_print_formula,g_print_latex = True,True
 
 def py2tex(
     expr,
-    print_latex=True,
-    print_formula=True,
+    print_latex = None,
+    print_formula = None,
     dummy_var="u",
     output="tex",
     tex_enclosure="$$",
@@ -151,6 +152,12 @@ def py2tex(
 
     """
 
+    # Check print globals
+    if print_formula is None:
+        print_formula = g_print_formula 
+    if print_latex is None:
+        print_latex = g_print_latex
+
     # Check inputs
     try:
         if sys.version_info > (3,):
@@ -250,7 +257,7 @@ def for2tex(a, **kwargs):
     """
 
     from pytexit import py2tex
-
+    
     return py2tex(for2py(a), **kwargs)
 
 
