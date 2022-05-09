@@ -153,10 +153,10 @@ def py2tex(
     """
 
     # Check print globals
-    if print_formula is None:
-        print_formula = g_print_formula 
-    if print_latex is None:
-        print_latex = g_print_latex
+    if PRINT_FORMULA is None:
+        print_formula = PRINT_FORMULA 
+    if PRINT_LATEX is None:
+        print_latex = PRINT_LATEX
 
     # Check inputs
     try:
