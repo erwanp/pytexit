@@ -64,6 +64,9 @@ def py2tex(
 
     print_latex: boolean
         if True, prints the latex expression in the console
+    
+    print_formula: boolean
+        if True, prints the formula expression in the console
 
     dummy_var: string
         dummy variable displayed in integrals
@@ -133,6 +136,9 @@ def py2tex(
     Will return ``'\\\\'`` instead of ``'\\'`` because we don't want those to be
     interpreted as regular expressions. Use ``print(result)`` to get the correct
     LaTex formula.
+    
+    You can also change the global variables ``pytexit.PRINT_FORMULA`` or ``pytexit.PRINT_LATEX`` 
+    to avoid passing them as parameters every time you call the function.
 
     See Also
     --------

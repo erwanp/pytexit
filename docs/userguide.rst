@@ -143,6 +143,23 @@ the ``output='word'`` option of :func:`~pytexit.pytexit.py2tex`::
 The latest output will typically replace all brackets {} with parenthesis () that are correctly
 interpreted by Word, and keep keywords that are correctly evaluated by Word (`\pi` or `\cdot`)
 
+By default, you have the option to enable/diable printing the given formula or the LaTeX, by passing your
+preferences as parameters to the ``pytexit.py2tex``::
+    
+    from pytexit import py2tex
+    py2tex(r'4*sqrt(2*pi*R)',print_formula = False,print_latex = True)
+
+You can also set them globaly by changing ``pytexit.PRINT_FORMULA`` or ``pytexit.PRINT_LATEX``. their values determine
+what will happen when you don't override them when calling the function. For Example::
+    
+    import pytexit
+    pytexit.py2tex(r'x=1.0d-2') # both formula and LaTeX will be printed 
+    pytexit.py2tex(r'4*sqrt(2*pi*R)',print_formula = False,print_latex = True) # only LaTeX will be printed
+
+    pytexit.PRINT_FORMULA, pytexit.PRINT_LATEX = True, False
+    pytexit.py2tex(r'a=3.2d0+3d1') # only formula will be printed
+    pytexit.py2text(r'2*sqrt(2*pi*k*T_e/m_e)*(DeltaE/(k*T_e))**2*a_0**2',print_formula = False) # nothing will be printed
+
 
 References
 ----------
