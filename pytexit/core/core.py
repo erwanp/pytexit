@@ -102,15 +102,15 @@ class LatexVisitor(ast.NodeVisitor):
     """
 
     def __init__(
-        self,
-        dummy_var,
-        upperscript,
-        lowerscript,
-        verbose,
-        simplify_multipliers,
-        simplify_fractions,
-        simplify_ints,
-        tex_multiplier,
+            self,
+            dummy_var,
+            upperscript,
+            lowerscript,
+            verbose,
+            simplify_multipliers,
+            simplify_fractions,
+            simplify_ints,
+            tex_multiplier,
     ):
 
         super(LatexVisitor, self).__init__()
@@ -451,7 +451,7 @@ class LatexVisitor(ast.NodeVisitor):
     def visit_UnaryOp(self, n):
         # Note: Unary operator followed by a power needs no parenthesis
         if self.prec(n.op) > self.prec(n.operand) and not (
-            hasattr(n.operand, "op") and isinstance(n.operand.op, ast.Pow)
+                hasattr(n.operand, "op") and isinstance(n.operand.op, ast.Pow)
         ):
             return r"{0}{1}".format(
                 self.visit(n.op), self.parenthesis(self.visit(n.operand))
@@ -552,6 +552,7 @@ class LatexVisitor(ast.NodeVisitor):
             # TODO: Adjust so that parentheses are not added to the outermost op?
             # Sub BinOp requires explicit order of operations if it is nested as operand of
             # other BinOps. Therefore, Sub as operands are encased in parentheses.
+            # This is a hotfix, check Pull Request #60.
             return r"({0}{1}{2})".format(left, self.visit(n.op), right)
         else:
             return r"{0}{1}{2}".format(left, self.visit(n.op), right)
@@ -735,6 +736,7 @@ def simplify(s):
     # Any Sub() subexpression nested within the whole expression, if it is the first op of its nest layer, is encased
     # in parentheses. That's why all '(VARIABLE - VARIABLE)', where VARIABLE can be any alphanumeric substring, are
     # replaced with 'VARIABLE - VARIABLE' unless '(VARIABLE - VARIABLE)' is not a right operand of an op other than +.
+    # This is a hotfix, check Pull Request #60.
     s = re.sub(r"([^-/*]|^)\(((?:[a-zA-z]+|[0-9]+.[0-9]*)-(?:[a-zA-z]+|[0-9]+\.*[0-9]*))\)", r"\1\2", s)
 
     # Remove unecessary parenthesis?
