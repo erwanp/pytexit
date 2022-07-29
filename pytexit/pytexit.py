@@ -193,12 +193,8 @@ def py2tex(
         )
     else:
         raise ValueError("Unexpected output: {0}".format(output))
-    if isinstance(pt.body[0], ast.Expr):
-        # To deal with cases such as 'x=something'
-        # TODO : one single command to start the visit?
-        s = Visitor.visit(pt.body[0].value)
-    else:  # For Compare / Assign expressions
-        s = Visitor.visit(pt.body[0])
+    # TODO : one single command to start the visit?
+    s = Visitor.visit(pt.body[0].value if isinstance(pt.body[0], ast.Expr) else pt.body[0])
 
     # Simplify if asked for
     if simplify_output:

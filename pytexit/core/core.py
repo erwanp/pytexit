@@ -548,6 +548,11 @@ class LatexVisitor(ast.NodeVisitor):
                     return r"{0}{1}{2}".format(left, operator, right)
             else:
                 return r"{0}{1}{2}".format(left, operator, right)
+        elif isinstance(n.op, ast.Sub) and not isinstance(n.left, ast.BinOp):
+            # TODO: Adjust so that parentheses are not added to the outermost op?
+            # Sub BinOp requires explicit order of operations if it is nested as operand of
+            # other BinOps. Therefore, Sub as operands are encased in parentheses.
+            return r"({0}{1}{2})".format(left, self.visit(n.op), right)
         else:
             return r"{0}{1}{2}".format(left, self.visit(n.op), right)
 
@@ -727,6 +732,11 @@ def replace_scientific(s):
 def simplify(s):
     """Cleans the generated text in post-processing"""
 
+    # Any Sub() subexpression nested within the whole expression, if it is the first op of its nest layer, is encased
+    # in parentheses. That's why all '(VARIABLE - VARIABLE)', where VARIABLE can be any alphanumeric substring, are
+    # replaced with 'VARIABLE - VARIABLE' unless '(VARIABLE - VARIABLE)' is not a right operand of an op other than +.
+    s = re.sub(r"([^-/*]|^)\(((?:[a-zA-z]+|[0-9]+.[0-9]*)-(?:[a-zA-z]+|[0-9]+\.*[0-9]*))\)", r"\1\2", s)
+
     # Remove unecessary parenthesis?
     # -------------
     # TODO: look for groups that looks like \(\([\(.+\)]*\)\ ),
@@ -739,5 +749,8 @@ def simplify(s):
     # Replace '\left(NUMBER\right)' with 'NUMBER'
     # ------------
     s = re.sub(r"\\left\(([\d\.]+)\\right\)", r"\1", s)
+
+    # Replace '\left( (...) \right)' with '\left(...\right)'
+    s = re.sub(r"(\\left\()\((.+)\)(\\right\))", r"\1\2\3", s)
 
     return s
