@@ -37,11 +37,13 @@ try:
 except:
     pass
 
+PRINT_FORMULA, PRINT_LATEX = True, True
+
 
 def py2tex(
     expr,
-    print_latex=True,
-    print_formula=True,
+    print_latex=None,
+    print_formula=None,
     dummy_var="u",
     output="tex",
     tex_enclosure="$$",
@@ -63,6 +65,9 @@ def py2tex(
 
     print_latex: boolean
         if True, prints the latex expression in the console
+
+    print_formula: boolean
+        if True, prints the formula expression in the console
 
     dummy_var: string
         dummy variable displayed in integrals
@@ -133,6 +138,9 @@ def py2tex(
     interpreted as regular expressions. Use ``print(result)`` to get the correct
     LaTex formula.
 
+    You can also change the global variables ``pytexit.PRINT_FORMULA`` or ``pytexit.PRINT_LATEX``
+    to avoid passing them as parameters every time you call the function.
+
     See Also
     --------
 
@@ -150,6 +158,12 @@ def py2tex(
     - sympy can also write LaTeX output.
 
     """
+
+    # Check print globals
+    if PRINT_FORMULA is None:
+        print_formula = PRINT_FORMULA
+    if PRINT_LATEX is None:
+        print_latex = PRINT_LATEX
 
     # Check inputs
     try:
