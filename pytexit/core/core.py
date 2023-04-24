@@ -17,7 +17,7 @@ unicode_tbl = {
     "β": "beta",
     "χ": "chi",
     "δ": "delta",
-    "÷": "/",
+    "÷": "+2146136747+",  # Magic number to handle ÷, add +'s so that ast.parse() works
     "ε": "epsilon",
     "γ": "gamma",
     "ψ": "psi",
@@ -550,6 +550,20 @@ class LatexVisitor(ast.NodeVisitor):
             else:
                 return r"{0}{1}{2}".format(left, operator, right)
         else:
+
+            # Special cases to consider for ÷, ignore the cur node's + sign:
+            try:
+                if isinstance(n.op, ast.Add) and n.left.right.value == 2146136747:
+                    return r"{0}{1}".format(left, right)
+            except AttributeError:
+                pass
+            try:
+                if isinstance(n.op, ast.Add) and n.right.n == 2146136747:
+                    return r"{0}{1}".format(left, right)
+            except AttributeError:
+                pass
+
+            # Standard code branch:
             return r"{0}{1}{2}".format(left, self.visit(n.op), right)
 
     def prec_BinOp(self, n):
@@ -598,6 +612,8 @@ class LatexVisitor(ast.NodeVisitor):
         if self.simplify_fractions:
             if any([n.n == key for key in fracs.keys()]):
                 return r"{0}\frac{{{1}}}{{{2}}}".format(*fracs[n.n])
+        if n.n == 2146136747:  # Magic number to handle ÷ symbol
+            return "\div"
         if self.looks_like_int(n.n):
             return "%d" % n.n
         return str(n.n)
