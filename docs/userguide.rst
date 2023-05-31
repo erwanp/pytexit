@@ -1,3 +1,4 @@
+
 Convert a Python expression to a LaTeX formula
 
 Install
@@ -106,6 +107,7 @@ identifiers in their Unicode equivalent::
   latex expressions::
 
     py2tex('arcsin(α)')
+
 .. math::
     \arcsin(\alpha)
 
