@@ -111,6 +111,98 @@ identifiers in their Unicode equivalent::
 .. math::
     \arcsin(\alpha)
 
+.. list-table:: Supported Unicode Characters
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Character
+     - Name
+     - As chr()
+   * - α
+     - alpha
+     - chr(945)
+   * - β
+     - beta
+     - chr(946)
+   * - χ
+     - chi
+     - chr(967)
+   * - δ
+     - delta
+     - chr(916)
+   * - ÷
+     - division
+     - chr(247)
+   * - ε
+     - epsilon
+     - chr(949)
+   * - γ
+     - gamma
+     - chr(947)
+   * - ψ
+     - psi
+     - chr(968)
+   * - θ
+     - theta
+     - chr(952)
+   * - κ
+     - kappa
+     - chr(954)
+   * - λ
+     - lambda
+     - chr(955)
+   * - lambda
+     - lambda
+     - chr(955)
+   * - η
+     - eta
+     - chr(951)
+   * - ν
+     - nu
+     - chr(957)
+   * - π
+     - pi
+     - chr(960)
+   * - ϕ
+     - phi
+     - chr(981)
+   * - σ
+     - omega
+     - chr(963)
+   * - τ
+     - tau
+     - chr(964)
+   * - ω
+     - omega
+     - chr(969)
+   * - ξ
+     - xi
+     - chr(958)
+   * - Δ
+     - Delta
+     - chr(916)
+   * - φ
+     - Phi
+     - chr(966)
+   * - Γ
+     - Gamma
+     - chr(915)
+   * - Ψ
+     - Psi
+     - chr(936)
+   * - α
+     - alpha
+     - chr(945)
+   * - Λ
+     - Lambda
+     - chr(923)
+   * - Σ
+     - Sigma
+     - chr(931)
+   * - Ξ
+     - Xi
+     - chr(926)
+
 - there is a mode to output Python expressions in Word syntax. From version 2007
   Word converts most LaTeX expressions in its own graphical representation. The
   Word mode here was just about replacing those LaTeX {} with Word ()::
