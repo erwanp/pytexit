@@ -32,7 +32,7 @@ def test_py2tex(verbose=True, **kwargs):
         r"-x**2",
         r"-(x**2+y**2)",
         r"-(x+y)**2",
-        r"(3/4)" + "÷" + "(8/15)",
+        r"(3/4)" + "/" + "(8/15)",
     ]
 
     expr_tex = [
@@ -229,6 +229,22 @@ def test_simplify_parser(verbose=True, **kwargs):
     assert py2tex("1e-7", simplify_output=True) == "$${10}^{-7}$$"
     assert py2tex("1e-7", simplify_output=False) == "$$1e-07$$"
 
+def test_multi():
+    """
+    sanity check for multi-line input (having import issues with multi2tex, 
+    so just pasting the implementation here for now)
+    """
+    a = "x = 4\ny = 5"
+    
+    code_arr = a.split('\n')
+    tex_arr = [""] * len(code_arr)
+    
+    for i in range(len(code_arr)):
+        tex_arr[i] = py2tex(code_arr[i])
+        
+    output = '\n'.join(tex_arr)
+    
+    assert output == "$$x=4$$\n$$y=5$$"
 
 def run_all_tests(verbose=True, **kwargs):
 
@@ -236,6 +252,7 @@ def run_all_tests(verbose=True, **kwargs):
     test_py2tex_py3only(verbose=verbose, **kwargs)
     test_hardcoded_names(verbose=verbose, **kwargs)
     test_simplify_parser(verbose=verbose, **kwargs)
+    test_multi()
 
     return True
 

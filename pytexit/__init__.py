@@ -6,7 +6,7 @@ pytexit
 from __future__ import absolute_import
 
 from .core import *
-from .pytexit import for2py, for2tex, py2tex
+from .pytexit import for2py, for2tex, py2tex, multi2tex
 
 
 def __get_version__():
