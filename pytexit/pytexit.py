@@ -268,6 +268,39 @@ def for2tex(a, **kwargs):
     return py2tex(for2py(a), **kwargs)
 
 
+def multi2tex(a):
+    """Converts a string with multiple Python formulas seperated by new-line characters to LaTeX
+
+    Parameters
+    ----------
+
+    a: str
+        Multi-line Python formula
+    
+    Returns
+    --------
+
+    returns the multi-line latex expression in raw text
+    
+    Usage
+    ------
+    
+    For notebook usage, define a string with the desired code block, for example using In[CODEBLOCK WITH PYTHON FORMULAS], 
+    and pass it to this function.
+    
+    """
+    
+    code_arr = a.split('\n')
+    tex_arr = [""] * len(code_arr)
+    
+    for i in range(len(code_arr)):
+        tex_arr[i] = py2tex(code_arr[i])
+        
+    output = '\n'.join(tex_arr)
+    
+    return output
+
+
 if __name__ == "__main__":
 
     from test.test_functions import run_all_tests
