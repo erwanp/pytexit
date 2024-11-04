@@ -33,6 +33,7 @@ def test_py2tex(verbose=True, **kwargs):
         r"-(x**2+y**2)",
         r"-(x+y)**2",
         r"(3/4)" + "/" + "(8/15)",
+        r"a-(b-(c-d))",
     ]
 
     expr_tex = [
@@ -50,6 +51,7 @@ def test_py2tex(verbose=True, **kwargs):
         r"$$-\left(x^2+y^2\right)$$",
         r"$$-\left(x+y\right)^2$$",
         r"$$\frac{\frac{3}{4}}{\frac{8}{15}}$$",
+        r"$$a-(b-(c-d))$$",
     ]
 
     for i, expr in enumerate(expr_py):
@@ -69,8 +71,6 @@ def test_py2tex(verbose=True, **kwargs):
         else:
             s = py2tex(expr, print_latex=False, print_formula=False)
             assert expr_tex[i] == s
-
-    return True
 
 
 def test_py2tex_py3only(verbose=True, **kwargs):
@@ -130,15 +130,15 @@ def test_hardcoded_names(verbose=True, **kwargs):
     # Python syntax
     assert (
         py2tex("sum([k for k in range(1, N)])", print_latex=False)
-        == "$$\sum_{k=1}^{N-1} k$$"
+        == "$$\\sum_{k=1}^{N-1} k$$"
     )
     assert (
         py2tex("sum([k for k in range(1, N+1)])", print_latex=False)
-        == "$$\sum_{k=1}^{N} k$$"
+        == "$$\\sum_{k=1}^{N} k$$"
     )
     assert (
         py2tex("sum([k for k in range(1, 11)])", print_latex=False)
-        == "$$\sum_{k=1}^{10} k$$"
+        == "$$\\sum_{k=1}^{10} k$$"
     )
 
     # Math Functions
@@ -166,7 +166,7 @@ def test_hardcoded_names(verbose=True, **kwargs):
             py2tex("arctan(alpha)", print_latex=False)
             == "$$\\arctan\\left(\\alpha\\right)$$"
         )
-    assert py2tex("arcsinh(x)", print_latex=False) == "$$\sinh^{-1}\\left(x\\right)$$"
+    assert py2tex("arcsinh(x)", print_latex=False) == "$$\\sinh^{-1}\\left(x\\right)$$"
     assert py2tex("arccosh(x)", print_latex=False) == "$$\\cosh^{-1}\\left(x\\right)$$"
 
     assert py2tex("np.power(2, 10)", print_latex=False) == "$$2^{10}$$"
@@ -174,7 +174,7 @@ def test_hardcoded_names(verbose=True, **kwargs):
     assert py2tex("pow(a+b, c)", print_latex=False) == "$$\\left(a+b\\right)^c$$"
 
     assert (
-        py2tex("5*25**2", print_latex=False, tex_multiplier=r"{\cdot}")
+        py2tex("5*25**2", print_latex=False, tex_multiplier="{\\cdot}")
         == "$$5{\\cdot}{25}^2$$"
     )
     assert py2tex("5*25**2/4", print_latex=False) == "$$\\frac{5\\times{25}^2}{4}$$"
@@ -210,7 +210,7 @@ def test_simplify_parser(verbose=True, **kwargs):
         py2tex("0.5", simplify_fractions=True, print_latex=False) == "$$\\frac{1}{2}$$"
     )
 
-    # Test simplify_multpliers
+    # Test simplify_multipliers
     assert py2tex("2*4", print_latex=False) == "$$2\\times4$$"
     assert py2tex("-2*3", print_latex=False) == "$$-2\\times3$$"
     assert py2tex("a*-2", simplify_multipliers=True, print_latex=False) == "$$-2a$$"
@@ -229,6 +229,7 @@ def test_simplify_parser(verbose=True, **kwargs):
     assert py2tex("1e-7", simplify_output=True) == "$${10}^{-7}$$"
     assert py2tex("1e-7", simplify_output=False) == "$$1e-07$$"
 
+
 def test_multi():
     """
     sanity check for multi-line input (having import issues with multi2tex, 
@@ -246,6 +247,7 @@ def test_multi():
     
     assert output == "$$x=4$$\n$$y=5$$"
 
+
 def run_all_tests(verbose=True, **kwargs):
 
     test_py2tex(verbose=verbose, **kwargs)
@@ -253,8 +255,6 @@ def run_all_tests(verbose=True, **kwargs):
     test_hardcoded_names(verbose=verbose, **kwargs)
     test_simplify_parser(verbose=verbose, **kwargs)
     test_multi()
-
-    return True
 
 
 if __name__ == "__main__":

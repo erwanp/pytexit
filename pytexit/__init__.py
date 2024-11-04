@@ -14,8 +14,7 @@ def __get_version__():
 
     # Read version number from file
     with open(join(dirname(__file__), "__version__.txt")) as version_file:
-        __version__ = version_file.read().strip()
-    return __version__
+        return version_file.read().strip()
 
 
 __version__ = __get_version__()

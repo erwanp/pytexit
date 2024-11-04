@@ -30,11 +30,11 @@ class WordVisitor(LatexVisitor):
 
     # Word-readable blocks
     def group(self, expr):
-        "Word will convert unnecessary parenthesis in equivalent LaTeX {} groups"
+        """Word will convert unnecessary parenthesis in equivalent LaTeX {} groups"""
         return self.parenthesis(expr)
 
     def parenthesis(self, expr):
-        "No spacing"
+        """No spacing"""
         return "({0})".format(expr)
 
     #    def power(self, expr, power):
@@ -42,11 +42,11 @@ class WordVisitor(LatexVisitor):
     #        return r'{0}^{1}'.format(expr, power)
 
     def division(self, up, down):
-        "no frac"
+        """no frac"""
         return r"({0}/{1})".format(up, down)
 
     def visit_Mult(self, n):
-        "No spacing"
+        """No spacing"""
         return r"\cdot"
 
     #        return r''

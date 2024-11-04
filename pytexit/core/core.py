@@ -191,7 +191,7 @@ class LatexVisitor(ast.NodeVisitor):
                 kw["max"] = self.visit(comp.iter.args[0])
             # Remove 1 for range max
             try:
-                kw["max"] = int(kw["max"]) - 1
+                kw["max"] = str(int(kw["max"]) - 1)
             except ValueError:
                 if kw["max"].endswith(r"+1"):
                     # write 'sum([... range(N+1)])' as (sum^N)
@@ -263,7 +263,7 @@ class LatexVisitor(ast.NodeVisitor):
         elif func in ["exp"]:
             return r"e^{%s}" % args
 
-        # Additionnal functions (convention names, not in numpy library)
+        # Additional functions (convention names, not in numpy library)
         elif func in ["kronecher", "kron"]:
             return r"\delta_{%s}" % args
 
@@ -282,14 +282,14 @@ class LatexVisitor(ast.NodeVisitor):
         # Sum
         elif func in ["sum"]:
             if blist:
-                return "\sum_{%s=%s}^{%s} %s" % (
+                return r"\sum_{%s=%s}^{%s} %s" % (
                     kwargs["iterator"],
                     kwargs["min"],
                     kwargs["max"],
                     kwargs["content"],
                 )
             else:
-                return r"\sum %s" % (args)
+                return r"\sum %s" % args
 
         # Recurrent operator names
         elif func in ["f", "g", "h"]:
@@ -368,11 +368,11 @@ class LatexVisitor(ast.NodeVisitor):
         def read_tree(t):
             """Write a LaTeX readable name"""
             r = t["val"]
-            if t["low"] != []:
+            if t["low"]:
                 #                child = [self.group(read_tree(tc)) for tc in t['low']]
                 child = [read_tree(tc) for tc in t["low"]]
                 r += "_{0}".format(self.group(",".join(child)))
-            if t["up"] != []:
+            if t["up"]:
                 #                child = [self.group(read_tree(tc)) for tc in t['up']]
                 child = [read_tree(tc) for tc in t["up"]]
                 r += "^{0}".format(self.group(",".join(child)))
@@ -445,7 +445,7 @@ class LatexVisitor(ast.NodeVisitor):
         # Replace Delta even if not full word  - Allow for expressions such as
         # ΔE
         elif "Delta" in m:
-            m = m.replace("Delta", "\Delta ")
+            m = m.replace("Delta", "\\Delta ")
 
         return m
 
@@ -596,24 +596,24 @@ class LatexVisitor(ast.NodeVisitor):
 
     def visit_Num(self, n):
         if self.simplify_fractions:
-            if any([n.n == key for key in fracs.keys()]):
-                return r"{0}\frac{{{1}}}{{{2}}}".format(*fracs[n.n])
-        if n.n == 2146136747:  # Magic number to handle ÷ symbol
-            return "\div"
-        if self.looks_like_int(n.n):
-            return "%d" % n.n
-        return str(n.n)
+            if any([n.value == key for key in fracs.keys()]):
+                return r"{0}\frac{{{1}}}{{{2}}}".format(*fracs[n.value])
+        if n.value == 2146136747:  # Magic number to handle ÷ symbol
+            return r"\div"
+        if self.looks_like_int(n.value):
+            return "%d" % n.value
+        return str(n.value)
 
     # New visits
     def visit_Assign(self, n):
-        "Rewrite Assign function (instead of executing it)"
+        """Rewrite Assign function (instead of executing it)"""
         return r"%s=%s" % (self.visit(n.targets[0]), self.visit(n.value))
 
     def visit_Compare(self, n):
-        "Rewrite Compare function (instead of executing it)"
+        """Rewrite Compare function (instead of executing it)"""
 
         def visit_Op(op):
-            "Note : not called by visit like other visit functions"
+            """Note : not called by visit like other visit functions"""
             if isinstance(op, ast.Lt):
                 return "<"
             elif isinstance(op, ast.LtE):
@@ -640,7 +640,7 @@ class LatexVisitor(ast.NodeVisitor):
     # Default
     def generic_visit(self, n):
         if isinstance(n, ast.AST):
-            return r"" % (
+            return r"%s%s" % (
                 n.__class__.__name__,
                 ", ".join(map(self.visit, [getattr(n, f) for f in n._fields])),
             )
@@ -657,7 +657,7 @@ class LatexVisitor(ast.NodeVisitor):
 
     def group(self, expr):
         """Returns expr, add brackets if needed"""
-        # Note: No brackets required when in parenthesis
+        # Note: No brackets required when in parentheses
         if len(expr) == 1 or expr.startswith(r"\left(") and expr.endswith(r"\right)"):
             return expr
         else:
@@ -682,7 +682,7 @@ class LatexVisitor(ast.NodeVisitor):
             return r"\operatorname{{{0}}}{1}".format(func, self.parenthesis(args))
 
 
-def preprocessing(expr, simplify):
+def preprocessing(expr):
     """Pre-process a string."""
 
     # replace unicode values (so that even a Python 2 pytexit can parse formula
@@ -690,7 +690,7 @@ def preprocessing(expr, simplify):
     for u in unicode_tbl:
         expr = expr.replace(u, unicode_tbl[u])
 
-    # remove unnessary calls to libraries
+    # remove unnecessary calls to libraries
     # Example: np.exp(-3) would be read exp(-3)
     expr = expr.strip()  # remove spaces on the side
     for m in clear_modules:
@@ -704,7 +704,7 @@ def preprocessing(expr, simplify):
 def replace_scientific(s):
     """Replace 'NUMBER e NUMBER' with powers of 10"""
 
-    regexp = re.compile(r"(\d*\.{0,1}\d+)[eE]([-+]?\d*\.{0,1}\d+)")
+    regexp = re.compile(r"(\d*\.?\d+)[eE]([-+]?\d*\.?\d+)")
 
     matches = regexp.findall(s)
     splits = regexp.split(s)
@@ -735,9 +735,9 @@ def simplify(s):
     # TODO: look for groups that looks like \(\([\(.+\)]*\)\ ),
     # (2 pairs of external parenthesis around any number (even 0) of closed pairs
     # of parenthesis)  -> then remove one of the the two external parenthesis
-    # TRied with re.findall(r'\(\([^\(^\)]*(\([^\(^\)]+\))*[^\(^\)]*\)\)', s)  but
+    # Tried with re.findall(r'\(\([^\(^\)]*(\([^\(^\)]+\))*[^\(^\)]*\)\)', s)  but
     # it doesnt work. One should better try to look for inner pairs and remove that
-    # one after one..
+    # one after one.
 
     # Replace '\left(NUMBER\right)' with 'NUMBER'
     # ------------

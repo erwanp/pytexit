@@ -84,10 +84,10 @@ def py2tex(
     tex_multiplier: raw string
         multiplication operator for latex formula.
 
-        r'\times':   2*2 -> 2 x 2 (Default)
-        r'{\times}': 2*2 -> 2x2
-        r'\cdot':    2*2 -> 2 · 2
-        r'{\cdot}':  2*2 -> 2·2
+        '\\times':   2*2 -> 2 x 2 (Default)
+        '{\\times}': 2*2 -> 2x2
+        '\\cdot':    2*2 -> 2 · 2
+        '{\\cdot}':  2*2 -> 2·2
 
     Other Parameters
     ----------------
@@ -153,7 +153,7 @@ def py2tex(
 
     Similar projects:
 
-    - https://github.com/iogf/lax  : "A pythonic way of writting latex."
+    - https://github.com/iogf/lax  : "A pythonic way of writing latex."
     - https://github.com/JelteF/PyLaTeX : "A Python library for creating LaTeX files"
     - sympy can also write LaTeX output.
 
@@ -174,7 +174,7 @@ def py2tex(
     except AssertionError:
         raise ValueError("Input must be a string")
 
-    expr = preprocessing(expr, simplify_output)  # removes unicode, module calls, etc.
+    expr = preprocessing(expr)  # removes unicode, module calls, etc.
 
     # replace scientific notation with power of 10 (this needs to be done in
     # preprocessing since the ast parser will replace 1e3 with 1000.0)
@@ -269,7 +269,7 @@ def for2tex(a, **kwargs):
 
 
 def multi2tex(a):
-    """Converts a string with multiple Python formulas seperated by new-line characters to LaTeX
+    """Converts a string with multiple Python formulas separated by new-line characters to LaTeX
 
     Parameters
     ----------
