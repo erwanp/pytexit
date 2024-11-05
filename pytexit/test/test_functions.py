@@ -34,6 +34,10 @@ def test_py2tex(verbose=True, **kwargs):
         r"-(x+y)**2",
         r"(3/4)" + "/" + "(8/15)",
         r"a-(b-(c-d))",
+        r"a=(x+y)-(x-y)",
+        r"d=(x+y)+(a-b)-(p+q)",
+        r"b=-(3*x-2*y)",
+        r"c=-(-4*x+5*y)",
     ]
 
     expr_tex = [
@@ -51,7 +55,11 @@ def test_py2tex(verbose=True, **kwargs):
         r"$$-\left(x^2+y^2\right)$$",
         r"$$-\left(x+y\right)^2$$",
         r"$$\frac{\frac{3}{4}}{\frac{8}{15}}$$",
-        r"$$a-(b-(c-d))$$",
+        r"$$a-\left(b-\left(c-d\right)\right)$$",
+        r"$$a=x+y-\left(x-y\right)$$",
+        r"$$d=x+y+a-b-\left(p+q\right)$$",
+        r"$$b=-\left(3x-2y\right)$$",
+        r"$$c=-\left(-4x+5y\right)$$",
     ]
 
     for i, expr in enumerate(expr_py):

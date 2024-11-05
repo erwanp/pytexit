@@ -464,7 +464,6 @@ class LatexVisitor(ast.NodeVisitor):
         return self.prec(n.op)
 
     def visit_BinOp(self, n):
-
         if self.prec(n.op) > self.prec(n.left):
             left = self.parenthesis(self.visit(n.left))
         elif isinstance(n.op, ast.Pow) and self.prec(n.op) == self.prec(n.left):
@@ -473,6 +472,9 @@ class LatexVisitor(ast.NodeVisitor):
         else:
             left = self.visit(n.left)
         if self.prec(n.op) > self.prec(n.right):
+            right = self.parenthesis(self.visit(n.right))
+        elif isinstance(n.op, ast.Sub) and self.prec(n.op) == self.prec(n.right):
+            # Keep parenthesis around subtracted term, for instance: a-(b-c)
             right = self.parenthesis(self.visit(n.right))
         else:
             right = self.visit(n.right)
@@ -594,7 +596,7 @@ class LatexVisitor(ast.NodeVisitor):
     def visit_USub(self, n):
         return "-"
 
-    def visit_Num(self, n):
+    def visit_Constant(self, n):
         if self.simplify_fractions:
             if any([n.value == key for key in fracs.keys()]):
                 return r"{0}\frac{{{1}}}{{{2}}}".format(*fracs[n.value])
