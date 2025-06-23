@@ -4,10 +4,13 @@ python:
   #- "3.7"
   - "3.8"
   - "3.9"
+  -"3.10"
 
 install:
   - pip install pytest-cov
-  - python setup.py install
+  - pip install -U pip setuptools wheel
+  - pip install -r docs/requirements.txt
+  - pip install .[dev]
 
 script:
   - pytest --cov=./
@@ -24,3 +27,14 @@ after_success:
   # code coverage :
   - pip install codecov
   - codecov
+
+deploy:
+  provider: pypi
+  username: "__token__"
+  password: $PYPI_API_TOKEN
+  distributions: "sdist bdist_wheel"
+  skip_existing: true
+  on:
+    tags: true
+    branch: master
+    python: "3.10"
