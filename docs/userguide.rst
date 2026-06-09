@@ -70,7 +70,7 @@ Arbitrary syntax:
 .. math::
     \sum_{i=1}^{100} i^2=338350
 
-- ``a_subˆsuper`` variables are converted with "sub" as subscript and "super" as superscript::
+``a_sub^super`` variables are interpreted using ``^`` as the XOR operator in Python syntax::
 
     py2tex('a_subˆsuper')
 
