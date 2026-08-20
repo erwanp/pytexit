@@ -228,7 +228,7 @@ class LatexVisitor(ast.NodeVisitor):
 
         # Usual math functions
         if func in ["cos", "sin", "tan", "cosh", "sinh", "tanh"]:
-            return "{0}{1}".format(func, self.parenthesis(args))
+            return r"\{0}{1}".format(func, self.parenthesis(args))
         elif func == "sqrt":
             return self.sqrt(args)
         # by default log refers to log10 in Python. Unless people import it as
