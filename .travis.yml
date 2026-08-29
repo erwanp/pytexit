@@ -20,6 +20,23 @@ jobs:
         - pip install pre-commit
       script:
         - pre-commit run --all-files
+    - stage: deploy
+      name: Deploy to PyPI
+      python: "3.9"
+      install:
+        - pip install twine wheel
+      script:
+        - skip
+      deploy:
+        provider: pypi
+        username: __token__
+        password: $PYPI_TOKEN
+        distributions: "sdist bdist_wheel"
+        skip_cleanup: true
+        skip_existing: true
+        on:
+          branch: master
+          python: "3.9"
 after_success:
   # code coverage :
   - pip install codecov
